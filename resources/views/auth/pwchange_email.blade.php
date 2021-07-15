@@ -1,0 +1,1 @@
+{{ $email_body}} <br> {{ route('reset.index', $pw_token) }}
