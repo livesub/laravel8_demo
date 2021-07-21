@@ -314,9 +314,23 @@ class Messages_kr extends Controller
         ]
     ];
 
+//게시판 관련
+    static $board = [
+        'b_ment' => [
+            'b_list_chk' => '회원만 볼수 있는 게시판 입니다.',
+            'b_write_chk' => '회원만 글 작성 가능합니다.',
+            'b_write_ment' => '글쓰기',
+            'b_choice_del_ment' => '선택삭제',
+            'b_save' => '저장 되었습니다.',
+        ]
+    ];
 
-
-
+    static $board_file_chk = [
+        'board_file_chk' => [
+            'bdt_file1.size' => '10kb를 초과할 수 없습니다',
+            'file_false' => '첨부 파일이 잘못 되었습니다.',
+        ]
+    ];
 
 
 }

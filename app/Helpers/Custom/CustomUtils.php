@@ -441,7 +441,7 @@ $um_value='80/0.5/3'
     }
 
     //셀렉트 박스 만들기
-    public static function select_box($select_name, $value, $key, $selected_val)
+    public static function select_box($select_name, $value, $key, $selected_val='')
     {
         $value_cut = explode("@@",$value);
         $key_cut = explode("@@",$key);

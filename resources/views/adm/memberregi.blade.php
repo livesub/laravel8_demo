@@ -120,12 +120,20 @@
 
 
 
+
     <div class='form-group' style='margin-top: 2em;'>
       <button class='btn btn-primary btn-lg btn-block' type='submit'>
         {{ $title_ment }}
       </button>
+
+
+    @if ($mode != 'regi')
       <button style="margin-top:20px;" type="button" onclick="mem_out();">회원 탈퇴/가입 처리</button>
+    @endif
+
     </div>
+
+
   </form>
 
 

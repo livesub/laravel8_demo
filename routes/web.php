@@ -205,9 +205,18 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\boardmanage\BoardmanageController@store',
     ]);
 
-    Route::get('adm/admhead', [     //리스트
-        'as' => 'adm.admhead.index',
-        'uses' => 'App\Http\Controllers\adm\AdmheadController@index',
+    Route::get('adm/admboard/list/{tb_name}', [  //게시판 리스트
+        'as' => 'adm.admboard.index',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@index',
     ]);
 
+    Route::get('adm/admboard/write/{tb_name}', [  //게시판 글쓰기
+        'as' => 'adm.admboard.create',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@create',
+    ]);
+
+    Route::post('adm/admboard/write/', [  //게시판 글쓰기
+        'as' => 'adm.admboard.store',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@store',
+    ]);
  });

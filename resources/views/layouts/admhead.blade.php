@@ -7,7 +7,6 @@
 <body>
 
 <script src='//code.jquery.com/jquery-3.3.1.min.js'></script>
-
     <table border="1">
         <tr>
             <td>상단 메뉴 또는 타이틀 등등</td>
@@ -23,6 +22,16 @@
                     <tr>
                         <td><a href="/adm/boardmanage">게시판 관리</a></td>
                     </tr>
+
+@php
+    $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
+@endphp
+
+@foreach($b_lists as $b_list)
+                    <tr>
+                        <td><a href="/adm/admboard/list/{{ $b_list->bm_tb_name }}"> - {{ $b_list->bm_tb_subject }}</a></td>
+                    </tr>
+@endforeach
                 </table>
             </td>
 

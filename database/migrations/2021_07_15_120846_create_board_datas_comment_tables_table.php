@@ -21,9 +21,9 @@ class CreateBoardDatasCommentTablesTable extends Migration
             $table->string('bdct_uname')->nullable()->comment('작성자 이름');
             $table->string('bdct_upw')->nullable()->comment('작성자 비밀번호');
             $table->text('bdct_memo')->comment('내용');
-            $table->integer('bdct_grp')->length(5)->nullable()->comment('댓글 그룹 판단-대댓글 표현');
-            $table->integer('bdct_sort')->length(5)->nullable()->comment('댓글 정렬-대댓글 표현');
-            $table->integer('bdct_depth')->length(5)->nullable()->comment('댓글 깊이-대댓글 표현');
+            $table->integer('bdct_grp')->length(5)->nullable()->default(0)->comment('댓글 그룹 판단-대댓글 표현');
+            $table->integer('bdct_sort')->length(5)->nullable()->default(0)->comment('댓글 정렬-대댓글 표현');
+            $table->integer('bdct_depth')->length(5)->nullable()->default(0)->comment('댓글 깊이-대댓글 표현');
             $table->string('bdct_ip')->comment('작성자 ip');
             $table->timestamps();
         });

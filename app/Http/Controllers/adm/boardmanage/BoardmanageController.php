@@ -1,4 +1,14 @@
 <?php
+#############################################################################
+#
+#		파일이름		:		BoardmanageController.php
+#		파일설명		:		관리자페이지 게시판 설정
+#		저작권			:		저작권은 제작자 있지만 누구나 사용합니다.
+#		제작자			:		김영섭
+#		최초제작일	    :		2021년 07월 16일
+#		최종수정일		:		2021년 07월 16일
+#
+###########################################################################-->
 
 namespace App\Http\Controllers\adm\boardmanage;
 
@@ -92,12 +102,16 @@ class BoardmanageController extends Controller
         $bm_coment_type       = $request->input('bm_coment_type');
         if($bm_coment_type == null) $bm_coment_type = 0;
 
+        $bm_secret_type       = $request->input('bm_secret_type');
+        if($bm_secret_type == null) $bm_secret_type = 0;
+
         $b_set = boardmanager::whereid($num)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
         $b_set->bm_tb_subject = $request->input('bm_tb_subject');
         $b_set->bm_file_num = $request->input('bm_file_num');
         $b_set->bm_resize_max_size = $request->input('bm_resize_max_size');
         $b_set->bm_resize_file_num = $request->input('bm_resize_file_num');
-        $b_set->bm_resize_file_size = $request->input('bm_resize_file_size');
+        $b_set->bm_resize_width_file = $request->input('bm_resize_width_file');
+        $b_set->bm_resize_height_file = $request->input('bm_resize_height_file');
         $b_set->bm_list_chk = $request->input('bm_list_chk');
         $b_set->bm_write_chk = $request->input('bm_write_chk');
         $b_set->bm_view_chk = $request->input('bm_view_chk');
@@ -108,6 +122,8 @@ class BoardmanageController extends Controller
         $b_set->bm_category_key = $request->input('bm_category_key');
         $b_set->bm_category_ment = $request->input('bm_category_ment');
         $b_set->bm_coment_type = $bm_coment_type;
+        $b_set->bm_secret_type = $bm_secret_type;
+        $b_set->bm_page_num = $request->input('bm_page_num');
         $b_set->bm_subject_len = $request->input('bm_subject_len');
         $b_set->bm_record_num = $request->input('bm_record_num');
         $b_set->bm_page_num = $request->input('bm_page_num');

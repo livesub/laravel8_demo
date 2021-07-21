@@ -50,14 +50,19 @@
             <table>
                 <tr>
                     <td>
-                        <input type="text" name="bm_resize_max_size" id="bm_resize_max_size" value="{{ $board_info->bm_resize_max_size }}" size="3"> 원본이미지 최대허용길이&nbsp&nbsp<input type="text" name="bm_resize_file_num" id="bm_resize_file_num" value="{{ $board_info->bm_resize_file_num }}" size="3"> (리사이징될 파일개수 - 원본제외)
+                        <input type="text" name="bm_resize_max_size" id="bm_resize_max_size" value="{{ $board_info->bm_resize_max_size }}" size="3" maxlength="3"> MB (첨부 파일 용량 제한 (예)8MB))&nbsp&nbsp<input type="text" name="bm_resize_file_num" id="bm_resize_file_num" value="{{ $board_info->bm_resize_file_num }}" size="3"> (리사이징될 파일개수 - 원본제외)
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" name="bm_resize_file_size" id="bm_resize_file_size" value="{{ $board_info->bm_resize_file_size }}"> (리사이징될 파일사이즈 - '%%'구분자사용)
+                        <input type="text" name="bm_resize_width_file" id="bm_resize_width_file" value="{{ $board_info->bm_resize_width_file }}"> (리사이징될 파일 넓이 - '%%'구분자사용)<br>
+                        <input type="text" name="bm_resize_height_file" id="bm_resize_height_file" value="{{ $board_info->bm_resize_height_file }}"> (리사이징될 파일 높이 - '%%'구분자사용)
                     </td>
                 </tr>
+                <tr>
+                    <td><font color="red">※ 리사이징 파일 갯수를 지정 했을시 넓이와 높이를 꼭 지정 하세요.</font></td>
+                </tr>
+
             </table>
         </td>
     </tr>
@@ -83,7 +88,7 @@
             카테고리 값
         </td>
         <td>
-            <input type="text" name="bm_category_key" id="bm_category_key" value="{{ $board_info->bm_category_key }}"> (카테고리설정시 필요한 키값을 넣으세요..구분자 '%%'사용)
+            <input type="text" name="bm_category_key" id="bm_category_key" value="{{ $board_info->bm_category_key }}"> (카테고리설정시 필요한 키값을 넣으세요..구분자 '@@'사용)
         </td>
     </tr>
 
@@ -92,7 +97,7 @@
             카테고리 멘트
         </td>
         <td>
-            <input type="text" name="bm_category_ment" id="bm_category_ment" value="{{ $board_info->bm_category_ment }}"> (카테고리키에 대응한 멘트를 넣으세요.구분자 '%%'사용 - 키와 개수가 같아야함)
+            <input type="text" name="bm_category_ment" id="bm_category_ment" value="{{ $board_info->bm_category_ment }}"> (카테고리키에 대응한 멘트를 넣으세요.구분자 '@@'사용 - 키와 개수가 같아야함)
         </td>
     </tr>
 
@@ -107,6 +112,19 @@
             @endphp
 
             <input type="checkbox" name="bm_coment_type" id="bm_coment_type" value="1" {{ $checked }}> (보기페이지에서 댓글 사용 여부)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            게시판 비밀글 사용 여부
+        </td>
+        <td>
+            @php
+                if($board_info->bm_secret_type == 1) $checked = "checked";
+                else $checked = "";
+            @endphp
+
+            <input type="checkbox" name="bm_secret_type" id="bm_secret_type" value="1" {{ $checked }}> (비밀글 사용 여부)
         </td>
     </tr>
 

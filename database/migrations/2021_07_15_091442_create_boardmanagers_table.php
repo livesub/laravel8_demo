@@ -28,11 +28,13 @@ class CreateBoardmanagersTable extends Migration
             $table->smallInteger('bm_delete_chk')->length(3)->default(100)->comment('삭제 가능 권한(100 손님)');
             $table->smallInteger('bm_comment_chk')->length(3)->default(100)->comment('댓글 가능 권한(100 손님)');
             $table->tinyInteger('bm_coment_type')->length(1)->default(1)->comment('답글사용여부1=>사용');
+            $table->tinyInteger('bm_secret_type')->length(1)->default(0)->comment('비밀글사용여부0=>비사용,1=>사용');
             $table->string('bm_category_key')->nullable()->comment('카테고리 키값');
             $table->string('bm_category_ment')->nullable()->comment('카테고리 이름값');
             $table->tinyInteger('bm_file_num')->length(2)->default(1)->comment('첨부파일 사용개수');
             $table->string('bm_resize_file_num')->nullable()->comment('첨부자료(이미지시) 리사이징 개수');
-            $table->string('bm_resize_file_size')->nullable()->comment('리사이징될 가로제한길이(리사이징 개수와 같아야함%%구분)');
+            $table->string('bm_resize_width_file')->nullable()->comment('리사이징될 가로 길이(리사이징 개수와 같아야함%%구분)');
+            $table->string('bm_resize_height_file')->nullable()->comment('리사이징될 높이 길이(리사이징 개수와 같아야함%%구분)');
             $table->integer('bm_resize_max_size')->nullable()->length(4)->comment('원본이미지최대허용길이');
             $table->timestamps();
         });
