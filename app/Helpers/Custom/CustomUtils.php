@@ -82,15 +82,24 @@ return $validator;
         return $Messages;
     }
 
-    public static function page_function($table_name,$pageNum,$writeList,$pageNumList)
+    public static function page_function($table_name,$pageNum,$writeList,$pageNumList,$type,$bm_tb_name='',$cate)
     {
+        //$table_name = 테이블 이름
         //$pageNum = get 방식의 호출 페이지 번호
         //$writeList = 한 화면에 보여줄 데이터 갯수
         //$pageNumList = 한 페이지당 표시될 글 갯수
         //$total_cnt = 게시물 총 갯수
-        $page = array();
+        //$type = 게시물 총 갯수(게시판 총 관리 테이블과 회원 관리 테이블 구조가 다름)
+        //$bm_tb_name = 게시판 이름
 
-        $total_cnt = DB::table($table_name)->count();
+        $page = array();
+        if($type != 'board'){
+            $total_cnt = DB::table($table_name)->count();
+        }else{
+            if($cate == "") $total_cnt = DB::table($table_name)->where('bm_tb_name',$bm_tb_name)->count();
+            else $total_cnt = DB::table($table_name)->where([['bm_tb_name',$bm_tb_name],['bdt_category',$cate]])->count();
+        }
+
 
         // view에서 넘어온 현재페이지의 파라미터 값.
         $page['pageNum']     = (isset($pageNum)?$pageNum:1);
@@ -441,12 +450,17 @@ $um_value='80/0.5/3'
     }
 
     //셀렉트 박스 만들기
-    public static function select_box($select_name, $value, $key, $selected_val='')
+    public static function select_box($select_name, $value, $key, $selected_val='',$route_link='')
     {
         $value_cut = explode("@@",$value);
         $key_cut = explode("@@",$key);
 
-        $select_disp = "<select name='{$select_name}' id='{$select_name}'>";
+        $select_disp = "<select name='{$select_name}' id='{$select_name}' {$route_link}>";
+        if($route_link != ""){
+            $select_disp .= "
+                <option value='' >전체</option>
+            ";
+        }
         for($i = 0; $i < count($value_cut); $i++){
             $selected = "";
             if($key_cut[$i] == $selected_val) $selected = "selected";

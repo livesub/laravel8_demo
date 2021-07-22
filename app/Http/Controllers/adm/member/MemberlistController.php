@@ -50,8 +50,9 @@ class MemberlistController extends Controller
         $pageNum     = $request->input('page');
         $writeList   = 10;  //10갯씩 뿌리기
         $pageNumList = 10; // 한 페이지당 표시될 글 갯수
+        $type = 'member';
 
-        $page_control = CustomUtils::page_function('users',$pageNum,$writeList,$pageNumList);
+        $page_control = CustomUtils::page_function('users',$pageNum,$writeList,$pageNumList,$type,'','');
         $members = DB::table('users')->orderBy('id', 'desc')->skip($page_control['startNum'])->take($writeList)->get();
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];

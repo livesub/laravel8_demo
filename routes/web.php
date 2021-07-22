@@ -184,6 +184,8 @@ Route::group(['middleware' => ['auth']], function () {
     ]);
 /*** 관리자 회원 관련 끝 */
 
+
+
 /*** 관리자 게시판 관리 */
     Route::get('adm/boardmanage', [     //리스트
         'as' => 'adm.boardmanage.index',
@@ -210,13 +212,28 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@index',
     ]);
 
+    Route::post('adm/admboard/list/choice_del', [  //게시판 리스트 에서 관리자 선택 삭제
+        'as' => 'adm.admboard.choice_del',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@choice_del',
+    ]);
+
     Route::get('adm/admboard/write/{tb_name}', [  //게시판 글쓰기
         'as' => 'adm.admboard.create',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@create',
     ]);
 
-    Route::post('adm/admboard/write/', [  //게시판 글쓰기
+    Route::post('adm/admboard/write/', [  //게시판 글쓰기 저장
         'as' => 'adm.admboard.store',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@store',
+    ]);
+
+    Route::get('adm/admboard/view/{tb_name}', [  //게시판 view
+        'as' => 'adm.admboard.show',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@show',
+    ]);
+
+    Route::post('adm/admboard/secret/{tb_name}', [  //게시판 비밀글 처리
+        'as' => 'adm.admboard.secret',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@secret',
     ]);
  });

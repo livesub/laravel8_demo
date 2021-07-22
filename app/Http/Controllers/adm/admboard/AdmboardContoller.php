@@ -35,7 +35,7 @@ class AdmboardContoller extends Controller
         $this->middleware('auth');
     }
 
-    public function index(Request $request)
+    public function index($tb_name,Request $request)
     {
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
@@ -47,8 +47,6 @@ class AdmboardContoller extends Controller
 
         $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();
 
-
-
         //글쓰기 삭제 등등 게시판 쎄팅값 처리
         //관리자 페이지 이지만 나중에 프론트로 copy 할때를 위해 똑같이 개발(21.07.16)
         if(Auth::user()->user_level == "") $user_level = "100";
@@ -56,27 +54,25 @@ class AdmboardContoller extends Controller
 
         //글list 제어
         if($user_level > $board_set_info->bm_list_chk){
-            return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$board['b_ment']['b_list_chk']);
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_list_chk']);
             exit;
         }
 
-        $tb_name = $request->input('tb_name');
-
-var_dump("리스트 뿌리기");
-/*
+        $cate        = $request->input('cate');
         $pageNum     = $request->input('page');
         $writeList   = 10;  //10갯씩 뿌리기
         $pageNumList = 10; // 한 페이지당 표시될 글 갯수
+        $type = 'board';
 
-        $page_control = CustomUtils::page_function($tb_name,$pageNum,$writeList,$pageNumList);
-        $board_lists = DB::table($board_datas_tables)->orderBy('id', 'desc')->skip($page_control['startNum'])->take($writeList)->get();
+        $page_control = CustomUtils::page_function('board_datas_tables',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate);
+
+        if($cate == ""){
+            $board_lists = DB::table('board_datas_tables')->where('bm_tb_name',$tb_name)->orderBy('id', 'desc')->skip($page_control['startNum'])->take($writeList)->get();
+        }else{
+            $board_lists = DB::table('board_datas_tables')->where([['bm_tb_name',$tb_name],['bdt_category',$cate]])->orderBy('id', 'desc')->skip($page_control['startNum'])->take($writeList)->get();
+        }
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
-*/
-
-
-
-
 
         //글쓰기 버튼 제어
         if($user_level <= $board_set_info->bm_write_chk){
@@ -85,14 +81,30 @@ var_dump("리스트 뿌리기");
 
         //선택 삭제 제어
         if($user_level == config('app.ADMIN_LEVEL')){
-            $choice_del_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/write/$board_set_info->bm_tb_name'\">{$Messages::$board['b_ment']['b_choice_del_ment']}</button></td>";
+            $choice_del_button = "<td><button type='button' onclick='choice_del();'>{$Messages::$board['b_ment']['b_choice_del_ment']}</button></td>";
+        }
+
+        //카테고리 제어
+        $selected_val = '';
+        $route_link = " onchange='category();' ";
+
+        if(trim($board_set_info->bm_category_key) != ""){
+            $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $cate, $route_link);
+        }else{
+            $select_disp = '';
         }
 
         return view('adm.admboard.admboardlist',[
+            'tb_name'                   => $tb_name,
             'board_set_info'            => $board_set_info, //게시판 쎄팅 배열
             'board_lists'               => $board_lists, //게시판 내용
             'list_button'               => $list_button,
             'choice_del_button'         => $choice_del_button,
+            'virtual_num'               => $page_control['virtual_num'],
+            'totalCount'                => $page_control['totalCount'],
+            'pageNum'                   => $page_control['pageNum'],
+            'pageList'                  => $pageList,
+            'select_disp'               => $select_disp
         ],$Messages::$mypage['mypage']['message']);
     }
 
@@ -118,7 +130,7 @@ var_dump("리스트 뿌리기");
 
         //글쓰기 권한 제어
         if($user_level > $board_set_info->bm_write_chk){
-            return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
             exit;
         }
 
@@ -128,9 +140,8 @@ var_dump("리스트 뿌리기");
         //카테고리 제어
         $selected_val = '';
         if(trim($board_set_info->bm_category_key) != ""){
-            $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $selected_val);
+            $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $selected_val,'');
         }
-
 
         return view('adm.admboard.admboardwrite',[
             'tb_name'                   => $tb_name,
@@ -166,7 +177,7 @@ var_dump("리스트 뿌리기");
 
         //글쓰기 권한 제어
         if($user_level > $board_set_info->bm_write_chk){
-            return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
             exit;
         }
 
@@ -282,9 +293,46 @@ var_dump("리스트 뿌리기");
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($tb_name,Request $request)
     {
-        //
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        //$tb_name = $request->input('tb_name');    request로 넘어온 값이 아님
+
+        $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
+
+        if(Auth::user()->user_level == "") $user_level = "100";
+        else $user_level = Auth::user()->user_level;
+
+        //글보기 권한 제어
+        if($user_level > $board_set_info->bm_view_chk){
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_view_chk']);
+            exit;
+        }
+
+        $board_info = DB::table('board_datas_tables')->where([['id', $request->input('id')], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
+
+        //비밀글 처리
+        if($board_info->bdt_chk_secret == 1){
+            //route('adm.admboard.show',$tb_name.'?id='.$board_list->id)
+            return redirect()->route('adm.admboard.secret',$tb_name.'?id='.$board_info->id);
+        }
+
+
+
+
+
+
+
+        return view('adm.admboard.admboardview');
+
+        dd("view!~~~~~~~~~~~~~~~".$request->id);
     }
 
     /**
@@ -320,4 +368,53 @@ var_dump("리스트 뿌리기");
     {
         //
     }
+
+    public function choice_del(Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $tb_name = $request->input('tb_name');
+        $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
+
+        $board_set_info = DB::table('boardmanagers')->select('bm_file_num')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 정보에서 첨부 파일 갯수 구하기
+
+        for ($i = 0; $i < count($request->input('chk_id')); $i++) {
+            //선택된 게시물 일괄 삭제
+            //먼저 게시물을 검사하여 파일이 있는지 파악 하고 같이 삭제 함
+            $board_info = DB::table('board_datas_tables')->where([['id', $request->input('chk_id')[$i]], ['bm_tb_name',$tb_name]])->first();
+
+            for($m = 1; $m <= $board_set_info->bm_file_num; $m++){
+                $bdt_file = 'bdt_file'.$m;
+                if($board_info->$bdt_file != ""){
+                    $file_cnt = explode('@@',$board_info->$bdt_file);
+
+                    for($j = 0; $j < count($file_cnt); $j++){
+                        $img_path = "";
+                        $img_path = $path.'/'.$file_cnt[$j];
+                        if (file_exists($img_path)) {
+                            @unlink($img_path); //이미지 삭제
+                        }
+                    }
+                }
+            }
+
+            DB::table('board_datas_tables')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
+        }
+        return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
+    }
+
+    public function secret($tb_name,Request $request)
+    {
+        dd($tb_name);
+    }
+
 }
+
+
+

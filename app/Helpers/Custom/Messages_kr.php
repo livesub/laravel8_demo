@@ -318,10 +318,12 @@ class Messages_kr extends Controller
     static $board = [
         'b_ment' => [
             'b_list_chk' => '회원만 볼수 있는 게시판 입니다.',
-            'b_write_chk' => '회원만 글 작성 가능합니다.',
+            'b_write_chk' => '회원만 글쓰기 가능합니다.',
+            'b_view_chk' => '회원만 글보기 가능합니다.',
             'b_write_ment' => '글쓰기',
             'b_choice_del_ment' => '선택삭제',
             'b_save' => '저장 되었습니다.',
+            'b_del' => '삭제 되었습니다.',
         ]
     ];
 
