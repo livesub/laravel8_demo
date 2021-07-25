@@ -317,13 +317,16 @@ class Messages_kr extends Controller
 //게시판 관련
     static $board = [
         'b_ment' => [
-            'b_list_chk' => '회원만 볼수 있는 게시판 입니다.',
-            'b_write_chk' => '회원만 글쓰기 가능합니다.',
-            'b_view_chk' => '회원만 글보기 가능합니다.',
+            'b_list_chk' => '글목록 권한이 없습니다.',
+            'b_write_chk' => '글쓰기 권한이 없습니다.',
+            'b_view_chk' => '글보기 권한이 없습니다.',
             'b_write_ment' => '글쓰기',
+            'b_reply_chk' => '답글 권한이 없습니다.',
+            'b_reply_ment' => '답글쓰기',
             'b_choice_del_ment' => '선택삭제',
             'b_save' => '저장 되었습니다.',
             'b_del' => '삭제 되었습니다.',
+            'b_pwno' => '비밀번호가 맞지 않습니다.',
         ]
     ];
 

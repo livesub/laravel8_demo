@@ -64,7 +64,9 @@ return $validator;
 
     public static function attachment_save($file,$path)
     {
-        $file_name = time().filter_var($file->getClientOriginalName(),FILTER_SANITIZE_URL);     //파일 이름 변환
+        //$file_name = time().filter_var($file->getClientOriginalName(),FILTER_SANITIZE_URL);     //파일 이름 변환
+        //이슈!! 한글 파일명일때 변환을 해 주지 않아 같은 시간대로 파일 덮어 버림
+        $file_name = uniqid().filter_var($file->getClientOriginalName(),FILTER_SANITIZE_URL);     //파일 이름 변환
         $file_ori_name = $file->getClientOriginalName();    //원본 파일 이름
 
         if (!$file->move(CustomUtils::attachments_path($path),$file_name)) {
@@ -82,7 +84,7 @@ return $validator;
         return $Messages;
     }
 
-    public static function page_function($table_name,$pageNum,$writeList,$pageNumList,$type,$bm_tb_name='',$cate)
+    public static function page_function($table_name,$pageNum,$writeList,$pageNumList,$type,$bm_tb_name='',$cate='')
     {
         //$table_name = 테이블 이름
         //$pageNum = get 방식의 호출 페이지 번호
@@ -95,11 +97,16 @@ return $validator;
         $page = array();
         if($type != 'board'){
             $total_cnt = DB::table($table_name)->count();
+            $cateinfo = '';
         }else{
-            if($cate == "") $total_cnt = DB::table($table_name)->where('bm_tb_name',$bm_tb_name)->count();
-            else $total_cnt = DB::table($table_name)->where([['bm_tb_name',$bm_tb_name],['bdt_category',$cate]])->count();
+            if($cate == ""){
+                $total_cnt = DB::table($table_name)->where('bm_tb_name',$bm_tb_name)->count();
+                $cateinfo = '';
+            }else {
+                $total_cnt = DB::table($table_name)->where([['bm_tb_name',$bm_tb_name],['bdt_category',$cate]])->count();
+                $cateinfo = "&cate=".$cate;
+            }
         }
-
 
         // view에서 넘어온 현재페이지의 파라미터 값.
         $page['pageNum']     = (isset($pageNum)?$pageNum:1);
@@ -125,23 +132,28 @@ return $validator;
 
         $page['virtual_num'] = $page['totalCount'] - $page['pageNumList'] * ($page['pageNum'] - 1);
 
-
-
         //페이징 관련
-        $page['preFirstPage'] = "<a href = '?pageNum=".$page['startPage']."'><<&nbsp</a>";
+        if($page['endPage'] != 0){
+            $page['preFirstPage'] = "<a href = '?pageNum=".$page['startPage'].$cateinfo."'><<&nbsp</a>";
+        }else{
+            $page['preFirstPage'] = "<<&nbsp";
+        }
 
         if($page['pageNum'] == 1)
         {
             $page['pre1Page'] = "";
         }else{
-            $page['pre1Page'] = "<a href = '?page=".($page['pageNum'] - 1)."'>&nbsp<</a>";
+            $page['pre1Page'] = "<a href = '?page=".($page['pageNum'] - 1).$cateinfo."'>&nbsp<</a>";
         }
 
         $page_hap = "";
-
-        for($i=$page['startPage']; $i<=$page['endPage']; $i++)
-        {
-            $page_hap .= "<a href = '?page=".$i."'>&nbsp".$i."&nbsp</a>";
+        if($page['endPage'] != 0){
+            for($i=$page['startPage']; $i<=$page['endPage']; $i++)
+            {
+                $page_hap .= "<a href = '?page=".$i.$cateinfo."'>&nbsp".$i."&nbsp</a>";
+            }
+        }else{
+            $page_hap = "&nbsp1&nbsp";
         }
 
         $page['listPage'] = $page_hap;
@@ -150,11 +162,18 @@ return $validator;
         {
             $page['next1Page'] = "";
         }else{
-            $page['next1Page'] = "<a href = '?page=".($page['pageNum'] + 1)."'>&nbsp>&nbsp</a>";
+            if($page['endPage'] != 0){
+                $page['next1Page'] = "<a href = '?page=".($page['pageNum'] + 1).$cateinfo."'>&nbsp>&nbsp</a>";
+            }else{
+                $page['next1Page'] = "";
+            }
         }
 
-        $page['nextLastPage'] = "<a href = '?page=".$page['endPage']."'>&nbsp>></a>";
-
+        if($page['endPage'] != 0){
+            $page['nextLastPage'] = "<a href = '?page=".$page['endPage'].$cateinfo."'>&nbsp>></a>";
+        }else{
+            $page['nextLastPage'] = "&nbsp>>";
+        }
 
         return $page;
     }

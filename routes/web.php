@@ -232,8 +232,29 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@show',
     ]);
 
-    Route::post('adm/admboard/secret/{tb_name}', [  //게시판 비밀글 처리
+    Route::get('adm/admboard/secret/{tb_name}', [  //게시판 비밀글 처리
         'as' => 'adm.admboard.secret',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@secret',
     ]);
+
+    Route::post('adm/admboard/secretpw/', [  //게시판 비밀글 처리
+        'as' => 'adm.admboard.secretpw',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@secretpw',
+    ]);
+
+    Route::post('adm/admboard/downloadfile/', [  //게시판 첨부파일 다운로드 처리
+        'as' => 'adm.admboard.downloadfile',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@downloadfile',
+    ]);
+
+    Route::get('adm/admboard/reply/{tb_name}/{ori_num}', [  //게시판 답글 쓰기
+        'as' => 'adm.admboard.reply',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@reply',
+    ]);
+
+    Route::post('adm/admboard/replysave/{tb_name}', [  //게시판 답글 저장
+        'as' => 'adm.admboard.replysave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@replysave',
+    ]);
+
  });
