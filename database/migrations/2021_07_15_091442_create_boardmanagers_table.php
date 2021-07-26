@@ -26,8 +26,7 @@ class CreateBoardmanagersTable extends Migration
             $table->smallInteger('bm_modify_chk')->length(3)->default(100)->comment('수정 가능 권한(100 손님)');
             $table->smallInteger('bm_reply_chk')->length(3)->default(100)->comment('답글 가능 권한(100 손님)');
             $table->smallInteger('bm_delete_chk')->length(3)->default(100)->comment('삭제 가능 권한(100 손님)');
-            $table->smallInteger('bm_comment_chk')->length(3)->default(100)->comment('댓글 가능 권한(100 손님)');
-            $table->tinyInteger('bm_coment_type')->length(1)->default(1)->comment('답글사용여부1=>사용');
+            $table->tinyInteger('bm_coment_type')->length(1)->default(1)->comment('댓글사용여부1=>사용');
             $table->tinyInteger('bm_secret_type')->length(1)->default(0)->comment('비밀글사용여부0=>비사용,1=>사용');
             $table->string('bm_category_key')->nullable()->comment('카테고리 키값');
             $table->string('bm_category_ment')->nullable()->comment('카테고리 이름값');

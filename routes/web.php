@@ -257,4 +257,23 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@replysave',
     ]);
 
+    Route::get('adm/admboard/modify/{tb_name}/{ori_num}', [  //게시판 수정
+        'as' => 'adm.admboard.modify',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@modify',
+    ]);
+
+    Route::post('adm/admboard/modifysave/{tb_name}', [  //게시판 수정 저장
+        'as' => 'adm.admboard.modifysave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@modifysave',
+    ]);
+
+    Route::post('adm/admboard/delete/{tb_name}', [  //게시판 삭제 처리
+        'as' => 'adm.admboard.deletesave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@deletesave',
+    ]);
+
+    Route::post('adm/admboard/commemt/{tb_name}', [  //게시판 덧글 처리
+        'as' => 'adm.admboard.commemtsave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtsave',
+    ]);
  });

@@ -318,11 +318,16 @@ class Messages_kr extends Controller
     static $board = [
         'b_ment' => [
             'b_list_chk' => '글목록 권한이 없습니다.',
+            'b_list_ment' => '글목록',
             'b_write_chk' => '글쓰기 권한이 없습니다.',
             'b_view_chk' => '글보기 권한이 없습니다.',
+            'b_comment_chk' => '댓글 권한이 없습니다.',
             'b_write_ment' => '글쓰기',
+            'b_del_chk' => '삭제 권한이 없습니다.',
+            'b_del_ment' => '삭제',
             'b_reply_chk' => '답글 권한이 없습니다.',
             'b_reply_ment' => '답글쓰기',
+            'b_modi_ment' => '수정',
             'b_choice_del_ment' => '선택삭제',
             'b_save' => '저장 되었습니다.',
             'b_del' => '삭제 되었습니다.',

@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 use Validator;  //체크
 use App\Models\board_datas_table;    //게시판 모델 정의
+use App\Models\board_datas_comment_table;    //게시판 모델 정의
 
 class AdmboardContoller extends Controller
 {
@@ -329,6 +330,7 @@ class AdmboardContoller extends Controller
         $result_pw      = $request->input('pw');  //비밀글 비번 찾기를 통해 온 결과 값(secretpw 함수)
         $cate           = $request->input('cate');
         $page           = $request->input('page');
+        $mode          = $request->input('mode');
 
         if($user_level > config('app.ADMIN_LEVEL') || Auth::user()->user_id != $board_info->bdt_uid){    //관리자가 아니거나 본인 글이 아닐시 비번 묻기
             if($board_info->bdt_chk_secret == 1 && $result_pw != 'ok'){
@@ -344,25 +346,55 @@ class AdmboardContoller extends Controller
         //비밀글일경우 때문에 다시 게시판 정보 읽기(비밀글일경우 비번이 맞아야 읽는 것이니 게시판 정보 읽고 조회수 누적 시키면 누적되기 전 값이 출력됨, 그래서 다시 정보 읽어서 출력)
         $board_info_display = DB::table('board_datas_tables')->where([['id', $request->input('id')], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
 
+        //page 처리
+        $page_link = "";
+        if($page != ""){
+            $page_link = "?page=".$page;
+        }
+
         //카테고리명 출력(카테고리가 있는 게시판 이라면)
         $category_ment = "";
+        $cate_link = "";
         if(trim($board_set_info->bm_category_key) != ""){
             $category_tmp = explode("@@",$board_set_info->bm_category_ment);
             $category_ment = $category_tmp[$board_info->bdt_category - 1];
+            $cate_link = "&cate=".$cate;
         }
 
         //글쓰기 버튼 제어
         $write_button = "";
         if($user_level <= $board_set_info->bm_write_chk){
-            //$write_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/write/$board_set_info->bm_tb_name'\">{$Messages::$board['b_ment']['b_write_ment']}</button></td>";
-            $write_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/write/$board_set_info->bm_tb_name'\">{$Messages::$board['b_ment']['b_write_ment']}</button></td>";
+            $write_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/write/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_write_ment']}</button></td>";
         }
 
         //답글 쓰기 버튼 제어
         $reply_button = "";
         if($user_level <= $board_set_info->bm_reply_chk){
-            $reply_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/reply/$board_set_info->bm_tb_name/$board_info->id'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
+            $reply_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
         }
+
+        //수정 버튼 제어
+        $modi_button = "";
+        if($user_level <= $board_set_info->bm_modify_chk){  //수정 권한이 있는 게시판인지
+            $modi_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
+        }
+
+        //삭제 버튼 제어
+        $del_button = "";
+        if($user_level <= $board_set_info->bm_delete_chk){  //삭제 권한이 있는 게시판인지
+            if($user_level <= config('app.ADMIN_LEVEL') || Auth::user()->user_id == $board_info->bdt_uid){    //관리자 이거나 본인 글일때 삭제 버튼 나오게
+                $del_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_del_ment']}</button></td>";
+            }
+        }
+
+        //목록 버튼 제어
+        $list_button = "";
+        if($user_level <= $board_set_info->bm_list_chk){  //삭제 권한이 있는 게시판인지
+            //$list_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
+            $list_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/list/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
+        }
+
+        $comment_infos = DB::table('board_datas_comment_tables')->where([['bdt_id', $request->input('id')], ['bm_tb_name',$tb_name]])->get();   //댓글 정보 읽기
 
         return view('adm.admboard.admboardview',[
             'tb_name'                   => $tb_name,
@@ -371,30 +403,14 @@ class AdmboardContoller extends Controller
             'board_info'                => $board_info_display, //게시판 내용
             'write_button'              => $write_button,
             'reply_button'              => $reply_button,
+            'modi_button'               => $modi_button,
+            'del_button'                => $del_button,
+            'list_button'               => $list_button,
+            'page'                      => $page,
+            'cate'                      => $cate,
+            'b_id'                      => $request->input('id'),
+            'comment_infos'             => $comment_infos,
         ],$Messages::$mypage['mypage']['message']);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -403,9 +419,61 @@ class AdmboardContoller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function deletesave($tb_name, Request $request)
     {
-        //
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        //$tb_name = $request->input('tb_name');    request로 넘어온 값이 아님
+
+        $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
+
+        if(Auth::user()->user_level == "") $user_level = "100";
+        else $user_level = Auth::user()->user_level;
+
+        //삭제 권한 제어
+        if($user_level > $board_set_info->bm_delete_chk){
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del_chk']);
+            exit;
+        }
+
+        $b_id = $request->input('b_id');
+        $mode = $request->input('mode');
+        $result_pw      = $request->input('pw');  //비밀글 비번 찾기를 통해 온 결과 값(secretpw 함수)
+
+        $board_set_info = DB::table('boardmanagers')->select('bm_file_num')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 정보에서 첨부 파일 갯수 구하기
+        $board_info = DB::table('board_datas_tables')->where([['id', $b_id], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
+
+        if($user_level > config('app.ADMIN_LEVEL') || Auth::user()->user_id != $board_info->bdt_uid){    //관리자가 아니거나 본인 글이 아닐시 비번 묻기
+            if($board_info->bdt_chk_secret == 1 && $result_pw != 'ok'){
+                return redirect()->route('adm.admboard.secret',$tb_name.'?id='.$board_info->id.'&mode=del');
+            }
+       }
+
+       $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
+
+        for($m = 1; $m <= $board_set_info->bm_file_num; $m++){
+            $bdt_file = 'bdt_file'.$m;
+            if($board_info->$bdt_file != ""){
+                $file_cnt = explode('@@',$board_info->$bdt_file);
+
+                for($j = 0; $j < count($file_cnt); $j++){
+                    $img_path = "";
+                    $img_path = $path.'/'.$file_cnt[$j];
+                    if (file_exists($img_path)) {
+                        @unlink($img_path); //이미지 삭제
+                    }
+                }
+            }
+        }
+
+        DB::table('board_datas_tables')->where('id',$b_id)->delete();   //row 삭제
+        return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
     }
 
     public function choice_del(Request $request)
@@ -461,12 +529,14 @@ class AdmboardContoller extends Controller
         $id = $request->input('id');
         $page = $request->input('page');
         $cate = $request->input('cate');
+        $mode = $request->input('mode');
 
         return view('adm.admboard.admboardsecret',[
             'tb_name'                   => $tb_name,
             'b_id'                      => $id,
             'page'                      => $page,
             'cate'                      => $cate,
+            'mode'                      => $mode,
         ],$Messages::$board['b_ment']);
     }
 
@@ -485,6 +555,7 @@ class AdmboardContoller extends Controller
         $upw = $request->input('upw');
         $page = $request->input('page');
         $cate = $request->input('cate');
+        $mode = $request->input('mode');
 
         if($tb_name == "" || $b_id == "" || $upw == ""){
             //예외 처리
@@ -502,8 +573,16 @@ class AdmboardContoller extends Controller
             $request['page'] = $page;
             $request['cate'] = $cate;
             $request['pw'] = "ok";
+            $request['mode'] = $mode;
 
-            return self::show($tb_name,$request);   //함수에 직접 전달
+            if($mode == 'modi'){
+                return self::modify($tb_name,$b_id,$request);   //함수에 직접 전달
+            }else if($mode == 'del'){
+                return self::deletesave($tb_name,$request);   //함수에 직접 전달
+            }else{
+                return self::show($tb_name,$request);   //함수에 직접 전달
+            }
+
             exit;
         }
     }
@@ -636,7 +715,7 @@ class AdmboardContoller extends Controller
         $bdt_depth = $request->input('bdt_depth');
         $bdt_category = $request->input('bdt_category');
 
-        $aa = board_datas_table::where([
+        $bdt_sort_up = board_datas_table::where([
             ['bdt_grp',$bdt_grp],
             ['bdt_sort','>',$bdt_sort],
         ])->increment('bdt_sort', 1);
@@ -652,6 +731,7 @@ class AdmboardContoller extends Controller
             'bdt_content' => $bdt_content,
             'bdt_category' => $bdt_category,
             'bdt_ip' => $bdt_ip,
+            'bdt_grp' => $bdt_grp,
             'bdt_sort' => $bdt_sort + 1,
             'bdt_depth' => $bdt_depth + 1,
         );
@@ -712,10 +792,290 @@ class AdmboardContoller extends Controller
 
         //저장 처리
         $create_result = board_datas_table::create($data);
-//        $create_result['bdt_grp'] = $create_result->id; //저장된 결과 값에 auto increment 값을 찾을때 사용
-//        $create_result->save();
 
-        if($create_result = 1) return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
+        if($bdt_category != ""){    //키테고리 있을때
+            $bdt_category_url = "?cate=".$bdt_category;
+        }
+
+        if($create_result = 1) return redirect('adm/admboard/list/'.$tb_name.$bdt_category_url)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+    }
+
+    public function modify($tb_name, $ori_num, Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        //$tb_name = $request->input('tb_name');    request로 넘어온 값이 아님
+
+        $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
+
+        if(Auth::user()->user_level == "") $user_level = "100";
+        else $user_level = Auth::user()->user_level;
+
+        //수정 권한 제어
+        if($user_level > $board_set_info->bm_modify_chk){
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_view_chk']);
+            exit;
+        }
+
+        $board_info = DB::table('board_datas_tables')->where([['id', $ori_num], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
+
+        //비밀글 처리
+        $result_pw      = $request->input('pw');  //비밀글 비번 찾기를 통해 온 결과 값(secretpw 함수)
+        $cate           = $request->input('cate');
+        $page           = $request->input('page');
+
+        if($user_level > config('app.ADMIN_LEVEL') || Auth::user()->user_id != $board_info->bdt_uid){    //관리자가 아니거나 본인 글이 아닐시 비번 묻기
+            if($board_info->bdt_chk_secret == 1 && $result_pw != 'ok'){
+                return redirect()->route('adm.admboard.secret',$tb_name.'?id='.$board_info->id.'&page='.$page.'&cate='.$cate.'&mode=modi');
+            }
+        }
+
+        //아이디 처리
+        if(Auth::user()->user_id == "") $user_id = "";
+        else $user_id = Auth::user()->user_id;
+
+        $select_disp = "";
+        if(trim($board_set_info->bm_category_key) != ""){
+            $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $board_info->bdt_category, '');
+        }
+
+        return view('adm.admboard.admboardmodify',[
+            'tb_name'                   => $tb_name,
+            'ori_num'                   => $ori_num,
+            'user_level'                => $user_level,
+            'user_id'                   => $user_id,
+            'select_disp'               => $select_disp,
+            'board_info'                => $board_info,
+            'board_set_info'            => $board_set_info,
+        ],$Messages::$board['b_ment']);
+    }
+
+    public function modifysave($tb_name, Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
+        $board_info = DB::table('board_datas_tables')->where([['id', $request->input('b_id')], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
+
+        if(Auth::user()->user_level == "") $user_level = "100";
+        else $user_level = Auth::user()->user_level;
+
+        $bdt_chk_secret = $request->input('bdt_chk_secret');
+
+        //아이디 처리(관리자가 수정 할땐 아이디, 이름과 비번은 바꾸지 않는다)
+        if(Auth::user()->user_level == config('app.ADMIN_LEVEL'))
+        {
+            $bdt_uid = $board_info->bdt_uid;
+            $bdt_uname = $board_info->bdt_uname;
+
+            if ($request->has('bdt_chk_secret')) {
+                $bdt_chk_secret = 1;
+                $bdt_upw = $board_info->bdt_upw;
+            }else{
+                $bdt_chk_secret = 0;
+                $bdt_upw = "";
+            }
+        }else{  //관리자가 아닐때
+            //아이디 처리
+            if(Auth::user()->user_id == '') $bdt_uid = $request->input('bdt_uid');
+            else $bdt_uid = Auth::user()->user_id;
+
+            //이름 처리
+            if(Auth::user()->user_name == '') $bdt_uname = $request->input('bdt_uname');
+            else $bdt_uname = Auth::user()->user_name;
+
+            if ($request->has('bdt_chk_secret')) {
+                $bdt_chk_secret = 1;
+                $bdt_upw = md5(trim($request->input('bdt_upw')));
+            }else{
+                $bdt_chk_secret = 0;
+                $bdt_upw = "";
+            }
+        }
+
+        $bdt_subject = addslashes($request->input('bdt_subject'));
+        $bdt_category = $request->input('bdt_category');
+        $bdt_content = $request->input('bdt_content');
+
+        $file_cnt = $board_set_info->bm_file_num;    //설정시 사용할 첨부 갯수
+        $file_max_size = $board_set_info->bm_resize_max_size;   //게시판 설정에서 첨부 파일 용량제한
+
+        $bdt_ip = $_SERVER["REMOTE_ADDR"];
+
+        //DB 저장 배열 만들기
+        $data = array(
+            'bm_tb_name' => $tb_name,
+            'bdt_chk_secret' => $bdt_chk_secret,
+            'bdt_uid' => $bdt_uid,
+            'bdt_uname' => $bdt_uname,
+            'bdt_upw' => $bdt_upw,
+            'bdt_subject' => $bdt_subject,
+            'bdt_content' => $bdt_content,
+            'bdt_category' => $bdt_category,
+            'bdt_ip' => $bdt_ip,
+        );
+
+        $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
+        $fileExtension = ['jpeg','jpg','png','gif','bmp', "GIF", "PNG", "JPG", "JPEG", "BMP"];  //이미지 일때 확장자 파악(이미지일 경우 썸네일 하기 위해)
+
+        for($i = 1; $i <= $file_cnt; $i++){
+            $file_chk_tmp = 'file_chk'.$i;
+            $file_chk = $request->input($file_chk_tmp); //수정,삭제,새로등록 체크 파악
+            if($file_chk == 1){ //체크된 것들만 액션
+                if($request->hasFile('bdt_file'.$i))    //첨부가 있음
+                {
+                    $bdt_file[$i] = $request->file('bdt_file'.$i);
+                    $file_type = $bdt_file[$i]->getClientOriginalExtension();    //이미지 확장자 구함
+                    $file_size = $bdt_file[$i]->getSize();  //첨부 파일 사이즈 구함
+
+                    //게시판 설정에서 첨부 파일 용량제한 에 따라 변경
+                    if($file_max_size != null || $file_max_size != 0){
+                        $max_size_mb = $file_max_size * 1024;   //라라벨은 kb 단위라 함
+                        //첨부 파일 용량 예외처리
+                        Validator::validate($request->all(), [
+                            'bdt_file'.$i  => ['max:'.$max_size_mb]
+                        ], [$file_max_size."MB 까지만 저장 가능 합니다."]);
+                    }
+
+                    $attachment_result = CustomUtils::attachment_save($bdt_file[$i],$path); //위의 패스로 이미지 저장됨
+
+                    $check = in_array($file_type,$fileExtension);   //첨부가 이미지 정해 놓은 이미지 배열 안에 있는지 파악
+                    if($check){
+                        //첨부물 이미지 일때
+                        //서버에 올라간 파일을 썸네일 만든다.
+                        //게시판 쎄팅에서 리사이징 갯수가 있는지 파악
+                        if($board_set_info->bm_resize_file_num != null || $board_set_info->bm_resize_file_num != 0)
+                        {
+                            //리사이징이 있을때(썸네일 만들기)
+                            $thumb_name = "";
+
+                            for($k = 0; $k < $board_set_info->bm_resize_file_num; $k++){
+                                $resize_width_file_tmp = explode("%%",$board_set_info->bm_resize_width_file);
+                                $resize_height_file_tmp = explode("%%",$board_set_info->bm_resize_height_file);
+
+                                $thumb_width = $resize_width_file_tmp[$k];
+                                $thumb_height = $resize_height_file_tmp[$k];
+
+                                $is_create = false;
+                                $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
+                            }
+                        }
+
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+
+                    }else{
+                        //첨부물 이미지가 아닐때
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
+                    }
+
+                    $bdt_file_tmp = 'bdt_file'.$i;
+                    if($board_info->$bdt_file_tmp != ""){   //기존 첨부가 있는지 파악 - 있다면 기존 파일 전체 삭제후 재 등록
+                        $file_cnt1 = explode('@@',$board_info->$bdt_file_tmp);
+                        for($j = 0; $j < count($file_cnt1); $j++){
+                            $img_path = "";
+                            $img_path = $path.'/'.$file_cnt1[$j];
+                            if (file_exists($img_path)) {
+                                @unlink($img_path); //이미지 삭제
+                            }
+                        }
+                    }
+                }else{  //첨부가 없음
+                    $bdt_file_tmp = 'bdt_file'.$i;
+                    if($board_info->$bdt_file_tmp != ""){   //기존 첨부가 있는지 파악 - 첨부 파일 없이 들어 온것은 기존 파일 삭제로 간주
+                        $file_cnt1 = explode('@@',$board_info->$bdt_file_tmp);
+                        for($j = 0; $j < count($file_cnt1); $j++){
+                            $img_path = "";
+                            $img_path = $path.'/'.$file_cnt1[$j];
+                            if (file_exists($img_path)) {
+                                @unlink($img_path); //이미지 삭제
+                            }
+                        }
+
+                        $data['bdt_ori_file_name'.$i] = "";  //배열에 추가 함
+                        $data['bdt_file'.$i] = "";  //배열에 추가 함
+                    }
+
+                }
+            }
+        }
+
+        $update_result = DB::table('board_datas_tables')->where('id', $request->input('b_id'))->limit(1)->update($data);
+
+        if($update_result = 1) return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+    }
+
+    public function commemtsave($tb_name, Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
+
+        if(Auth::user()->user_level == "") $user_level = "100";
+        else $user_level = Auth::user()->user_level;
+
+        //댓글 권한 제어(회원만 댓글 가능)
+        if(Auth::user()->user_level == "" || $board_set_info->bm_coment_type != 1){
+            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_comment_chk']);
+            exit;
+        }
+
+        $cate     = $request->input('cate');
+        $page     = $request->input('page');
+        $b_id     = $request->input('b_id');
+
+        //$board_info = DB::table('board_datas_tables')->where([['id', $b_id], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
+
+        //아이디 처리
+        if(Auth::user()->user_id == '') $bdct_uid = "";
+        else $bdct_uid = Auth::user()->user_id;
+
+        //이름 처리
+        if(Auth::user()->user_name == '') $bdct_uname = '';
+        else $bdct_uname = Auth::user()->user_name;
+
+        $bdct_memo = $request->input('bdct_memo');
+        $bdct_ip = $_SERVER["REMOTE_ADDR"];
+
+
+        //DB 저장 배열 만들기
+        $data = array(
+            'bm_tb_name' => $tb_name,
+            'bdt_id' => $b_id,
+            'bdct_uid' => $bdct_uid,
+            'bdct_uname' => $bdct_uname,
+            'bdct_memo' => $bdct_memo,
+            'bdct_ip' => $bdct_ip,
+            'bdct_sort' => 0,
+            'bdct_depth' => 0,
+        );
+
+        $create_result = board_datas_comment_table::create($data);
+        $create_result['bdct_grp'] = $create_result->id; //저장된 결과 값에 auto increment 값을 찾을때 사용
+        $create_result->save();
+
+        if($create_result = 1) return redirect('adm/admboard/view/'.$tb_name.'?id='.$b_id.'&page='.$page.'&cate='.$cate)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
         else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
 

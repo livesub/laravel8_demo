@@ -78,8 +78,8 @@
             <input type="text" name="bm_modify_chk" id="bm_modify_chk" value="{{ $board_info->bm_modify_chk }}" size="3">수정
             <input type="text" name="bm_delete_chk" id="bm_delete_chk" value="{{ $board_info->bm_delete_chk }}" size="3">삭제
             <input type="text" name="bm_reply_chk" id="bm_reply_chk" value="{{ $board_info->bm_reply_chk }}" size="3">답글
-            <input type="text" name="bm_comment_chk" id="bm_comment_chk" value="{{ $board_info->bm_comment_chk }}" size="3">댓글<br>
-            (비회원일때 100)
+            <br>
+            (비회원일때 100, 관리자 일땐 3 이하를 적어 주세요.)
         </td>
     </tr>
 
@@ -111,7 +111,7 @@
                 else $checked = "";
             @endphp
 
-            <input type="checkbox" name="bm_coment_type" id="bm_coment_type" value="1" {{ $checked }}> (보기페이지에서 댓글 사용 여부)
+            <input type="checkbox" name="bm_coment_type" id="bm_coment_type" value="1" {{ $checked }}> (보기페이지에서 댓글 사용 여부 - 사용시 회원만 댓글 가능 합니다.)
         </td>
     </tr>
     <tr>

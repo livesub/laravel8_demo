@@ -10,6 +10,7 @@
 <input type="hidden" name="b_id" id="b_id" value="{{ $b_id }}">
 <input type="hidden" name="page" id="page" value="{{ $page }}">
 <input type="hidden" name="cate" id="cate" value="{{ $cate }}">
+<input type="hidden" name="mode" id="mode" value="{{ $mode }}">
 
     <tr>
         <td colspan="2"><h4>비밀글 비밀번호 확인<h4></td>

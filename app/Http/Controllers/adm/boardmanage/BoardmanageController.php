@@ -118,7 +118,6 @@ class BoardmanageController extends Controller
         $b_set->bm_modify_chk = $request->input('bm_modify_chk');
         $b_set->bm_delete_chk = $request->input('bm_delete_chk');
         $b_set->bm_reply_chk = $request->input('bm_reply_chk');
-        $b_set->bm_comment_chk = $request->input('bm_comment_chk');
         $b_set->bm_category_key = $request->input('bm_category_key');
         $b_set->bm_category_ment = $request->input('bm_category_ment');
         $b_set->bm_coment_type = $bm_coment_type;
