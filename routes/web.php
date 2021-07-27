@@ -276,4 +276,9 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'adm.admboard.commemtsave',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtsave',
     ]);
+
+    Route::post('adm/admboard/commemtreply/{tb_name}', [  //게시판 덧글에 댓글 처리
+        'as' => 'adm.admboard.commemtreplysave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtreplysave',
+    ]);
  });

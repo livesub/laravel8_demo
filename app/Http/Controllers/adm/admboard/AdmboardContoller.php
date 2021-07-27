@@ -394,7 +394,7 @@ class AdmboardContoller extends Controller
             $list_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/list/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
         }
 
-        $comment_infos = DB::table('board_datas_comment_tables')->where([['bdt_id', $request->input('id')], ['bm_tb_name',$tb_name]])->get();   //댓글 정보 읽기
+        $comment_infos = DB::table('board_datas_comment_tables')->where([['bdt_id', $request->input('id')], ['bm_tb_name',$tb_name]])->orderby('bdct_grp', 'DESC')->orderby('bdct_sort')->get();   //댓글 정보 읽기
 
         return view('adm.admboard.admboardview',[
             'tb_name'                   => $tb_name,
@@ -1078,6 +1078,71 @@ class AdmboardContoller extends Controller
         if($create_result = 1) return redirect('adm/admboard/view/'.$tb_name.'?id='.$b_id.'&page='.$page.'&cate='.$cate)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
         else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
+
+
+    public function commemtreplysave($tb_name, Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $cate     = $request->input('cate');
+        $page     = $request->input('page');
+        $b_id     = $request->input('b_id');    //원본글
+
+        $c_id     = $request->input('c_id');    //댓글 원본
+        $bdct_memo = $request->input('bdct_memo_reply');
+        $bdct_grp = $request->input('bdct_grp');
+        $bdct_sort = $request->input('bdct_sort');
+        $bdct_depth = $request->input('bdct_depth');
+
+        //아이디 처리
+        if(Auth::user()->user_id == '') $bdct_uid = "";
+        else $bdct_uid = Auth::user()->user_id;
+
+        //이름 처리
+        if(Auth::user()->user_name == '') $bdct_uname = '';
+        else $bdct_uname = Auth::user()->user_name;
+
+        $bdct_ip = $_SERVER["REMOTE_ADDR"];
+
+        $bdct_sort_up = board_datas_comment_table::where([
+            ['bdct_grp',$bdct_grp],
+            ['bdct_sort','>',$bdct_sort],
+        ])->increment('bdct_sort', 1);
+
+
+        //DB 저장 배열 만들기
+        $data = array(
+            'bm_tb_name' => $tb_name,
+            'bdt_id' => $b_id,
+            'bdct_uid' => $bdct_uid,
+            'bdct_uname' => $bdct_uname,
+            'bdct_memo' => $bdct_memo,
+            'bdct_grp' => $bdct_grp,
+            'bdct_sort' => $bdct_sort + 1,
+            'bdct_depth' => $bdct_depth + 1,
+            'bdct_ip' => $bdct_ip,
+        );
+
+        //저장 처리
+        $create_result = board_datas_comment_table::create($data);
+
+        $id_link = "?id=".$b_id;
+        $page_link = "&page=".$page;
+        $cate_url = "";
+        if($cate != ""){    //키테고리 있을때
+            $cate_url = "&cate=".$cate;
+        }
+
+        if($create_result = 1) return redirect('adm/admboard/view/'.$tb_name.$id_link.$page_link.$cate_url)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+    }
+
 
 
 }

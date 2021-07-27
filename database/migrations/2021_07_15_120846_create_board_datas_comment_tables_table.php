@@ -25,7 +25,7 @@ class CreateBoardDatasCommentTablesTable extends Migration
             $table->integer('bdct_depth')->length(5)->nullable()->default(0)->comment('댓글 깊이-대댓글 표현');
             $table->string('bdct_ip')->comment('작성자 ip');
             $table->timestamps();
-            $table->index(['bm_tb_name','bdct_grp', 'bdct_sort','bdct_depth']);
+            $table->index(['bdct_grp', 'bdct_sort','bdct_depth']);
         });
     }
 
