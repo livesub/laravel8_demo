@@ -3,7 +3,7 @@
 <b><h4>1. 버전 정보</h4></b>
 VMWARE : 15
 
-Ubuntu : 20.04.2 LTS
+OS : Ubuntu 20.04.2 LTS
 
 php : 7.4.21
 
