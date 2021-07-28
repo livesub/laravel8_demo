@@ -17,6 +17,22 @@
 </script>
 
     <div class='form-group'>
+        <select name='multi_lang' id='multi_lang' onchange='multi_lang();'>
+            <option value='kr'
+            @if(Session::get('multi_lang') == '' || Session::get('multi_lang') == 'kr')
+                selected
+            @endif
+            >Korea</option>
+            <option value='en'
+            @if(Session::get('multi_lang') == 'en')
+                selected
+            @endif
+            >Englsh</option>
+        </select>
+    </div>
+
+
+    <div class='form-group'>
     @if(!auth()->user())
         <a href='{{ route('login.index') }}'>LOGIN</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('join.create') }}'>REGISTER</a>
     @else
