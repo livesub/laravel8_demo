@@ -21,7 +21,6 @@ use App\Models\boardmanager;    //모델 정의(게시판 관리 테이블)
 use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 
-
 class BoardmanageController extends Controller
 {
     /**
@@ -71,11 +70,26 @@ class BoardmanageController extends Controller
         $bm_tb_name       = $request->input('bm_tb_name');
         $bm_tb_subject    = $request->input('bm_tb_subject');
         $bm_file_num      = $request->input('bm_file_num');
+        $bm_type          = $request->input('bm_type');
+
+
+        $path = 'data/board';     //첨부물 저장 경로
+        if (!is_dir($path)) {
+            @mkdir($path, 0755);
+            @chmod($path, 0755);
+        }
+
+        $board_path = 'data/board/'.$bm_tb_name;     //각 게시판 첨부물 저장 경로
+        if (!is_dir($board_path)) {   //첨부가 저장될 디렉토리 생성
+            @mkdir($board_path, 0755);
+            @chmod($board_path, 0755);
+        }
 
         $create_result = boardmanager::create([
-            'bm_tb_name' => $bm_tb_name,
+            'bm_tb_name'    => $bm_tb_name,
             'bm_tb_subject' => $bm_tb_subject,
-            'bm_file_num' => $bm_file_num,
+            'bm_file_num'   => $bm_file_num,
+            'bm_type'       => $bm_type,
         ])->exists(); //저장,실패 결과 값만 받아 오기 위해  exists() 를 씀
 
         if($create_result = 1) return redirect()->route('adm.boardmanage.index')->with('alert_messages', $Messages::$boardmanage['bm']['message']['bmm_tb_add_ok']);
@@ -90,7 +104,6 @@ class BoardmanageController extends Controller
      */
     public function store(Request $request)
     {
-
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
@@ -108,7 +121,7 @@ class BoardmanageController extends Controller
         $b_set = boardmanager::whereid($num)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
         $b_set->bm_tb_subject = $request->input('bm_tb_subject');
         $b_set->bm_file_num = $request->input('bm_file_num');
-        $b_set->bm_resize_max_size = $request->input('bm_resize_max_size');
+        $b_set->bm_type = $request->input('bm_type');
         $b_set->bm_resize_file_num = $request->input('bm_resize_file_num');
         $b_set->bm_resize_width_file = $request->input('bm_resize_width_file');
         $b_set->bm_resize_height_file = $request->input('bm_resize_height_file');
@@ -190,8 +203,28 @@ class BoardmanageController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+        $b_id           = $request->input('b_id');
+        $bm_tb_name     = $request->input('bm_tb_name');
+
+        $board_path = 'data/board/'.$bm_tb_name;     //각 게시판 첨부물 저장 경로
+
+        if (is_dir($board_path)) {  //디렉토리 삭제
+            $del_directory = rmdir(public_path($board_path));
+        }
+
+        $bmanage_del = DB::table('boardmanagers')->where([['id',$b_id], ['bm_tb_name',$bm_tb_name]])->delete();   //manager테이블에서 row 삭제
+        $bdt_del = DB::table('board_datas_tables')->where('bm_tb_name',$bm_tb_name)->delete();   //게시판 row 삭제
+        $bdct_del = DB::table('board_datas_comment_tables')->where('bm_tb_name',$bm_tb_name)->delete();   //게시판 댓글 row 삭제
+
+        return redirect()->route('adm.boardmanage.index')->with('alert_messages', $Messages::$board['b_ment']['b_del']);
     }
 }

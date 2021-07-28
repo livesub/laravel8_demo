@@ -330,6 +330,7 @@ class Messages_kr extends Controller
             'b_modi_ment' => '수정',
             'b_choice_del_ment' => '선택삭제',
             'b_save' => '저장 되었습니다.',
+            'b_modi' => '수정 되었습니다.',
             'b_del' => '삭제 되었습니다.',
             'b_pwno' => '비밀번호가 맞지 않습니다.',
         ]

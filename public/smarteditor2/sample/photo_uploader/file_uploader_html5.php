@@ -20,7 +20,8 @@
 		$file->name = date("YmdHis").mt_rand().".".$filename_ext;
 		$file->content = file_get_contents("php://input");
 
-		$uploadDir = '../../../data/smarteditor/';
+		//$uploadDir = '../../../data/smarteditor/';
+		$uploadDir = "../../../data/{$_COOKIE['directory']}/";		//다른 곳에 쓰일경우 COOKIE['directory'] 설정 변경(현재 게시판)
 		if(!is_dir($uploadDir)){
 			mkdir($uploadDir, 0777);
 		}
@@ -30,7 +31,8 @@
 		if(file_put_contents($newPath, $file->content)) {
 			$sFileInfo .= "&bNewLine=true";
 			$sFileInfo .= "&sFileName=".$filename;
-			$sFileInfo .= "&sFileURL=../../../data/smarteditor/".$file->name;
+			//$sFileInfo .= "&sFileURL=../../../data/smarteditor/".$file->name;
+			$sFileInfo .= "&sFileURL={$uploadDir}".$file->name;
 		}
 
 		echo $sFileInfo;

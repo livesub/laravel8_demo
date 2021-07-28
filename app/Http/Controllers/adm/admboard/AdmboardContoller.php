@@ -147,6 +147,10 @@ class AdmboardContoller extends Controller
             $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $selected_val,'');
         }
 
+        //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
+        $tb_name_directory = "board/{$tb_name}/editor";
+        setcookie('directory', $tb_name_directory, (time() + 3600),"/"); //일단 1시간 잡음(1*60*60)
+
         return view('adm.admboard.admboardwrite',[
             'tb_name'                   => $tb_name,
             'board_set_info'            => $board_set_info,
@@ -213,7 +217,8 @@ class AdmboardContoller extends Controller
         $bdt_content = $request->input('bdt_content');
 
         $file_cnt = $board_set_info->bm_file_num;    //설정시 사용할 첨부 갯수
-        $file_max_size = $board_set_info->bm_resize_max_size;   //게시판 설정에서 첨부 파일 용량제한
+        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
+        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
         $bdt_ip = $_SERVER["REMOTE_ADDR"];
 
@@ -241,14 +246,12 @@ class AdmboardContoller extends Controller
                 $file_type = $bdt_file[$i]->getClientOriginalExtension();    //이미지 확장자 구함
                 $file_size = $bdt_file[$i]->getSize();  //첨부 파일 사이즈 구함
 
-                //게시판 설정에서 첨부 파일 용량제한 에 따라 변경
-                if($file_max_size != null || $file_max_size != 0){
-                    $max_size_mb = $file_max_size * 1024;   //라라벨은 kb 단위라 함
-                    //첨부 파일 용량 예외처리
-                    Validator::validate($request->all(), [
-                        'bdt_file'.$i  => ['max:'.$max_size_mb]
-                    ], [$file_max_size."MB 까지만 저장 가능 합니다."]);
-                }
+                //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
+                $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
+                //첨부 파일 용량 예외처리
+                Validator::validate($request->all(), [
+                    'bdt_file'.$i  => ['max:'.$max_size_mb]
+                ], [$upload_max_filesize."MB 까지만 저장 가능 합니다."]);
 
                 $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
                 $attachment_result = CustomUtils::attachment_save($bdt_file[$i],$path); //위의 패스로 이미지 저장됨
@@ -390,7 +393,6 @@ class AdmboardContoller extends Controller
         //목록 버튼 제어
         $list_button = "";
         if($user_level <= $board_set_info->bm_list_chk){  //삭제 권한이 있는 게시판인지
-            //$list_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
             $list_button = "<td><button type='button' onclick=\"location.href='/adm/admboard/list/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
         }
 
@@ -456,6 +458,10 @@ class AdmboardContoller extends Controller
        }
 
        $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
+       $editor_path = $path."/editor";     //스마트 에디터 첨부 저장 경로
+
+        //스마트 에디터 내용에 첨부된 이미지 색제
+        $editor_img_del = CustomUtils::editor_img_del($board_info->bdt_content, $editor_path);
 
         for($m = 1; $m <= $board_set_info->bm_file_num; $m++){
             $bdt_file = 'bdt_file'.$m;
@@ -488,6 +494,7 @@ class AdmboardContoller extends Controller
 
         $tb_name = $request->input('tb_name');
         $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
+        $editor_path = $path."/editor";     //스마트 에디터 첨부 저장 경로
 
         $board_set_info = DB::table('boardmanagers')->select('bm_file_num')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 정보에서 첨부 파일 갯수 구하기
 
@@ -495,6 +502,9 @@ class AdmboardContoller extends Controller
             //선택된 게시물 일괄 삭제
             //먼저 게시물을 검사하여 파일이 있는지 파악 하고 같이 삭제 함
             $board_info = DB::table('board_datas_tables')->where([['id', $request->input('chk_id')[$i]], ['bm_tb_name',$tb_name]])->first();
+
+            //스마트 에디터 내용에 첨부된 이미지 색제
+            $editor_img_del = CustomUtils::editor_img_del($board_info->bdt_content, $editor_path);
 
             for($m = 1; $m <= $board_set_info->bm_file_num; $m++){
                 $bdt_file = 'bdt_file'.$m;
@@ -646,6 +656,10 @@ class AdmboardContoller extends Controller
         //원본글 내용 구함
         $board_ori_info = DB::table('board_datas_tables')->select('bdt_grp','bdt_sort','bdt_depth','bdt_category','bdt_subject','bdt_content')->where([['id', $ori_num], ['bm_tb_name',$tb_name]])->first();    //게시물 정보 추출
 
+        //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
+        $tb_name_directory = "board/{$tb_name}/editor";
+        setcookie('directory', $tb_name_directory, (time() + 3600),"/"); //일단 1시간 잡음(1*60*60)
+
         return view('adm.admboard.admboardreply',[
             'tb_name'                   => $tb_name,
             'ori_num'                   => $ori_num,
@@ -706,7 +720,8 @@ class AdmboardContoller extends Controller
         $bdt_content = $request->input('bdt_content');
 
         $file_cnt = $board_set_info->bm_file_num;    //설정시 사용할 첨부 갯수
-        $file_max_size = $board_set_info->bm_resize_max_size;   //게시판 설정에서 첨부 파일 용량제한
+        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
+        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
         $bdt_ip = $_SERVER["REMOTE_ADDR"];
 
@@ -745,14 +760,12 @@ class AdmboardContoller extends Controller
                 $file_type = $bdt_file[$i]->getClientOriginalExtension();    //이미지 확장자 구함
                 $file_size = $bdt_file[$i]->getSize();  //첨부 파일 사이즈 구함
 
-                //게시판 설정에서 첨부 파일 용량제한 에 따라 변경
-                if($file_max_size != null || $file_max_size != 0){
-                    $max_size_mb = $file_max_size * 1024;   //라라벨은 kb 단위라 함
-                    //첨부 파일 용량 예외처리
-                    Validator::validate($request->all(), [
-                        'bdt_file'.$i  => ['max:'.$max_size_mb]
-                    ], [$file_max_size."MB 까지만 저장 가능 합니다."]);
-                }
+                //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
+                $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
+                //첨부 파일 용량 예외처리
+                Validator::validate($request->all(), [
+                    'bdt_file'.$i  => ['max:'.$max_size_mb]
+                ], [$upload_max_filesize."MB 까지만 저장 가능 합니다."]);
 
                 $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
                 $attachment_result = CustomUtils::attachment_save($bdt_file[$i],$path); //위의 패스로 이미지 저장됨
@@ -846,6 +859,10 @@ class AdmboardContoller extends Controller
             $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $board_info->bdt_category, '');
         }
 
+        //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
+        $tb_name_directory = "board/{$tb_name}/editor";
+        setcookie('directory', $tb_name_directory, (time() + 3600),"/"); //일단 1시간 잡음(1*60*60)
+
         return view('adm.admboard.admboardmodify',[
             'tb_name'                   => $tb_name,
             'ori_num'                   => $ori_num,
@@ -911,7 +928,8 @@ class AdmboardContoller extends Controller
         $bdt_content = $request->input('bdt_content');
 
         $file_cnt = $board_set_info->bm_file_num;    //설정시 사용할 첨부 갯수
-        $file_max_size = $board_set_info->bm_resize_max_size;   //게시판 설정에서 첨부 파일 용량제한
+        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
+        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
         $bdt_ip = $_SERVER["REMOTE_ADDR"];
 
@@ -941,14 +959,12 @@ class AdmboardContoller extends Controller
                     $file_type = $bdt_file[$i]->getClientOriginalExtension();    //이미지 확장자 구함
                     $file_size = $bdt_file[$i]->getSize();  //첨부 파일 사이즈 구함
 
-                    //게시판 설정에서 첨부 파일 용량제한 에 따라 변경
-                    if($file_max_size != null || $file_max_size != 0){
-                        $max_size_mb = $file_max_size * 1024;   //라라벨은 kb 단위라 함
-                        //첨부 파일 용량 예외처리
-                        Validator::validate($request->all(), [
-                            'bdt_file'.$i  => ['max:'.$max_size_mb]
-                        ], [$file_max_size."MB 까지만 저장 가능 합니다."]);
-                    }
+                    //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
+                    $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
+                    //첨부 파일 용량 예외처리
+                    Validator::validate($request->all(), [
+                        'bdt_file'.$i  => ['max:'.$max_size_mb]
+                    ], [$upload_max_filesize."MB 까지만 저장 가능 합니다."]);
 
                     $attachment_result = CustomUtils::attachment_save($bdt_file[$i],$path); //위의 패스로 이미지 저장됨
 
@@ -1115,7 +1131,6 @@ class AdmboardContoller extends Controller
             ['bdct_sort','>',$bdct_sort],
         ])->increment('bdct_sort', 1);
 
-
         //DB 저장 배열 만들기
         $data = array(
             'bm_tb_name' => $tb_name,
@@ -1143,8 +1158,66 @@ class AdmboardContoller extends Controller
         else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
 
+    public function commemtmodifysave($tb_name, Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
 
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
+        $cate     = $request->input('cate');
+        $page     = $request->input('page');
+        $b_id     = $request->input('b_id');    //원본글
+        $c_id     = $request->input('c_id');    //댓글 원본
+
+        $bdct_memo = $request->input('bdct_memo_reply');
+
+        $c_up = board_datas_comment_table::whereid($c_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+        $c_up->bdct_memo = $bdct_memo;
+        $result_up = $c_up->save();
+
+        $id_link = "?id=".$b_id;
+        $page_link = "&page=".$page;
+        $cate_url = "";
+        if($cate != ""){    //키테고리 있을때
+            $cate_url = "&cate=".$cate;
+        }
+
+        if($result_up = 1) return redirect('adm/admboard/view/'.$tb_name.$id_link.$page_link.$cate_url)->with('alert_messages', $Messages::$board['b_ment']['b_modi']);
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+    }
+
+    public function commemtdelete($tb_name, Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $cate     = $request->input('cate');
+        $page     = $request->input('page');
+        $b_id     = $request->input('b_id');    //원본글
+        $c_id     = $request->input('c_id');    //댓글 원본
+
+        $result_del = DB::table('board_datas_comment_tables')->where('id',$c_id)->delete();   //row 삭제
+
+        $id_link = "?id=".$b_id;
+        $page_link = "&page=".$page;
+        $cate_url = "";
+        if($cate != ""){    //키테고리 있을때
+            $cate_url = "&cate=".$cate;
+        }
+
+        if($result_del = 1) return redirect('adm/admboard/view/'.$tb_name.$id_link.$page_link.$cate_url)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+
+    }
 }
 
 

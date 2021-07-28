@@ -207,6 +207,11 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\boardmanage\BoardmanageController@store',
     ]);
 
+    Route::post('adm/boardmanage/boarddel', [   //게시판 삭제
+        'as' => 'adm.boardmanage.destroy',
+        'uses' => 'App\Http\Controllers\adm\boardmanage\BoardmanageController@destroy',
+    ]);
+
     Route::get('adm/admboard/list/{tb_name}', [  //게시판 리스트
         'as' => 'adm.admboard.index',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@index',
@@ -272,13 +277,23 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@deletesave',
     ]);
 
-    Route::post('adm/admboard/commemt/{tb_name}', [  //게시판 덧글 처리
+    Route::post('adm/admboard/commemt/{tb_name}', [  //게시판 댓글 처리
         'as' => 'adm.admboard.commemtsave',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtsave',
     ]);
 
-    Route::post('adm/admboard/commemtreply/{tb_name}', [  //게시판 덧글에 댓글 처리
+    Route::post('adm/admboard/commemtreply/{tb_name}', [  //게시판 댓글에 답글 처리
         'as' => 'adm.admboard.commemtreplysave',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtreplysave',
+    ]);
+
+    Route::post('adm/admboard/commemtmodify/{tb_name}', [  //게시판 댓글 수정 처리
+        'as' => 'adm.admboard.commemtmodifysave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtmodifysave',
+    ]);
+
+    Route::post('adm/admboard/commemtdelete/{tb_name}', [  //게시판 댓글 삭제 처리
+        'as' => 'adm.admboard.commemtdelete',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtdelete',
     ]);
  });

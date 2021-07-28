@@ -17,6 +17,7 @@ class CreateBoardmanagersTable extends Migration
             $table->id()->comment('순번');
             $table->string('bm_tb_name')->unique()->comment('테이블명');
             $table->string('bm_tb_subject')->comment('게시판 이름');
+            $table->integer('bm_type')->length(2)->default(1)->comment('게시판 종류 : 1=>일반게시판, 2=>갤러리게시판');
             $table->integer('bm_record_num')->length(2)->default(10)->comment('한 페이지 게시물 갯수');
             $table->integer('bm_page_num')->nullable()->length(2)->default(10)->comment('한 페이지 출력될 페이지 갯수');
             $table->smallInteger('bm_subject_len')->length(3)->default(50)->comment('출력될 제목 길이');
@@ -34,7 +35,6 @@ class CreateBoardmanagersTable extends Migration
             $table->string('bm_resize_file_num')->nullable()->comment('첨부자료(이미지시) 리사이징 개수');
             $table->string('bm_resize_width_file')->nullable()->comment('리사이징될 가로 길이(리사이징 개수와 같아야함%%구분)');
             $table->string('bm_resize_height_file')->nullable()->comment('리사이징될 높이 길이(리사이징 개수와 같아야함%%구분)');
-            $table->integer('bm_resize_max_size')->nullable()->length(4)->comment('원본이미지최대허용길이');
             $table->timestamps();
         });
     }

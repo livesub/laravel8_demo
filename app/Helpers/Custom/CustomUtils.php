@@ -493,4 +493,23 @@ $um_value='80/0.5/3'
         return $select_disp;
     }
 
+    //게시물 삭제시 스마트 에디터 첨부 파일 까지 삭제 하기
+    public static function editor_img_del($content, $editor_path)
+    {
+        //$content = 본문 내용
+        //$editor_path = 저장된 스마트 에디터 첨부 경록
+        preg_match_all("/<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>/i", $content, $matches);
+        for($y = 0; $y < count($matches[1]); $y++){
+            $tmp_cut = explode("/",$matches[1][$y]);
+            $last_file_name = end($tmp_cut);
+            $editor_img_del = $editor_path."/".$last_file_name;
+            var_dump($editor_img_del);  ?><br><br><?php
+
+            if (file_exists($editor_img_del)) {
+                @unlink($editor_img_del); //이미지 삭제
+            }
+        }
+
+        return true;
+    }
 }

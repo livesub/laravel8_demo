@@ -14,7 +14,8 @@ if(bSuccessUpload) {
 	if(!in_array($filename_ext, $allow_file)) {
 		$url .= '&errstr='.$name;
 	} else {
-		$uploadDir = '../../../data/smarteditor/';
+		//$uploadDir = '../../../data/smarteditor/';
+		$uploadDir = "../../../data/{$_COOKIE['directory']}/";	//다른 곳에 쓰일경우 COOKIE['directory'] 설정 변경
 		if(!is_dir($uploadDir)){
 			mkdir($uploadDir, 0777);
 		}
@@ -25,7 +26,8 @@ if(bSuccessUpload) {
 
 		$url .= "&bNewLine=true";
 		$url .= "&sFileName=".urlencode(urlencode($name));
-		$url .= "&sFileURL=../../../data/smarteditor/".urlencode(urlencode($name));
+		//$url .= "&sFileURL=../../../data/smarteditor/".urlencode(urlencode($name));
+		$url .= "&sFileURL={$uploadDir}".urlencode(urlencode($name));
 	}
 }
 // FAILED

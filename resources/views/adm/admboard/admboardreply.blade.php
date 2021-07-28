@@ -93,9 +93,6 @@
         <td>내용</td>
         <td>
             <textarea name="bdt_content" id="bdt_content" style="width:100%;height:220px;">
-            ======= 원본 글 =======<br>
-            {{ $board_ori_info->bdt_content }}<br>
-            =====================<br>
             Re :&nbsp;
             </textarea>
 <script type="text/javascript">
