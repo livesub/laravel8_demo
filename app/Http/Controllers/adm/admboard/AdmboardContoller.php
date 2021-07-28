@@ -96,6 +96,12 @@ class AdmboardContoller extends Controller
             $select_disp = CustomUtils::select_box('bdt_category', $board_set_info->bm_category_ment, $board_set_info->bm_category_key, $cate, $route_link);
         }
 
+        //게시판 종류 체크(일반게시판, 갤러리 게시판)
+        if($board_set_info->bm_type == 1){
+            dd("일반");
+        }else{
+            dd("갤러리");
+        }
         return view('adm.admboard.admboardlist',[
             'tb_name'                   => $tb_name,
             'board_set_info'            => $board_set_info, //게시판 쎄팅 배열
@@ -276,11 +282,13 @@ class AdmboardContoller extends Controller
                             $is_create = false;
                             $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                         }
+                    }else{
+                        return redirect('adm/boardmanage')->with('alert_messages', $Messages::$board['b_ment']['b_set']);
+                        exit;
                     }
 
                     $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
                     $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
-
                 }else{
                     //첨부물 이미지가 아닐때
                     $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함

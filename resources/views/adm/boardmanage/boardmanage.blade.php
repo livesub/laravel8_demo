@@ -43,8 +43,13 @@
                 <form name="b_add" id="b_add" method="post" action="{{ route('adm.boardmanage.create') }}">
                 {!! csrf_field() !!}
                 <tr>
-                    <td>테이블명</td>
-                    <td><input type="text" name="bm_tb_name" id="bm_tb_name"></td>
+                    <td>게시판명</td>
+                    <td>
+                        <input type="text" name="bm_tb_name" id="bm_tb_name">
+                        @error('bm_tb_name')
+                            <strong>{{ $message }}</strong>
+                        @enderror
+                    </td>
                 </tr>
 
                 <tr>
@@ -102,7 +107,7 @@
 
     function board_add(){
         if($.trim($("#bm_tb_name").val()) == ""){
-            alert("테이블명을 영문으로 공백 없이 입력하세요.");
+            alert("게시판명을 영문으로 공백 없이 입력하세요.");
             $("#bm_tb_name").focus();
             return false;
         }

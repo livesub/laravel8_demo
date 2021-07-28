@@ -67,7 +67,9 @@
         </td>
         <td>
             <table>
-
+                <tr>
+                </tr>
+                    <td><input type="text" name="bm_resize_file_num" id="bm_resize_file_num" value="{{ $board_info->bm_resize_file_num }}" size="3"> (리사이징될 파일개수 - 원본제외)</td>
                 <tr>
                     <td>
                         <input type="text" name="bm_resize_width_file" id="bm_resize_width_file" value="{{ $board_info->bm_resize_width_file }}"> (리사이징될 파일 넓이 - '%%'구분자사용)<br>

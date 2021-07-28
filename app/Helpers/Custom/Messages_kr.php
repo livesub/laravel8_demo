@@ -306,7 +306,7 @@ class Messages_kr extends Controller
             'message' => [
                 'bmm_title' => '게시판 목록 및 추가',
                 'bmm_subtitle' => '설치된 게시판 리스트',
-                'bmm_tb_name' => '테이블명',
+                'bmm_tb_name' => '게시판명',
                 'bmm_tb_subject' => '게시판제목',
                 'bmm_tb_add_ok' => '게시판이 추가 되었습니다.',
                 'bmm_tb_up_ok' => '게시판이 수정 되었습니다.',
@@ -333,6 +333,7 @@ class Messages_kr extends Controller
             'b_modi' => '수정 되었습니다.',
             'b_del' => '삭제 되었습니다.',
             'b_pwno' => '비밀번호가 맞지 않습니다.',
+            'b_set' => '게시판 설정을 확인 하세요.',
         ]
     ];
 
@@ -343,7 +344,13 @@ class Messages_kr extends Controller
         ]
     ];
 
-
+    static $board_manage = [
+        'validate' => [
+            'bm_tb_name.required' => '게시판명을 입력하세요.',
+            'bm_tb_name.unique' => '같은 게시판명이 존재 합니다.',
+            'bm_tb_name.max' => '20자 이하로 작성 하세요.',
+        ]
+    ];
 }
 
 

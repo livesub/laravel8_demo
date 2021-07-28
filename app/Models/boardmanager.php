@@ -14,6 +14,7 @@ class boardmanager extends Model
         'bm_tb_name',
         'bm_tb_subject',
         'bm_file_num',
+        'bm_type',
     ];
 
     protected $hidden = [

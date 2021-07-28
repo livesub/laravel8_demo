@@ -20,6 +20,7 @@ use App\Models\User;    //모델 정의(사용자 테이블)
 use App\Models\boardmanager;    //모델 정의(게시판 관리 테이블)
 use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
+use Validator;  //체크
 
 class BoardmanageController extends Controller
 {
@@ -72,6 +73,9 @@ class BoardmanageController extends Controller
         $bm_file_num      = $request->input('bm_file_num');
         $bm_type          = $request->input('bm_type');
 
+        Validator::validate($request->all(), [
+            'bm_tb_name'  => ['required', 'unique:boardmanagers', 'max:20'],
+        ], $Messages::$board_manage['validate']);
 
         $path = 'data/board';     //첨부물 저장 경로
         if (!is_dir($path)) {
