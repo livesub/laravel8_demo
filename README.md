@@ -1,62 +1,71 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<b><h5>초보 라라벨 사용자 데모용 개발 입니다. 막코딩!!!</h5></b>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<b><h4>1. 버전 정보</h4></b>
+VMWARE : 15
 
-## About Laravel
+OS : Ubuntu 20.04.2 LTS
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+php : 7.4.21
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Mysql : Ver 8.0.26
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Composer : 1.10.1
 
-## Learning Laravel
+Laravel : 8
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+네이버 스마트에디터 : smarteditor2-2.8.2.3
+<br>
+<br>
+<b><h4>2. 설치 정보</h4></b>
+1. composer create-project laravel/laravel dev_board
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. DB 설정
+mysql -uroot -p	//비번 1
 
-## Laravel Sponsors
+create user kim identified by '1';
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+CREATE DATABASE dev_board default CHARACTER SET UTF8;
 
-### Premium Partners
+GRANT ALL privileges ON dev_board.* TO 'kim'@'%';
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+flush privileges;
 
-## Contributing
+3. .env 편집 -- DB 편집
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. php artisan migrate
+<br>
+<br>
+<b><h4>3. 설명</h4></b>
 
-## Code of Conduct
+1. 쎄팅 이후 메인페이지 로딩시 관리자 1명 자동 생성
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+2. 회원 로그인, 정보 수정, 이미지 첨부, 비밀번호 변경
 
-## Security Vulnerabilities
+/adm 관리자 이동
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. 회원 관리 등록, 수정
 
-## License
+4. 게시판 관리
+    - 게시판 추가(첨부 디렉토리 생성)
+    - 게시판 설정
+       - 첨부 파일 사용 갯수
+       - 게시판 종류(일반 게시판, 갤러리 게시판) - 작업중
+       - 이미지 리사이징 갯수
+       - 게시판 접근 권한(목록,쓰기,보기,수정,삭제,답글)
+       - 게시판 카테고리 생성
+       - 댓글 사용 유무
+       - 비밀글 사용 유무
+    - 게시판 삭제
+        - 삭제시 첨부 파일 디랙토리(일반첨부, 스마트에디터 이미지) 같이 삭제
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. 각 생성된 게시판
+    - 리스트(관리자 선택 삭제)
+    - 글쓰기(스마트 에디터 이용)
+        - 비밀글 처리
+        - 에디터 이미지 첨부시 크기 조절 기능
+    - 글보기
+        - 댓글 쓰기(댓글의 답글, 수정, 삭제)
+    - 수정 : 수정시 스머트 에디터 이미지 첨부물 처리... 고민중
+    - 삭제
+        - 삭제시 본문 내용에 포함된 스마트에디터 이미지도 같이 삭제
+        
