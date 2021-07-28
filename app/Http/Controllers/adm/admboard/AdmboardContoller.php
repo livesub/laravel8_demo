@@ -61,8 +61,9 @@ class AdmboardContoller extends Controller
 
         $cate        = $request->input('cate');
         $pageNum     = $request->input('page');
-        $writeList   = 10;  //10갯씩 뿌리기
-        $pageNumList = 10; // 한 페이지당 표시될 글 갯수
+        $writeList   = $board_set_info->bm_record_num;  //페이지당 글수
+        $pageNumList = $board_set_info->bm_page_num; //블럭당 페이지수
+
         $type = 'board';
 
         $page_control = CustomUtils::page_function('board_datas_tables',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate);
@@ -98,11 +99,14 @@ class AdmboardContoller extends Controller
 
         //게시판 종류 체크(일반게시판, 갤러리 게시판)
         if($board_set_info->bm_type == 1){
-            dd("일반");
+            var_dump("일반");
+            $view_blade = "adm.admboard.admboardlist";
         }else{
-            dd("갤러리");
+            $view_blade = "adm.admboard.admboardgallerylist";
+            var_dump("갤러리");
         }
-        return view('adm.admboard.admboardlist',[
+
+        return view($view_blade,[
             'tb_name'                   => $tb_name,
             'board_set_info'            => $board_set_info, //게시판 쎄팅 배열
             'board_lists'               => $board_lists, //게시판 내용
