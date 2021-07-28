@@ -21,10 +21,13 @@ Laravel : 8
 
 2. DB 설정
 mysql -uroot -p	//비번 1
+
 create user kim identified by '1';
 
 CREATE DATABASE dev_board default CHARACTER SET UTF8;
+
 GRANT ALL privileges ON dev_board.* TO 'kim'@'%';
+
 flush privileges;
 
 3. .env 편집 -- DB 편집
