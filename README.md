@@ -19,7 +19,7 @@ Laravel : 8
 <b><h4>2. 설치 정보</h4></b>
 1. composer create-project laravel/laravel dev_board
 
-2. ----- DB 설정
+2. DB 설정
 mysql -uroot -p	//비번 1
 create user kim identified by '1';
 
