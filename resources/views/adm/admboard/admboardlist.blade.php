@@ -42,17 +42,16 @@
             <a href="{{ route('adm.admboard.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
 
                 @if ($board_list->bdt_depth == 0)
-                    {{ stripslashes($board_list->bdt_subject) }}
+                    {{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
                 @else
                 @for ($i=0; $i<$board_list->bdt_depth; $i++)
                     &nbsp&nbsp
                 @endfor
-                └{{ stripslashes($board_list->bdt_subject) }}
+                └{{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
                 @endif
 
             </a>
         </td>
-
 
         <td>{{ $board_list->bdt_uname }}</td>
         <td>{{ $board_list->bdt_hit }}</td>

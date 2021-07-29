@@ -99,11 +99,9 @@ class AdmboardContoller extends Controller
 
         //게시판 종류 체크(일반게시판, 갤러리 게시판)
         if($board_set_info->bm_type == 1){
-            var_dump("일반");
             $view_blade = "adm.admboard.admboardlist";
         }else{
             $view_blade = "adm.admboard.admboardgallerylist";
-            var_dump("갤러리");
         }
 
         return view($view_blade,[
