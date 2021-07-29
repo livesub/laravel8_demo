@@ -22,7 +22,9 @@
                     <tr>
                         <td><a href="/adm/boardmanage">게시판 관리</a></td>
                     </tr>
-
+                    <tr>
+                        <td>게시판 리스트</td>
+                    </tr>
 @php
     $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
 @endphp
@@ -34,7 +36,7 @@
 @endforeach
 
                     <tr>
-                        <td><a href="/adm/editor">에디터 불필요 파일 관리</a></td>
+                        <td><a href="/adm/editor">에디터 불필요 파일 삭제</a></td>
                     </tr>
                 </table>
             </td>
