@@ -32,6 +32,10 @@
                         <td><a href="/adm/admboard/list/{{ $b_list->bm_tb_name }}"> - {{ $b_list->bm_tb_subject }}</a></td>
                     </tr>
 @endforeach
+
+                    <tr>
+                        <td><a href="/adm/editor">에디터 불필요 파일 관리</a></td>
+                    </tr>
                 </table>
             </td>
 

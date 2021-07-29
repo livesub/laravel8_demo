@@ -503,21 +503,28 @@ $um_value='80/0.5/3'
             $tmp_cut = explode("/",$matches[1][$y]);
             $last_file_name = end($tmp_cut);
             $editor_img_del = $editor_path."/".$last_file_name;
-            var_dump($editor_img_del);  ?><br><br><?php
 
             if (file_exists($editor_img_del)) {
                 @unlink($editor_img_del); //이미지 삭제
             }
         }
-
         return true;
     }
 
     //디렉토리에 있는 하위 디렉토리 까지 전부 삭제
-    function aa()
-    {
-dd("sdvsvsvsdvsdvsd");
-
+    function rmdir_ok($dir) {
+        $dirs = dir($dir);
+        while(false !== ($entry = $dirs->read())) {
+            if(($entry != '.') && ($entry != '..')) {
+                if(is_dir($dir.'/'.$entry)) {
+                      $this->rmdir_ok($dir.'/'.$entry);
+                } else {
+                      @unlink($dir.'/'.$entry);
+                }
+            }
+        }
+        $dirs->close();
+        @rmdir($dir);
     }
 
 }

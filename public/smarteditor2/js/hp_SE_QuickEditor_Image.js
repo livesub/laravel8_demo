@@ -393,7 +393,7 @@ nhn.husky.SE_QuickEditor_Image = jindo.$Class({
                 htImageSize.height = htSize.nImgBeforeHeight;
                 htImageSize.rwidth = htSize.nReserveWidth;
                 htImageSize.rheight = htSize.nReserveHeight;
-                var msg = this.oApp.$MSG("SE_QuickEditor_Image.exceedMaxSize").replace("${nEditorWidth}", nEditorWidth);
+                var msg = this.oApp.$MSG("이미지 크기를 에디터 가로폭 보다 크게 조절하실 수 없습니다.").replace("${nEditorWidth}", nEditorWidth);
                 alert(msg);
             }
         }
@@ -414,7 +414,7 @@ nhn.husky.SE_QuickEditor_Image = jindo.$Class({
             if(htSize.nAdjustWidth > nEditorWidth){
                 htImageSize.width = htSize.nImgBeforeWidth;
                 htImageSize.rwidth = htSize.nReserverWidth;
-                var msg = this.oApp.$MSG("SE_QuickEditor_Image.exceedMaxSize").replace("${nEditorWidth}", nEditorWidth);
+                var msg = this.oApp.$MSG("이미지 크기를 에디터 가로폭 보다 크게 조절하실 수 없습니다.").replace("${nEditorWidth}", nEditorWidth);
                 alert(msg);
             }
         }

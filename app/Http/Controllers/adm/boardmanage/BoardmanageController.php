@@ -223,7 +223,7 @@ class BoardmanageController extends Controller
         $board_path = 'data/board/'.$bm_tb_name;     //각 게시판 첨부물 저장 경로
 
         if (is_dir($board_path)) {  //디렉토리 삭제
-            $del_directory = CustomUtils::deleteDir(public_path($board_path));
+            $del_directory = (new CustomUtils)->rmdir_ok(public_path($board_path));
         }
 
         $bmanage_del = DB::table('boardmanagers')->where([['id',$b_id], ['bm_tb_name',$bm_tb_name]])->delete();   //manager테이블에서 row 삭제

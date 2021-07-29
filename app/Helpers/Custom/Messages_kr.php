@@ -351,6 +351,13 @@ class Messages_kr extends Controller
             'bm_tb_name.max' => '20자 이하로 작성 하세요.',
         ]
     ];
+
+    static $board_editor = [
+        'editor' => [
+            'del_ok' => '정상적으로 삭제 되었습니다.',
+        ]
+    ];
+
 }
 
 

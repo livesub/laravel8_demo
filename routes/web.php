@@ -296,4 +296,10 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'adm.admboard.commemtdelete',
         'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtdelete',
     ]);
+
+    Route::get('adm/editor', [  //스마트 에디터를 통해 남아 있는 불필요 파일 제거
+        'as' => 'adm.editor.delete',
+        'uses' => 'App\Http\Controllers\adm\editor\AdmeditorContoller@destroy',
+    ]);
+
  });
