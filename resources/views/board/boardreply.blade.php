@@ -1,4 +1,4 @@
-@extends('layouts.admhead')
+@extends('layouts.head')
 
 @section('content')
 
@@ -45,22 +45,19 @@
 <table>
     <tr>
         <td>
-            <h4>{{ $board_set_info->bm_tb_subject }} 글쓰기</h4>
+            <h4>{{ $board_set_info->bm_tb_subject }} 답글 쓰기</h4>
         <td>
     </tr>
 </table>
 <table border=1 width="800">
-<form name="boardForm" id="boardForm" action="{{ route('adm.admboard.store') }}" method="POST" enctype='multipart/form-data'>
+<form name="boardForm" id="boardForm" action="{{ route('board.replysave',$tb_name) }}" method="POST" enctype='multipart/form-data'>
 {!! csrf_field() !!}
-<input type="hidden" name="tb_name" id="tb_name" value="{{ $board_set_info->bm_tb_name }}">
 <input type="hidden" name="bdt_uid" id="bdt_uid" value="{{ $user_id }}">
-
-    @if($board_set_info->bm_category_key != "")
-    <tr>
-        <td>카테고리</td>
-        <td>{!! $select_disp !!}</td>
-    </tr>
-    @endif
+<input type="hidden" name="ori_num" id="ori_num" value="{{ $ori_num }}">    <!-- 원본글 번호 -->
+<input type="hidden" name="bdt_category" id="bdt_category" value="{{ $board_ori_info->bdt_category }}">    <!-- 원본글의 카테고리 -->
+<input type="hidden" name="bdt_grp" id="bdt_grp" value="{{ $board_ori_info->bdt_grp }}">
+<input type="hidden" name="bdt_sort" id="bdt_sort" value="{{ $board_ori_info->bdt_sort }}">
+<input type="hidden" name="bdt_depth" id="bdt_depth" value="{{ $board_ori_info->bdt_depth }}">
 
     <tr>
         <td>제목</td>
@@ -73,10 +70,12 @@
         <td>글쓴이</td>
         <td><input type="text" name="bdt_uname" id="bdt_uname" value="{{ old('bdt_uname') }}"></td>
     </tr>
+
     <tr>
         <td>비밀번호</td>
         <td><input type="password" name="bdt_upw" id="bdt_upw"></td>
     </tr>
+
     @endif
 
     @if($board_set_info->bm_secret_type == 1)
@@ -84,13 +83,14 @@
         <td>비밀글</td>
         <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();"></td>
     </tr>
+
     @endif
 
 
     <tr>
         <td>내용</td>
         <td>
-            <textarea name="bdt_content" id="bdt_content" style="width:100%;height:220px;">{{ old('bdt_content') }}</textarea>
+            <textarea name="bdt_content" id="bdt_content" style="width:100%;height:220px;"></textarea>
 <script type="text/javascript">
     var oEditors = [];
     nhn.husky.EZCreator.createInIFrame({
@@ -116,7 +116,7 @@
     @endfor
 
     <tr colspan="2">
-        <td><button type="button" onclick="submitContents();">저장</button></td>
+        <td><button type="button" onclick="submitContents();">답글 저장</button></td>
     </tr>
     </form>
 </table>

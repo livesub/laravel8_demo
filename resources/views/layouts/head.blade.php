@@ -31,14 +31,41 @@
         </select>
     </div>
 
+    <table>
+        <tr>
+            <td>
+            @if(!auth()->user())
+                <a href='{{ route('login.index') }}'>LOGIN</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('join.create') }}'>REGISTER</a>
+            @else
+            <a href='{{ route('mypage.index') }}'>MYPAGE</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('logout.destroy') }}'>LOGOUT</a>
+            @endif
+            </td>
 
-    <div class='form-group'>
-    @if(!auth()->user())
-        <a href='{{ route('login.index') }}'>LOGIN</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('join.create') }}'>REGISTER</a>
-    @else
-       <a href='{{ route('mypage.index') }}'>MYPAGE</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('logout.destroy') }}'>LOGOUT</a>
-    @endif
-    </div>
+
+            @if(auth()->user())
+                @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
+            <td>
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('adm.index') }}'>관리자</a>
+            </td>
+                @endif
+            @endif
+        </tr>
+        <tr>
+            <td>
+                <table border=1>
+                    <tr>
+                    @php
+                        $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
+                    @endphp
+                    @foreach($b_lists as $b_list)
+                        <td><a href="/board/list/{{ $b_list->bm_tb_name }}"> {{ $b_list->bm_tb_subject }}</a></td>
+                    @endforeach
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
 
 
 

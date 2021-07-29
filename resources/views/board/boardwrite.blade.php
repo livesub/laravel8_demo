@@ -1,4 +1,4 @@
-@extends('layouts.admhead')
+@extends('layouts.head')
 
 @section('content')
 
@@ -50,7 +50,7 @@
     </tr>
 </table>
 <table border=1 width="800">
-<form name="boardForm" id="boardForm" action="{{ route('adm.admboard.store') }}" method="POST" enctype='multipart/form-data'>
+<form name="boardForm" id="boardForm" action="{{ route('board.store') }}" method="POST" enctype='multipart/form-data'>
 {!! csrf_field() !!}
 <input type="hidden" name="tb_name" id="tb_name" value="{{ $board_set_info->bm_tb_name }}">
 <input type="hidden" name="bdt_uid" id="bdt_uid" value="{{ $user_id }}">
@@ -73,10 +73,12 @@
         <td>글쓴이</td>
         <td><input type="text" name="bdt_uname" id="bdt_uname" value="{{ old('bdt_uname') }}"></td>
     </tr>
+
     <tr>
         <td>비밀번호</td>
         <td><input type="password" name="bdt_upw" id="bdt_upw"></td>
     </tr>
+
     @endif
 
     @if($board_set_info->bm_secret_type == 1)

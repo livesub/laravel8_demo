@@ -1,4 +1,4 @@
-@extends('layouts.admhead')
+@extends('layouts.head')
 
 @section('content')
 
@@ -12,7 +12,7 @@
     </tr>
 </table>
 <table border=1>
-    <form name="blist" id="blist" method="post" action="{{ route('adm.admboard.choice_del') }}">
+    <form name="blist" id="blist" method="post" action="{{ route('board.choice_del') }}">
     {!! csrf_field() !!}
     <input type="hidden" name="tb_name" id="tb_name" value="{{ $tb_name }}">
 
@@ -48,7 +48,7 @@
         <td>{{ $virtual_num-- }}</td>
 
         <td>
-            <a href="{{ route('adm.admboard.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
+            <a href="{{ route('board.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
 
                 @if ($board_list->bdt_depth == 0)
                     {{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
@@ -123,7 +123,7 @@
 <script>
     function category(){
         var cate = $("#bdt_category option:selected").val();
-        location.href = "{{ route('adm.admboard.index',$tb_name) }}?cate="+cate;
+        location.href = "{{ route('board.index',$tb_name) }}?cate="+cate;
     }
 </script>
 

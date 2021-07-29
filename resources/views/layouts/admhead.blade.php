@@ -25,15 +25,15 @@
                     <tr>
                         <td>게시판 리스트</td>
                     </tr>
-@php
-    $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
-@endphp
+                    @php
+                        $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
+                    @endphp
 
-@foreach($b_lists as $b_list)
+                    @foreach($b_lists as $b_list)
                     <tr>
                         <td><a href="/adm/admboard/list/{{ $b_list->bm_tb_name }}"> - {{ $b_list->bm_tb_subject }}</a></td>
                     </tr>
-@endforeach
+                    @endforeach
 
                     <tr>
                         <td><a href="/adm/editor">에디터 불필요 파일 삭제</a></td>

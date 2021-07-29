@@ -115,6 +115,7 @@ class BoardmanageController extends Controller
         }
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
         $num       = $request->input('num');
         $bm_coment_type       = $request->input('bm_coment_type');
         if($bm_coment_type == null) $bm_coment_type = 0;

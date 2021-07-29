@@ -1,4 +1,4 @@
-@extends('layouts.admhead')
+@extends('layouts.head')
 
 @section('content')
 
@@ -45,15 +45,15 @@
 <table>
     <tr>
         <td>
-            <h4>{{ $board_set_info->bm_tb_subject }} 글쓰기</h4>
+            <h4>{{ $board_set_info->bm_tb_subject }} 글 수정</h4>
         <td>
     </tr>
 </table>
 <table border=1 width="800">
-<form name="boardForm" id="boardForm" action="{{ route('adm.admboard.store') }}" method="POST" enctype='multipart/form-data'>
+<form name="boardForm" id="boardForm" action="{{ route('board.modifysave',$board_set_info->bm_tb_name) }}" method="POST" enctype='multipart/form-data'>
 {!! csrf_field() !!}
-<input type="hidden" name="tb_name" id="tb_name" value="{{ $board_set_info->bm_tb_name }}">
 <input type="hidden" name="bdt_uid" id="bdt_uid" value="{{ $user_id }}">
+<input type="hidden" name="b_id" id="b_id" value="{{ $board_info->id }}">
 
     @if($board_set_info->bm_category_key != "")
     <tr>
@@ -64,25 +64,41 @@
 
     <tr>
         <td>제목</td>
-        <td><input type="text" name="bdt_subject" id="bdt_subject" value="{{ old('bdt_subject') }}" maxlength="180"></td>
+        <td><input type="text" name="bdt_subject" id="bdt_subject" value="{{ stripslashes($board_info->bdt_subject) }}" maxlength="180"></td>
     </tr>
 
 
     @if($user_level == 100)
     <tr>
         <td>글쓴이</td>
-        <td><input type="text" name="bdt_uname" id="bdt_uname" value="{{ old('bdt_uname') }}"></td>
+        <td><input type="text" name="bdt_uname" id="bdt_uname" value="{{ $board_info->bdt_uname }}"></td>
     </tr>
-    <tr>
+
+    <tr >
         <td>비밀번호</td>
-        <td><input type="password" name="bdt_upw" id="bdt_upw"></td>
+        <td>
+            <input type="password" name="bdt_upw" id="bdt_upw"><br>
+                @if ($user_level == config('app.ADMIN_LEVEL'))
+                    ※ 관리자 수정시 비밀 번호는 변경 되지 않습니다.
+                @endif
+        </td>
     </tr>
     @endif
 
     @if($board_set_info->bm_secret_type == 1)
+
+        @php
+        if($board_info->bdt_chk_secret == 1){
+            $disp = "block";
+            $secret_chk_box = "checked";
+        }else{
+            $disp = "none";
+            $secret_chk_box = "";
+        }
+        @endphp
     <tr>
         <td>비밀글</td>
-        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();"></td>
+        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();" {{ $secret_chk_box }}></td>
     </tr>
     @endif
 
@@ -90,7 +106,7 @@
     <tr>
         <td>내용</td>
         <td>
-            <textarea name="bdt_content" id="bdt_content" style="width:100%;height:220px;">{{ old('bdt_content') }}</textarea>
+            <textarea name="bdt_content" id="bdt_content" style="width:100%;height:220px;">{{ $board_info->bdt_content }}</textarea>
 <script type="text/javascript">
     var oEditors = [];
     nhn.husky.EZCreator.createInIFrame({
@@ -111,15 +127,37 @@
         @error('bdt_file'.$i)
             <strong>{{ $message }}</strong>
         @enderror
+
+        @php
+            $file_ori_name = "bdt_ori_file_name$i";
+        @endphp
+            <br><a href="javascript:file_down('{{ $tb_name }}','{{ $board_info->id }}','{{ $i }}');">{{ $board_info->$file_ori_name }}</a><br>
+            <input type='checkbox' name="file_chk{{ $i }}" id="file_chk{{ $i }}" value='1'>수정,삭제,새로 등록시 체크 하세요.
         </td>
     </tr>
     @endfor
 
     <tr colspan="2">
         <td><button type="button" onclick="submitContents();">저장</button></td>
+        <td><button type="button" onclick="history.back(-1);">취소</button></td>
     </tr>
     </form>
 </table>
 
+<form name="down_form" id="down_form" method="post" action="{{ route('board.downloadfile') }}">
+{!! csrf_field() !!}
+    <input type="hidden" name="tb_name" id="tb_name_down">
+    <input type="hidden" name="b_id" id="b_id">
+    <input type="hidden" name="file_num" id="file_num">
+</form>
+
+<script>
+    function file_down(tb_name, b_id, file_num){
+        $("#tb_name_down").val(tb_name);
+        $("#b_id").val(b_id);
+        $("#file_num").val(file_num);
+        $("#down_form").submit();
+    }
+</script>
 
 @endsection

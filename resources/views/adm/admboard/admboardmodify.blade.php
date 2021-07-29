@@ -22,16 +22,12 @@
             $("#bdt_uname").focus();
             return;
         }
-        @endif
 
-        @if($board_set_info->bm_secret_type == 1)
-            if($('#bdt_chk_secret').is(":checked") == true){
-                if($.trim($("#bdt_upw").val()) == ""){
-                    alert("비밀번호를 입력하세요.");
-                    $("#bdt_upw").focus();
-                    return;
-                }
-            }
+        if($.trim($("#bdt_upw").val()) == ""){
+            alert("비밀번호를 입력하세요.");
+            $("#bdt_upw").focus();
+            return;
+        }
         @endif
 
         if( bdt_content == ""  || bdt_content == null || bdt_content == '&nbsp;' || bdt_content == '<p>&nbsp;</p>')  {
@@ -77,25 +73,8 @@
         <td>글쓴이</td>
         <td><input type="text" name="bdt_uname" id="bdt_uname" value="{{ $board_info->bdt_uname }}"></td>
     </tr>
-    @endif
 
-    @if($board_set_info->bm_secret_type == 1)
-
-    @php
-        if($board_info->bdt_chk_secret == 1){
-            $disp = "block";
-            $secret_chk_box = "checked";
-        }else{
-            $disp = "none";
-            $secret_chk_box = "";
-        }
-    @endphp
     <tr>
-        <td>비밀글</td>
-        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();" {{ $secret_chk_box }}></td>
-    </tr>
-
-    <tr id="secret_chk_id" style="display:{{ $disp }};" >
         <td>비밀번호</td>
         <td>
             <input type="password" name="bdt_upw" id="bdt_upw"><br>
@@ -103,6 +82,23 @@
                     ※ 관리자 수정시 비밀 번호는 변경 되지 않습니다.
                 @endif
         </td>
+    </tr>
+    @endif
+
+    @if($board_set_info->bm_secret_type == 1)
+
+        @php
+        if($board_info->bdt_chk_secret == 1){
+            $disp = "block";
+            $secret_chk_box = "checked";
+        }else{
+            $disp = "none";
+            $secret_chk_box = "";
+        }
+        @endphp
+    <tr>
+        <td>비밀글</td>
+        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();" {{ $secret_chk_box }}></td>
     </tr>
     @endif
 
@@ -147,17 +143,6 @@
     </tr>
     </form>
 </table>
-
-<script>
-    function secret_chk(){
-        if($('#bdt_chk_secret').is(":checked") == true){
-            $("#secret_chk_id").show();
-        }else{
-            $("#secret_chk_id").hide();
-        }
-    }
-</script>
-
 
 <form name="down_form" id="down_form" method="post" action="{{ route('adm.admboard.downloadfile') }}">
 {!! csrf_field() !!}

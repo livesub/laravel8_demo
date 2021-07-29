@@ -1,4 +1,4 @@
-@extends('layouts.admhead')
+@extends('layouts.head')
 
 @section('content')
 
@@ -48,7 +48,7 @@
 
 @if($board_set_info->bm_coment_type == "1" && Auth::user() != "")
 <table border=1>
-<form name="comment_form" id="comment_form" method="post" action="{{ route('adm.admboard.commemtsave',$tb_name) }}">
+<form name="comment_form" id="comment_form" method="post" action="{{ route('board.commemtsave',$tb_name) }}">
 {!! csrf_field() !!}
 <input type="hidden" name="page" id="c_page" value="{{ $page }}">
 <input type="hidden" name="cate" id="c_cate" value="{{ $cate }}">
@@ -112,7 +112,7 @@
     </tr>
 </table>
 
-<form name="down_form" id="down_form" method="post" action="{{ route('adm.admboard.downloadfile') }}">
+<form name="down_form" id="down_form" method="post" action="{{ route('board.downloadfile') }}">
 {!! csrf_field() !!}
     <input type="hidden" name="tb_name" id="tb_name">
     <input type="hidden" name="b_id" id="b_id">
@@ -129,7 +129,7 @@
     }
 </script>
 
-<form name="del_form" id="del_form" method="post" action="{{ route('adm.admboard.deletesave',$tb_name) }}">
+<form name="del_form" id="del_form" method="post" action="{{ route('board.deletesave',$tb_name) }}">
 {!! csrf_field() !!}
     <input type="hidden" name="b_id" id="board_id" value="{{ $board_info->id }}">
     <input type="hidden" name="mode" id="mode" value="del">
@@ -193,10 +193,10 @@
             $("#bdct_sort").val(bdct_sort);
             $("#bdct_depth").val(bdct_depth);
             $("#bdct_memo_reply").val($("#bdct_memo_reply"+c_id).val());  //값이 넘어가지 않아 hidden에 담아 보냄
-            $("#comment_form").attr("action", "{{ route('adm.admboard.commemtreplysave',$tb_name) }}");
+            $("#comment_form").attr("action", "{{ route('board.commemtreplysave',$tb_name) }}");
         }else if(mode == 'modi'){
             $("#bdct_memo_reply").val($("#bdct_memo_reply"+c_id).val());
-            $("#comment_form").attr("action", "{{ route('adm.admboard.commemtmodifysave',$tb_name) }}");
+            $("#comment_form").attr("action", "{{ route('board.commemtmodifysave',$tb_name) }}");
         }
 
         $("#comment_form").submit();
@@ -208,7 +208,7 @@
     function comment_del(c_id){
         if (confirm("선택 하신 댓글을 삭제 하시겠습니까?") == true){    //확인
             $("#c_id").val(c_id);
-            $("#comment_form").attr("action", "{{ route('adm.admboard.commemtdelete',$tb_name) }}");
+            $("#comment_form").attr("action", "{{ route('board.commemtdelete',$tb_name) }}");
             $("#comment_form").submit();
         }else{
             return;
