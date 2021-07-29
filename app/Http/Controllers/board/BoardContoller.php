@@ -833,13 +833,11 @@ class BoardContoller extends Controller
         {
             $bdt_uid = $board_info->bdt_uid;
             $bdt_uname = $board_info->bdt_uname;
-
+            $bdt_upw = "";
             if ($request->has('bdt_chk_secret')) {
                 $bdt_chk_secret = 1;
-                $bdt_upw = $board_info->bdt_upw;
             }else{
                 $bdt_chk_secret = 0;
-                $bdt_upw = "";
             }
         }else{  //관리자가 아닐때
             //아이디 처리
@@ -850,12 +848,14 @@ class BoardContoller extends Controller
             if(Auth::user() == '') $bdt_uname = $request->input('bdt_uname');
             else $bdt_uname = Auth::user()->user_name;
 
+            //비밀번호 처리
+            if(Auth::user() == '') $bdt_upw = md5(trim($request->input('bdt_upw')));
+            else $bdt_upw = "";
+
             if ($request->has('bdt_chk_secret')) {
                 $bdt_chk_secret = 1;
-                $bdt_upw = md5(trim($request->input('bdt_upw')));
             }else{
                 $bdt_chk_secret = 0;
-                $bdt_upw = "";
             }
         }
 
