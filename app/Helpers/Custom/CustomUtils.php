@@ -512,4 +512,12 @@ $um_value='80/0.5/3'
 
         return true;
     }
+
+    //디렉토리에 있는 하위 디렉토리 까지 전부 삭제
+    function aa()
+    {
+dd("sdvsvsvsdvsdvsd");
+
+    }
+
 }

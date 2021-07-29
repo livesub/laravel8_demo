@@ -25,7 +25,10 @@
 
 
     <tr>
+        @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
         <td>선택<br><input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);" class="selec_chk"></td>
+        @endif
+
         <td>번호</td>
         <td>제목</td>
         <td>글쓴이</td>
@@ -35,7 +38,9 @@
 
     @foreach($board_lists as $board_list)
     <tr>
+        @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
         <td><input type="checkbox" name="chk_id[]" value="{{ $board_list->id }}" id="chk_id_{{ $board_list->id }}" class="selec_chk"></td>
+        @endif
         <td>{{ $virtual_num-- }}</td>
 
         <td>
