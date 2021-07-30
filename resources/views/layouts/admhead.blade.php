@@ -7,6 +7,17 @@
 <body>
 
 <script src='//code.jquery.com/jquery-3.3.1.min.js'></script>
+
+    <table>
+        <tr>
+            <td>
+            @if(auth()->user())
+            <a href='{{ route('logout.destroy') }}'>LOGOUT</a>
+            @endif
+            </td>
+        </tr>
+    </table>
+
     <table border="1">
         <tr>
             <td>상단 메뉴 또는 타이틀 등등</td>

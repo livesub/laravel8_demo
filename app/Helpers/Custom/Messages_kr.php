@@ -334,6 +334,7 @@ class Messages_kr extends Controller
             'b_del' => '삭제 되었습니다.',
             'b_pwno' => '비밀번호가 맞지 않습니다.',
             'b_set' => '게시판 설정을 확인 하세요.',
+            'time_over' => '글쓰기 시간이 초과 되었습니다.',
         ]
     ];
 

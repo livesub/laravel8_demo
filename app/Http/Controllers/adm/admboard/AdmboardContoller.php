@@ -156,7 +156,7 @@ class AdmboardContoller extends Controller
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
         $tb_name_directory = "board/{$tb_name}/editor";
-        setcookie('directory', $tb_name_directory, (time() + 3600),"/"); //일단 1시간 잡음(1*60*60)
+        setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         return view('adm.admboard.admboardwrite',[
             'tb_name'                   => $tb_name,
@@ -182,6 +182,11 @@ class AdmboardContoller extends Controller
         }
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        if(!isset($_COOKIE['directory'])){
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
+            exit;
+        }
 
         $tb_name = $request->input('tb_name');
 
@@ -721,7 +726,7 @@ class AdmboardContoller extends Controller
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
         $tb_name_directory = "board/{$tb_name}/editor";
-        setcookie('directory', $tb_name_directory, (time() + 3600),"/"); //일단 1시간 잡음(1*60*60)
+        setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         return view('adm.admboard.admboardreply',[
             'tb_name'                   => $tb_name,
@@ -743,6 +748,11 @@ class AdmboardContoller extends Controller
         }
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        if(!isset($_COOKIE['directory'])){
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
+            exit;
+        }
 
         $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
 
@@ -942,7 +952,7 @@ class AdmboardContoller extends Controller
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
         $tb_name_directory = "board/{$tb_name}/editor";
-        setcookie('directory', $tb_name_directory, (time() + 3600),"/"); //일단 1시간 잡음(1*60*60)
+        setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         return view('adm.admboard.admboardmodify',[
             'tb_name'                   => $tb_name,
@@ -965,6 +975,11 @@ class AdmboardContoller extends Controller
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
+        if(!isset($_COOKIE['directory'])){
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
+            exit;
+        }
+
         $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
         $board_info = DB::table('board_datas_tables')->where([['id', $request->input('b_id')], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
 
@@ -973,7 +988,6 @@ class AdmboardContoller extends Controller
 
         //$bdt_chk_secret = $request->input('bdt_chk_secret');
 
-        //아이디 처리(관리자가 수정 할땐 아이디, 이름과 비번은 바꾸지 않는다)
         //아이디 처리(관리자가 수정 할땐 아이디, 이름과 비번은 바꾸지 않는다)
         if(Auth::user() != "" && Auth::user()->user_level == config('app.ADMIN_LEVEL')){    //관리자일때
             $bdt_uid = $board_info->bdt_uid;
