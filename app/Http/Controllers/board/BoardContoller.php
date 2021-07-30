@@ -149,11 +149,11 @@ class BoardContoller extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        if(isset($_COOKIE['directory'])){
+        if(!isset($_COOKIE['directory'])){
             return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
             exit;
         }
-dd("savsvsv");
+
         $tb_name = $request->input('tb_name');
 
         $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();   //게시판 설정 가져 오기
