@@ -1,2 +1,3 @@
 public/data
 .env
+.env.example
