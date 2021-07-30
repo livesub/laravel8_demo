@@ -305,11 +305,29 @@ class BoardContoller extends Controller
         $mode          = $request->input('mode');
 
         //관리자가 아니거나 본인 글이 아닐시 비번 묻기
-        if($user_level > config('app.ADMIN_LEVEL'))
+        if($user_level > config('app.ADMIN_LEVEL')) //일반 사용자
         {
-            if(Auth::user() == "" || Auth::user()->user_id != $board_info->bdt_uid){
-                if($board_info->bdt_chk_secret == 1 && $result_pw != 'ok'){
+            if(Auth::user() == ""){     //비회원일때
+                if($board_info->bdt_chk_secret == 1 && $result_pw != 'ok'){     //비밀글이라면
                     return redirect()->route('board.secret',$tb_name.'?id='.$board_info->id.'&page='.$page.'&cate='.$cate);
+                }
+            }else{  //회원일때
+                if(Auth::user()->user_id != $board_info->bdt_uid){  //본인 글이 아니고
+                    //먼저 답글인지 파악
+                    //답글일때 회원 작성 글은 비밀번호가 없고, 자신의 글에 답변은 볼수 있게 하기 위해
+                    if($board_info->bdt_depth > 0){
+                        if($board_info->bdt_chk_secret == 1){ //비밀글일때
+                            //원본글 작성자 찾기
+                            $board_ori_info = DB::table('board_datas_tables')->select("bdt_uid")->where([['id', $board_info->bdt_grp], ['bm_tb_name',$tb_name], ['bdt_depth',0]])->first();
+                            if(Auth::user()->user_id != $board_ori_info->bdt_uid ){
+                                return redirect()->route('board.secret',$tb_name.'?id='.$board_info->id.'&page='.$page.'&cate='.$cate);
+                            }
+                        }
+                    }else{
+                        if($board_info->bdt_chk_secret == 1 && $result_pw != 'ok'){     //비밀글이라면
+                            return redirect()->route('board.secret',$tb_name.'?id='.$board_info->id.'&page='.$page.'&cate='.$cate);
+                        }
+                    }
                 }
             }
         }
@@ -337,32 +355,58 @@ class BoardContoller extends Controller
             $cate_link = "&cate=".$cate;
         }
 
-        //글쓰기 버튼 제어
+        //버튼 초기화
         $write_button = "";
+        $reply_button = "";
+        $modi_button = "";
+        $del_button = "";
+        $list_button = "";
+
+        //글쓰기 버튼 제어
         if($user_level <= $board_set_info->bm_write_chk){
             $write_button = "<td><button type='button' onclick=\"location.href='/board/write/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_write_ment']}</button></td>";
         }
 
-        //답글 쓰기 버튼 제어
-        $reply_button = "";
-        if($user_level <= $board_set_info->bm_reply_chk){
+        //버튼 제어
+        if(Auth::user() != "" && Auth::user()->user_level <= config('app.ADMIN_LEVEL')){    //관리자일때
+            //답글 쓰기 버튼 제어
             $reply_button = "<td><button type='button' onclick=\"location.href='/board/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
-        }
 
-        //수정 버튼 제어
-        $modi_button = "";
-        if($user_level <= $board_set_info->bm_modify_chk){  //수정 권한이 있는 게시판인지
+            //수정 버튼 제어
             $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
-        }
 
-        //삭제 버튼 제어
-        $del_button = "";
-        if($user_level <= $board_set_info->bm_delete_chk){  //삭제 권한이 있는 게시판인지
+            //삭제 버튼 제어
             $del_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_del_ment']}</button></td>";
+        }else{
+            //답글 쓰기 버튼 제어
+            if($user_level <= $board_set_info->bm_reply_chk){
+                $reply_button = "<td><button type='button' onclick=\"location.href='/board/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
+            }
+
+            //수정 버튼 제어
+            if($user_level <= $board_set_info->bm_modify_chk){  //수정 권한이 있는 게시판인지
+                if(Auth::user() == ""){     //비회원 일때
+                    $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
+                }else{      //회원일때
+                    if(Auth::user()->user_id == $board_info->bdt_uid){
+                        $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
+                    }
+                }
+            }
+
+            //삭제 버튼 제어
+            if($user_level <= $board_set_info->bm_delete_chk){  //삭제 권한이 있는 게시판인지
+                if(Auth::user() == ""){     //비회원 일때
+                    $del_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_del_ment']}</button></td>";
+                }else{      //회원일때
+                    if(Auth::user()->user_id == $board_info->bdt_uid){
+                        $del_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_del_ment']}</button></td>";
+                    }
+                }
+            }
         }
 
         //목록 버튼 제어
-        $list_button = "";
         if($user_level <= $board_set_info->bm_list_chk){  //삭제 권한이 있는 게시판인지
             $list_button = "<td><button type='button' onclick=\"location.href='/board/list/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
         }
@@ -629,13 +673,30 @@ class BoardContoller extends Controller
             exit;
         }
 
-        //아이디 처리
-        if(Auth::user() == '') $bdt_uid = $request->input('bdt_uid');
-        else $bdt_uid = Auth::user()->user_id;
+        //관리자 답글시 비번은 원본글 비번으로
+        $ori_num = $request->input('ori_num');  //원본글 번호
+        if(Auth::user() != "" && $user_level <= config('app.ADMIN_LEVEL')){     //관리자일때
+            //원본글 작성자 찾기
+            $board_ori_info = DB::table('board_datas_tables')->select("bdt_upw")->where([['id', $ori_num], ['bm_tb_name',$tb_name], ['bdt_depth',0]])->first();
+            $bdt_uid = Auth::user()->user_id;
+            $bdt_uname = Auth::user()->user_name;
 
-        //이름 처리
-        if(Auth::user() == '') $bdt_uname = $request->input('bdt_uname');
-        else $bdt_uname = Auth::user()->user_name;
+            if($board_ori_info == "") $bdt_upw = "";
+            else $bdt_upw = $board_ori_info->bdt_upw;
+        }else{
+            //일반 사용자일 경우(회,비회 포함)
+            //아이디 처리
+            if(Auth::user() == '') $bdt_uid = $request->input('bdt_uid');
+            else $bdt_uid = Auth::user()->user_id;
+
+            //이름 처리
+            if(Auth::user() == '') $bdt_uname = $request->input('bdt_uname');
+            else $bdt_uname = Auth::user()->user_name;
+
+            //비밀번호 처리
+            if(Auth::user() == '') $bdt_upw = md5(trim($request->input('bdt_upw')));
+            else $bdt_upw = "";
+        }
 
         $bdt_subject = addslashes($request->input('bdt_subject'));
         $bdt_chk_secret = $request->input('bdt_chk_secret');
@@ -647,13 +708,6 @@ class BoardContoller extends Controller
         }
 
         $bdt_category = $request->input('bdt_category');
-        if(trim($request->input('bdt_upw')) != "")
-        {
-            $bdt_upw = md5(trim($request->input('bdt_upw')));
-        }else{
-            $bdt_upw = "";
-        }
-
         $bdt_content = $request->input('bdt_content');
 
         $file_cnt = $board_set_info->bm_file_num;    //설정시 사용할 첨부 갯수
@@ -745,7 +799,7 @@ class BoardContoller extends Controller
 
         //저장 처리
         $create_result = board_datas_table::create($data);
-
+        $bdt_category_url = "";
         if($bdt_category != ""){    //키테고리 있을때
             $bdt_category_url = "?cate=".$bdt_category;
         }
@@ -826,21 +880,14 @@ class BoardContoller extends Controller
         if(Auth::user() == "") $user_level = "100";
         else $user_level = Auth::user()->user_level;
 
-        $bdt_chk_secret = $request->input('bdt_chk_secret');
+        //$bdt_chk_secret = $request->input('bdt_chk_secret');
 
         //아이디 처리(관리자가 수정 할땐 아이디, 이름과 비번은 바꾸지 않는다)
-        if(Auth::user() != "" && Auth::user()->user_level == config('app.ADMIN_LEVEL'))
-        {
+        if(Auth::user() != "" && Auth::user()->user_level == config('app.ADMIN_LEVEL')){    //관리자일때
             $bdt_uid = $board_info->bdt_uid;
             $bdt_uname = $board_info->bdt_uname;
-            $bdt_upw = "";
-            if ($request->has('bdt_chk_secret')) {
-                $bdt_chk_secret = 1;
-            }else{
-                $bdt_chk_secret = 0;
-            }
+            $bdt_upw = $board_info->bdt_upw;
         }else{  //관리자가 아닐때
-            //아이디 처리
             if(Auth::user() == '') $bdt_uid = $request->input('bdt_uid');
             else $bdt_uid = Auth::user()->user_id;
 
@@ -851,12 +898,12 @@ class BoardContoller extends Controller
             //비밀번호 처리
             if(Auth::user() == '') $bdt_upw = md5(trim($request->input('bdt_upw')));
             else $bdt_upw = "";
+        }
 
-            if ($request->has('bdt_chk_secret')) {
-                $bdt_chk_secret = 1;
-            }else{
-                $bdt_chk_secret = 0;
-            }
+        if ($request->has('bdt_chk_secret')) {
+            $bdt_chk_secret = 1;
+        }else{
+            $bdt_chk_secret = 0;
         }
 
         $bdt_subject = addslashes($request->input('bdt_subject'));

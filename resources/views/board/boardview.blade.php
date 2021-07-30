@@ -104,11 +104,11 @@
 
 <table border=1>
     <tr>
-        <td>{!! $reply_button !!}</td>
-        <td>{!! $write_button !!}</td>
-        <td>{!! $modi_button !!}</td>
-        <td>{!! $del_button !!}</td>
-        <td>{!! $list_button !!}</td>
+        {!! $reply_button !!}
+        {!! $write_button !!}
+        {!! $modi_button !!}
+        {!! $del_button !!}
+        {!! $list_button !!}
     </tr>
 </table>
 

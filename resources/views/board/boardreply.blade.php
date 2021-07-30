@@ -81,7 +81,7 @@
     @if($board_set_info->bm_secret_type == 1)
     <tr>
         <td>비밀글</td>
-        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();"></td>
+        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1"></td>
     </tr>
 
     @endif

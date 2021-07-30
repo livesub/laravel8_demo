@@ -26,12 +26,16 @@
 @endif
 
 
-@if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
+
+
+@if(Auth::user() != "")
+    @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
 <table>
     <tr>
         <td>선택 <input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);" class="selec_chk"></td>
     </tr>
 </table>
+    @endif
 @endif
 
 
@@ -50,9 +54,12 @@
                     $bdt_file1_disp = "/data/board/{$board_list->bm_tb_name}/".$bdt_file1_cut[1];
                 }
             @endphp
+
             <td>
-                @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
+                @if(Auth::user() != "")
+                    @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
                 <input type="checkbox" name="chk_id[]" value="{{ $board_list->id }}" id="chk_id_{{ $board_list->id }}" class="selec_chk">
+                    @endif
                 @endif
 
                 <a href="{{ route('board.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
