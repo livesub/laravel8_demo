@@ -493,6 +493,24 @@ $um_value='80/0.5/3'
         return $select_disp;
     }
 
+    //셀렉트 박스 skin 만들기
+    public static function select_box_skin($select_name, $value, $selected_val='')
+    {
+        $select_disp = "<select name='{$select_name}' id='{$select_name}'>";
+
+        for($i = 0; $i < count($value); $i++){
+            $selected = "";
+            if($value[$i] == $selected_val) $selected = "selected";
+            $select_disp .= "
+                <option value='$value[$i]' $selected>$value[$i]</option>
+            ";
+        }
+
+        $select_disp .= "</select>";
+
+        return $select_disp;
+    }
+
     //게시물 삭제시 스마트 에디터 첨부 파일 까지 삭제 하기
     public static function editor_img_del($content, $editor_path)
     {

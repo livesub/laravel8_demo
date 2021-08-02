@@ -288,13 +288,14 @@ class AdmboardContoller extends Controller
                             $is_create = false;
                             $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                         }
-                    }else{
-                        return redirect('adm/boardmanage')->with('alert_messages', $Messages::$board['b_ment']['b_set']);
-                        exit;
-                    }
 
-                    $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
-                    $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                    }else{
+                        //리사이징이 없을때
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
+                    }
                 }else{
                     //첨부물 이미지가 아닐때
                     $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
@@ -921,11 +922,14 @@ class AdmboardContoller extends Controller
                             $is_create = false;
                             $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                         }
+
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                    }else{
+                        //리사이징이 없을때
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
                     }
-
-                    $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
-                    $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
-
                 }else{
                     //첨부물 이미지가 아닐때
                     $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
@@ -1125,11 +1129,14 @@ class AdmboardContoller extends Controller
                                 $is_create = false;
                                 $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                             }
+
+                            $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                            $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                        }else{
+                            //리사이징이 없을때
+                            $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                            $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
                         }
-
-                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
-                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
-
                     }else{
                         //첨부물 이미지가 아닐때
                         $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함

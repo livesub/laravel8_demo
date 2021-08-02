@@ -43,7 +43,7 @@
         </td>
     </tr>
     <tr>
-        <td>게시판종류</td>
+        <td>게시판 종류</td>
         <td>
             @php
             if($board_info->bm_type == 1){
@@ -61,6 +61,11 @@
             </select>
         </td>
     </tr>
+    <tr>
+        <td>게시판 스킨</td>
+        <td>{!! $directory_disp !!}</td>
+    </tr>
+
     <tr>
         <td>
             리사이징(이미지일때만)

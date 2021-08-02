@@ -69,13 +69,18 @@
                 </tr>
 
                 <tr>
-                    <td>게시판종류</td>
+                    <td>게시판 종류</td>
                     <td>
                         <select name="bm_type" id="bm_type">
                             <option value="1">일반게시판</option>
                             <option value="2">갤러리게시판</option>
                         </select>
                     </td>
+                </tr>
+
+                <tr>
+                    <td>게시판 스킨</td>
+                    <td>{!! $directory_disp !!}</td>
                 </tr>
 
                 <tr>

@@ -76,12 +76,12 @@ class BoardContoller extends Controller
 
         //게시판 종류 체크(일반게시판, 갤러리 게시판)
         if($board_set_info->bm_type == 1){
-            $view_blade = "board.boardlist";
+            $list_blade = "skin.".$board_set_info->bm_skin.".list";
         }else{
-            $view_blade = "board.boardgallerylist";
+            $list_blade = "skin.".$board_set_info->bm_skin.".list";
         }
 
-        return view($view_blade,[
+        return view($list_blade,[
             'tb_name'                   => $tb_name,
             'board_set_info'            => $board_set_info, //게시판 쎄팅 배열
             'board_lists'               => $board_lists, //게시판 내용
@@ -130,7 +130,10 @@ class BoardContoller extends Controller
         $tb_name_directory = "board/{$tb_name}/editor";
         setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
-        return view('board.boardwrite',[
+        //현재 리스트를 제외한 스킨은 공통으로 쓰고 있음
+        $write_blade = "skin.".$board_set_info->bm_skin.".write";
+
+        return view($write_blade,[
             'tb_name'                   => $tb_name,
             'board_set_info'            => $board_set_info,
             'user_level'                => $user_level,
@@ -254,13 +257,14 @@ class BoardContoller extends Controller
                             $is_create = false;
                             $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                         }
-                    }else{
-                        return redirect('board/list/'.$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_set']);
-                        exit;
-                    }
 
-                    $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
-                    $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                    }else{
+                        //리사이징이 없을때
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
+                    }
                 }else{
                     //첨부물 이미지가 아닐때
                     $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
@@ -418,7 +422,9 @@ class BoardContoller extends Controller
 
         $comment_infos = DB::table('board_datas_comment_tables')->where([['bdt_id', $request->input('id')], ['bm_tb_name',$tb_name]])->orderby('bdct_grp', 'DESC')->orderby('bdct_sort')->get();   //댓글 정보 읽기
 
-        return view('board.boardview',[
+        $view_blade = "skin.".$board_set_info->bm_skin.".view";
+
+        return view($view_blade,[
             'tb_name'                   => $tb_name,
             'category_ment'             => $category_ment,
             'board_set_info'            => $board_set_info,
@@ -699,7 +705,9 @@ class BoardContoller extends Controller
         $tb_name_directory = "board/{$tb_name}/editor";
         setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
-        return view('board.boardreply',[
+        $reply_blade = "skin.".$board_set_info->bm_skin.".reply";
+
+        return view($reply_blade,[
             'tb_name'                   => $tb_name,
             'ori_num'                   => $ori_num,
             'user_level'                => $user_level,
@@ -838,14 +846,14 @@ class BoardContoller extends Controller
                             $is_create = false;
                             $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                         }
+
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
                     }else{
-                        return redirect('board/list/'.$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_set']);
-                        exit;
+                        //리사이징이 없을때
+                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                        $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
                     }
-
-                    $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
-                    $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
-
                 }else{
                     //첨부물 이미지가 아닐때
                     $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
@@ -916,7 +924,9 @@ class BoardContoller extends Controller
         $tb_name_directory = "board/{$tb_name}/editor";
         setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
-        return view('board.boardmodify',[
+        $modify_blade = "skin.".$board_set_info->bm_skin.".modify";
+
+        return view($modify_blade,[
             'tb_name'                   => $tb_name,
             'ori_num'                   => $ori_num,
             'user_level'                => $user_level,
@@ -1033,11 +1043,14 @@ class BoardContoller extends Controller
                                 $is_create = false;
                                 $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
                             }
+
+                            $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                            $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                        }else{
+                            //리사이징이 없을때
+                            $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
+                            $data['bdt_file'.$i] = $attachment_result[1];  //배열에 추가 함
                         }
-
-                        $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함
-                        $data['bdt_file'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
-
                     }else{
                         //첨부물 이미지가 아닐때
                         $data['bdt_ori_file_name'.$i] = $attachment_result[2];  //배열에 추가 함

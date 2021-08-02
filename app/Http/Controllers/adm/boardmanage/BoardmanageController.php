@@ -48,8 +48,14 @@ class BoardmanageController extends Controller
         //select 쿼리
         $b_lists = DB::table('boardmanagers')->orderBy('id', 'desc')->get();
 
+        $path    = '../resources/views/skin';   //스킨 경로
+
+        $directory = array_values(array_diff(scandir($path), array(".", "..", "tmp")));
+        $directory_disp = CustomUtils::select_box_skin("bm_skin",$directory,"");
+
         return view('adm.boardmanage.boardmanage', [
-            'b_lists'=>$b_lists
+            'b_lists'           => $b_lists,
+            'directory_disp'    => $directory_disp,
         ],$Messages::$boardmanage['bm']['message']);
     }
 
@@ -72,6 +78,7 @@ class BoardmanageController extends Controller
         $bm_tb_subject    = $request->input('bm_tb_subject');
         $bm_file_num      = $request->input('bm_file_num');
         $bm_type          = $request->input('bm_type');
+        $bm_skin          = $request->input('bm_skin');
 
         Validator::validate($request->all(), [
             'bm_tb_name'  => ['required', 'unique:boardmanagers', 'max:20'],
@@ -94,6 +101,7 @@ class BoardmanageController extends Controller
             'bm_tb_subject' => $bm_tb_subject,
             'bm_file_num'   => $bm_file_num,
             'bm_type'       => $bm_type,
+            'bm_skin'       => $bm_skin,
         ])->exists(); //저장,실패 결과 값만 받아 오기 위해  exists() 를 씀
 
         if($create_result = 1) return redirect()->route('adm.boardmanage.index')->with('alert_messages', $Messages::$boardmanage['bm']['message']['bmm_tb_add_ok']);
@@ -127,6 +135,7 @@ class BoardmanageController extends Controller
         $b_set->bm_tb_subject = $request->input('bm_tb_subject');
         $b_set->bm_file_num = $request->input('bm_file_num');
         $b_set->bm_type = $request->input('bm_type');
+        $b_set->bm_skin = $request->input('bm_skin');
         $b_set->bm_resize_file_num = $request->input('bm_resize_file_num');
         $b_set->bm_resize_width_file = $request->input('bm_resize_width_file');
         $b_set->bm_resize_height_file = $request->input('bm_resize_height_file');
@@ -176,7 +185,16 @@ class BoardmanageController extends Controller
 
         $board_info = DB::table('boardmanagers')->where('id', $num)->first();
 
-        return view('adm.boardmanage.boardmanageview',["board_info" => $board_info],$Messages::$mypage['mypage']['message']);
+        $path    = '../resources/views/skin';   //스킨 경로
+
+        $directory = array_values(array_diff(scandir($path), array(".", "..", "tmp")));
+        $directory_disp = CustomUtils::select_box_skin("bm_skin",$directory,$board_info->bm_skin);
+
+
+        return view('adm.boardmanage.boardmanageview',[
+            "board_info"        => $board_info,
+            "directory_disp"    => $directory_disp,
+        ],$Messages::$mypage['mypage']['message']);
     }
 
     /**
