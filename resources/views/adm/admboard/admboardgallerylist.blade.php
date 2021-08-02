@@ -47,7 +47,10 @@
                     $bdt_file1_disp = "no_img";
                 }else{
                     $bdt_file1_cut = explode("@@",$board_list->bdt_file1);
-                    $bdt_file1_disp = "/data/board/{$board_list->bm_tb_name}/".$bdt_file1_cut[1];
+                    if(count($bdt_file1_cut) == 1) $bdt_file = $bdt_file1_cut[0];
+                    else $bdt_file = $bdt_file1_cut[1];
+
+                    $bdt_file1_disp = "/data/board/{$board_list->bm_tb_name}/".$bdt_file;
                 }
             @endphp
             <td>

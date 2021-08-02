@@ -147,17 +147,20 @@
 <form name="down_form" id="down_form" method="post" action="{{ route('board.downloadfile') }}">
 {!! csrf_field() !!}
     <input type="hidden" name="tb_name" id="tb_name_down">
-    <input type="hidden" name="b_id" id="b_id">
+    <input type="hidden" name="b_id" id="b_id_down">
     <input type="hidden" name="file_num" id="file_num">
 </form>
 
 <script>
     function file_down(tb_name, b_id, file_num){
         $("#tb_name_down").val(tb_name);
-        $("#b_id").val(b_id);
+        $("#b_id_down").val(b_id);
         $("#file_num").val(file_num);
         $("#down_form").submit();
     }
 </script>
+
+
+
 
 @endsection
