@@ -40,6 +40,7 @@ class CreateBoardDatasTablesTable extends Migration
             $table->string('bdt_ori_file_name5')->nullable()->comment('원본 첨부파일 이름5');
             $table->text('bdt_file5')->nullable()->comment('첨부파일5(원본@@썸네일1@@썸네일2..)');
             $table->integer('bdt_down_cnt')->default(0)->comment('첨부 다운로드 횟수');
+            $table->enum('bdt_del', ['N', 'Y'])->length(2)->default('N')->comment('삭제 여부 : N=>미삭제,Y=>삭제(답글이 있을때 사용)');
             $table->timestamps();
             $table->index(['bm_tb_name','bdt_grp', 'bdt_sort','bdt_depth']);
         });

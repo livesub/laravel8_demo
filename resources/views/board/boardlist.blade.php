@@ -35,6 +35,7 @@
         <td>제목</td>
         <td>글쓴이</td>
         <td>조회수</td>
+        <td>덧글수</td>
     </tr>
 
 
@@ -48,9 +49,12 @@
         <td>{{ $virtual_num-- }}</td>
 
         <td>
-            <a href="{{ route('board.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
+                @if($board_list->bdt_del != 'Y')
+                    <a href="{{ route('board.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
+                @endif
 
                 @if ($board_list->bdt_depth == 0)
+
                     {{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
                 @else
                 @for ($i=0; $i<$board_list->bdt_depth; $i++)
@@ -59,11 +63,14 @@
                 └{{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
                 @endif
 
-            </a>
+                @if($board_list->bdt_del != 'Y')
+                    </a>
+                @endif
         </td>
 
         <td>{{ $board_list->bdt_uname }}</td>
         <td>{{ $board_list->bdt_hit }}</td>
+        <td>{{ $board_list->bdt_comment_cnt }}</td>
     </tr>
     @endforeach
 

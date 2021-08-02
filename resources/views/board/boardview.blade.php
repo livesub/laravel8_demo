@@ -48,7 +48,7 @@
 
 @if($board_set_info->bm_coment_type == "1" && Auth::user() != "")
 <table border=1>
-<form name="comment_form" id="comment_form" method="post" action="{{ route('board.commemtsave',$tb_name) }}">
+<form name="comment_form" id="comment_form" method="post" action="{{ route('board.commentsave',$tb_name) }}">
 {!! csrf_field() !!}
 <input type="hidden" name="page" id="c_page" value="{{ $page }}">
 <input type="hidden" name="cate" id="c_cate" value="{{ $cate }}">

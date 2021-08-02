@@ -546,7 +546,30 @@ class AdmboardContoller extends Controller
             }
         }
 
-        DB::table('board_datas_tables')->where('id',$b_id)->delete();   //row 삭제
+	    //답글이 달린 글이면 삭제 하지 않고(bdt_del 플러그 값 Y로 바꾸고, 제목,내용,글쓴이 등등 'null' 업뎃  첨부물은 삭제)
+        //댓글이 있는지 파악
+        $board_sort = DB::table('board_datas_tables')->where([['bdt_grp', $board_info->bdt_grp], ['bm_tb_name',$tb_name],['bdt_sort','>',$board_info->bdt_sort]])->count();
+        if($board_sort >= 1){   //댓글이 있는 상태
+            $data = array(
+                'bdt_uid' => '',
+                'bdt_uname' => '',
+                'bdt_upw' => '',
+                'bdt_subject' => '삭제된 글입니다.',
+                'bdt_content' => '',
+                'bdt_hit' => 0,
+                'bdt_comment_cnt' => 0,
+                'bdt_down_cnt' => 0,
+                'bdt_del' => 'Y',
+            );
+
+            for($p = 1; $p <= $board_set_info->bm_file_num; $p++){  //단순 첨부 파일 DB 만 지우기 위해
+                $data['bdt_ori_file_name'.$p] = '';  //배열에 추가 함
+                $data['bdt_file'.$p] = '';  //배열에 추가 함
+            }
+            $update_result = DB::table('board_datas_tables')->where('id', $b_id)->limit(1)->update($data);
+        }else{
+            DB::table('board_datas_tables')->where('id',$b_id)->delete();   //row 삭제
+        }
         return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
     }
 
@@ -589,7 +612,32 @@ class AdmboardContoller extends Controller
                 }
             }
 
-            DB::table('board_datas_tables')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
+            //답글이 달린 글이면 삭제 하지 않고(bdt_del 플러그 값 Y로 바꾸고, 제목,내용,글쓴이 등등 'null' 업뎃  첨부물은 삭제)
+            //댓글이 있는지 파악
+            $board_sort = DB::table('board_datas_tables')->where([['bdt_grp', $board_info->bdt_grp], ['bm_tb_name',$tb_name],['bdt_sort','>',$board_info->bdt_sort]])->count();
+            if($board_sort >= 1){   //댓글이 있는 상태
+                $data = array(
+                    'bdt_uid' => '',
+                    'bdt_uname' => '',
+                    'bdt_upw' => '',
+                    'bdt_subject' => '삭제된 글입니다.',
+                    'bdt_content' => '',
+                    'bdt_hit' => 0,
+                    'bdt_comment_cnt' => 0,
+                    'bdt_down_cnt' => 0,
+                    'bdt_del' => 'Y',
+                );
+
+                for($p = 1; $p <= $board_set_info->bm_file_num; $p++){  //단순 첨부 파일 DB 만 지우기 위해
+                    $data['bdt_ori_file_name'.$p] = '';  //배열에 추가 함
+                    $data['bdt_file'.$p] = '';  //배열에 추가 함
+                }
+                $update_result = DB::table('board_datas_tables')->where('id', $request->input('chk_id')[$i])->limit(1)->update($data);
+
+            }else{
+                DB::table('board_datas_tables')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
+            }
+
         }
         return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
     }
@@ -1125,7 +1173,7 @@ class AdmboardContoller extends Controller
         else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
 
-    public function commemtsave($tb_name, Request $request)
+    public function commentsave($tb_name, Request $request)
     {
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
@@ -1236,6 +1284,11 @@ class AdmboardContoller extends Controller
         //저장 처리
         $create_result = board_datas_comment_table::create($data);
 
+        //원본글에 댓글 갯수 업뎃
+        $b_up = board_datas_table::whereid($b_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+        $b_up->bdt_comment_cnt = $b_up->bdt_comment_cnt + 1;
+        $result_up = $b_up->save();
+
         $id_link = "?id=".$b_id;
         $page_link = "&page=".$page;
         $cate_url = "";
@@ -1294,7 +1347,25 @@ class AdmboardContoller extends Controller
         $b_id     = $request->input('b_id');    //원본글
         $c_id     = $request->input('c_id');    //댓글 원본
 
-        $result_del = DB::table('board_datas_comment_tables')->where('id',$c_id)->delete();   //row 삭제
+        //답글이 달린 글이면 삭제 하지 않고(bdct_del 플러그 값 Y로 바꾸고, 제목,내용,글쓴이 등등 'null' 업뎃  첨부물은 삭제)
+        $b_c_info = DB::table('board_datas_comment_tables')->select('bdct_grp','bdct_sort')->where([['id', $c_id], ['bm_tb_name',$tb_name]])->first();
+        $b_comment_sort = DB::table('board_datas_comment_tables')->where([['bdct_grp', $b_c_info->bdct_grp], ['bm_tb_name',$tb_name],['bdct_sort','>',$b_c_info->bdct_sort]])->count();
+        if($b_comment_sort >= 1){   //댓글이 있는 상태
+            $data = array(
+                'bdct_uid' => '',
+                'bdct_uname' => '',
+                'bdct_memo' => '삭제된 글입니다.',
+                'bdct_del' => 'Y',
+            );
+            $update_result = DB::table('board_datas_comment_tables')->where('id', $c_id)->limit(1)->update($data);
+        }else{
+            $result_del = DB::table('board_datas_comment_tables')->where('id',$c_id)->delete();   //row 삭제
+
+            //원본글에 댓글 갯수 업뎃
+            $b_up = board_datas_table::whereid($b_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+            $b_up->bdt_comment_cnt = $b_up->bdt_comment_cnt - 1;
+            $result_up = $b_up->save();
+        }
 
         $id_link = "?id=".$b_id;
         $page_link = "&page=".$page;

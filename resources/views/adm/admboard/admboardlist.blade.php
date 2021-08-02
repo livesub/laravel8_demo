@@ -19,7 +19,7 @@
     @if($board_set_info->bm_category_key != "")
     <tr>
         <td>카테고리</td>
-        <td colspan="4">{!! $select_disp !!}</td>
+        <td colspan="5">{!! $select_disp !!}</td>
     </tr>
     @endif
 
@@ -35,6 +35,7 @@
         <td>제목</td>
         <td>글쓴이</td>
         <td>조회수</td>
+        <td>덧글수</td>
     </tr>
 
 
@@ -48,7 +49,9 @@
         <td>{{ $virtual_num-- }}</td>
 
         <td>
+            @if($board_list->bdt_del != 'Y')
             <a href="{{ route('adm.admboard.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
+            @endif
 
                 @if ($board_list->bdt_depth == 0)
                     {{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
@@ -59,11 +62,15 @@
                 └{{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}
                 @endif
 
+            @if($board_list->bdt_del != 'Y')
             </a>
+            @endif
+
         </td>
 
         <td>{{ $board_list->bdt_uname }}</td>
         <td>{{ $board_list->bdt_hit }}</td>
+        <td>{{ $board_list->bdt_comment_cnt }}</td>
     </tr>
     @endforeach
 

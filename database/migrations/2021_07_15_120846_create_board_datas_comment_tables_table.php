@@ -24,6 +24,7 @@ class CreateBoardDatasCommentTablesTable extends Migration
             $table->integer('bdct_sort')->length(5)->nullable()->default(0)->comment('댓글 정렬-대댓글 표현');
             $table->integer('bdct_depth')->length(5)->nullable()->default(0)->comment('댓글 깊이-대댓글 표현');
             $table->string('bdct_ip')->comment('작성자 ip');
+            $table->enum('bdct_del', ['N', 'Y'])->length(2)->default('N')->comment('삭제 여부 : N=>미삭제,Y=>삭제(답글이 있을때 사용)');
             $table->timestamps();
             $table->index(['bdct_grp', 'bdct_sort','bdct_depth']);
         });

@@ -278,8 +278,8 @@ Route::group(['middleware' => ['auth']], function () {
     ]);
 
     Route::post('adm/admboard/commemt/{tb_name}', [  //게시판 댓글 처리
-        'as' => 'adm.admboard.commemtsave',
-        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commemtsave',
+        'as' => 'adm.admboard.commentsave',
+        'uses' => 'App\Http\Controllers\adm\admboard\AdmboardContoller@commentsave',
     ]);
 
     Route::post('adm/admboard/commemtreply/{tb_name}', [  //게시판 댓글에 답글 처리
@@ -371,8 +371,8 @@ Route::post('board/delete/{tb_name}', [  //게시판 삭제 처리
 ]);
 
 Route::post('board/commemt/{tb_name}', [  //게시판 댓글 처리
-    'as' => 'board.commemtsave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@commemtsave',
+    'as' => 'board.commentsave',
+    'uses' => 'App\Http\Controllers\board\BoardContoller@commentsave',
 ]);
 
 Route::post('board/commemtreply/{tb_name}', [  //게시판 댓글에 답글 처리
