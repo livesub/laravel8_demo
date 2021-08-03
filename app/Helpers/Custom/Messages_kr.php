@@ -359,6 +359,11 @@ class Messages_kr extends Controller
         ]
     ];
 
+    static $category = [
+        'insert' => [
+            'in_ok' => '카테고리가 추가 되었습니다.',
+        ]
+    ];
 }
 
 

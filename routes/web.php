@@ -301,7 +301,24 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'adm.editor.delete',
         'uses' => 'App\Http\Controllers\adm\editor\AdmeditorContoller@destroy',
     ]);
- });
+
+/*** 관리자 카테고리 관리 */
+    Route::get('adm/cate', [
+        'as' => 'adm.cate.indx',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@index',
+    ]);
+
+    Route::get('adm/cateadd', [
+        'as' => 'adm.cate.addcategory',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@addcategory',
+    ]);
+
+    Route::post('adm/cateaddsave', [
+        'as' => 'adm.cate.addcategorysave',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@addcategorysave',
+    ]);
+
+});
 
 
 /*** 프론트 게시판 관리 */

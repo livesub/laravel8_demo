@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 
-class boardmanager extends Model
+class categorys extends Model
 {
-    use HasFactory, Notifiable;
+    //use HasFactory, Notifiable;
+    use HasFactory;
 
     protected $fillable = [
-        'bm_tb_name',
-        'bm_tb_subject',
-        'bm_file_num',
-        'bm_type',
-        'bm_skin',
+        'ca_id',
+        'ca_name_kr',
+        'ca_name_en',
+        'ca_display',
+        'ca_rank',
     ];
 
     protected $hidden = [
@@ -23,5 +23,4 @@ class boardmanager extends Model
 
     protected $casts = [
     ];
-
 }

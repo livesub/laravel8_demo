@@ -35,10 +35,13 @@ header ('Pragma: no-cache');
             <td>
                 <table>
                     <tr>
-                        <td><a href="/adm/member">회원 관리</a></td>
+                        <td><a href="{{ route('adm.member.index') }}">회원 관리</a></td>
                     </tr>
                     <tr>
-                        <td><a href="/adm/boardmanage">게시판 관리</a></td>
+                        <td><a href="{{ route('adm.cate.indx') }}">카테고리 관리</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ route('adm.boardmanage.index') }}">게시판 관리</a></td>
                     </tr>
                     <tr>
                         <td>게시판 리스트</td>
@@ -49,12 +52,12 @@ header ('Pragma: no-cache');
 
                     @foreach($b_lists as $b_list)
                     <tr>
-                        <td><a href="/adm/admboard/list/{{ $b_list->bm_tb_name }}"> - {{ $b_list->bm_tb_subject }}</a></td>
+                        <td><a href="{{ route('adm.admboard.index',$b_list->bm_tb_name) }}"> - {{ $b_list->bm_tb_subject }}</a></td>
                     </tr>
                     @endforeach
 
                     <tr>
-                        <td><a href="/adm/editor">에디터 불필요 파일 삭제</a></td>
+                        <td><a href="{{ route('adm.editor.delete') }}">에디터 불필요 파일 삭제</a></td>
                     </tr>
                 </table>
             </td>
