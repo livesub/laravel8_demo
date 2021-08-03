@@ -43,13 +43,27 @@ class BoardContoller extends Controller
 
         $type = 'board';
 
-        $page_control = CustomUtils::page_function('board_datas_tables',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate);
+        //검색 처리
+        $keymethod = $request->input('keymethod');
+        $keyword = $request->input('keyword');
 
-        if($cate == ""){
-            $board_lists = DB::table('board_datas_tables')->where('bm_tb_name',$tb_name)->orderby('bdt_grp', 'DESC')->orderby('bdt_sort')->skip($page_control['startNum'])->take($writeList)->get();
-        }else{
-            $board_lists = DB::table('board_datas_tables')->where([['bm_tb_name',$tb_name],['bdt_category',$cate]])->orderby('bdt_grp', 'DESC')->orderby('bdt_sort')->skip($page_control['startNum'])->take($writeList)->get();
+        $search_sql = "";
+        if($keymethod != "" && $keyword != ""){
+            if($keymethod == "all"){
+                $search_sql = " AND (bdt_subject LIKE '%{$keyword}%' OR bdt_content LIKE '%{$keyword}%') ";
+            }else{
+                $search_sql = " AND {$keymethod} LIKE '%{$keyword}%' ";
+            }
         }
+
+        $cate_sql = "";
+        if($cate != ""){
+            $cate_sql = " AND bdt_category = '{$cate}'";
+        }
+
+        $page_control = CustomUtils::page_function('board_datas_tables',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate,$keymethod,$keyword);
+
+        $board_lists = DB::select("select * from board_datas_tables where bm_tb_name = '{$tb_name}' {$cate_sql} {$search_sql} order by bdt_grp desc, bdt_sort asc limit {$page_control['startNum']} , {$writeList}");
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
 
@@ -93,6 +107,8 @@ class BoardContoller extends Controller
             'pageList'                  => $pageList,
             'select_disp'               => $select_disp,
             'cate'                      => $cate,
+            'keymethod'                 => $keymethod,
+            'keyword'                   => $keyword,
         ],$Messages::$mypage['mypage']['message']);
     }
 
@@ -311,7 +327,9 @@ class BoardContoller extends Controller
         $result_pw      = $request->input('pw');  //비밀글 비번 찾기를 통해 온 결과 값(secretpw 함수)
         $cate           = $request->input('cate');
         $page           = $request->input('page');
-        $mode          = $request->input('mode');
+        $mode           = $request->input('mode');
+        $keymethod      = $request->input('keymethod');
+        $keyword        = $request->input('keyword');
 
         //관리자가 아니거나 본인 글이 아닐시 비번 묻기
         if($user_level > config('app.ADMIN_LEVEL')) //일반 사용자
@@ -364,6 +382,12 @@ class BoardContoller extends Controller
             $cate_link = "&cate=".$cate;
         }
 
+        //검색어 처리
+        $search_link = "";
+        if($keymethod != "" && $keyword != ""){
+            $search_link = "&keymethod=".$keymethod."&keyword=".$keyword;
+        }
+
         //버튼 초기화
         $write_button = "";
         $reply_button = "";
@@ -373,32 +397,32 @@ class BoardContoller extends Controller
 
         //글쓰기 버튼 제어
         if($user_level <= $board_set_info->bm_write_chk){
-            $write_button = "<td><button type='button' onclick=\"location.href='/board/write/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_write_ment']}</button></td>";
+            $write_button = "<td><button type='button' onclick=\"location.href='/board/write/$board_set_info->bm_tb_name$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_write_ment']}</button></td>";
         }
 
         //버튼 제어
         if(Auth::user() != "" && Auth::user()->user_level <= config('app.ADMIN_LEVEL')){    //관리자일때
             //답글 쓰기 버튼 제어
-            $reply_button = "<td><button type='button' onclick=\"location.href='/board/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
+            $reply_button = "<td><button type='button' onclick=\"location.href='/board/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
 
             //수정 버튼 제어
-            $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
+            $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
 
             //삭제 버튼 제어
             $del_button = "<td><button type='button' onclick='b_del();'>{$Messages::$board['b_ment']['b_del_ment']}</button></td>";
         }else{
             //답글 쓰기 버튼 제어
             if($user_level <= $board_set_info->bm_reply_chk){
-                $reply_button = "<td><button type='button' onclick=\"location.href='/board/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
+                $reply_button = "<td><button type='button' onclick=\"location.href='/board/reply/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_reply_ment']}</button></td>";
             }
 
             //수정 버튼 제어
             if($user_level <= $board_set_info->bm_modify_chk){  //수정 권한이 있는 게시판인지
                 if(Auth::user() == ""){     //비회원 일때
-                    $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
+                    $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
                 }else{      //회원일때
                     if(Auth::user()->user_id == $board_info->bdt_uid){
-                        $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
+                        $modi_button = "<td><button type='button' onclick=\"location.href='/board/modify/$board_set_info->bm_tb_name/$board_info->id$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_modi_ment']}</button></td>";
                     }
                 }
             }
@@ -417,7 +441,7 @@ class BoardContoller extends Controller
 
         //목록 버튼 제어
         if($user_level <= $board_set_info->bm_list_chk){  //삭제 권한이 있는 게시판인지
-            $list_button = "<td><button type='button' onclick=\"location.href='/board/list/$board_set_info->bm_tb_name$page_link$cate_link'\">{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
+            $list_button = "<td><button type='button' onclick=\"location.href='/board/list/$board_set_info->bm_tb_name$page_link$cate_link$search_link'\">{$Messages::$board['b_ment']['b_list_ment']}</button></td>";
         }
 
         $comment_infos = DB::table('board_datas_comment_tables')->where([['bdt_id', $request->input('id')], ['bm_tb_name',$tb_name]])->orderby('bdct_grp', 'DESC')->orderby('bdct_sort')->get();   //댓글 정보 읽기

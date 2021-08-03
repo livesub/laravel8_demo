@@ -84,28 +84,44 @@ return $validator;
         return $Messages;
     }
 
-    public static function page_function($table_name,$pageNum,$writeList,$pageNumList,$type,$bm_tb_name='',$cate='')
+    public static function page_function($table_name,$pageNum,$writeList,$pageNumList,$type,$bm_tb_name='',$cate='',$keymethod='',$keyword='')
     {
         //$table_name = 테이블 이름
         //$pageNum = get 방식의 호출 페이지 번호
         //$writeList = 한 화면에 보여줄 데이터 갯수
         //$pageNumList = 한 페이지당 표시될 글 갯수
-        //$total_cnt = 게시물 총 갯수
-        //$type = 게시물 총 갯수(게시판 총 관리 테이블과 회원 관리 테이블 구조가 다름)
+        //$type = 게시판 페이징인지 다른 곳 페이징인지 선택
         //$bm_tb_name = 게시판 이름
+        //$cate = 카테고리 선택시
+        //$keymethod = 검색 이 있을시 (칼럼)
+        //$keyword = 검색 이 있을시 (검색어)
 
         $page = array();
+        $searchinfo = "";
+        $cateinfo = '';
+        $search_sql = "";
+
         if($type != 'board'){
             $total_cnt = DB::table($table_name)->count();
-            $cateinfo = '';
         }else{
-            if($cate == ""){
-                $total_cnt = DB::table($table_name)->where('bm_tb_name',$bm_tb_name)->count();
-                $cateinfo = '';
-            }else {
-                $total_cnt = DB::table($table_name)->where([['bm_tb_name',$bm_tb_name],['bdt_category',$cate]])->count();
+            //게시판일때
+            if($keymethod != "" && $keyword != ""){
+                if($keymethod == "all"){
+                    $search_sql = " AND (bdt_subject LIKE '%{$keyword}%' OR bdt_content LIKE '%{$keyword}%') ";
+                }else{
+                    $search_sql = " AND {$keymethod} LIKE '%{$keyword}%' ";
+                }
+                $searchinfo = "&keymethod=".$keymethod."&keyword=".$keyword;
+            }
+
+            $cate_sql = "";
+            if($cate != ""){
+                $cate_sql = " AND bdt_category = '{$cate}'";
                 $cateinfo = "&cate=".$cate;
             }
+
+            $total_tmp = DB::select("select count(*) as cnt from board_datas_tables where bm_tb_name = '{$bm_tb_name}' {$cate_sql} {$search_sql}");
+            $total_cnt = $total_tmp[0]->cnt;
         }
 
         // view에서 넘어온 현재페이지의 파라미터 값.
@@ -134,7 +150,7 @@ return $validator;
 
         //페이징 관련
         if($page['endPage'] != 0){
-            $page['preFirstPage'] = "<a href = '?pageNum=".$page['startPage'].$cateinfo."'><<&nbsp</a>";
+            $page['preFirstPage'] = "<a href = '?pageNum=".$page['startPage'].$cateinfo.$searchinfo."'><<&nbsp</a>";
         }else{
             $page['preFirstPage'] = "<<&nbsp";
         }
@@ -143,14 +159,14 @@ return $validator;
         {
             $page['pre1Page'] = "";
         }else{
-            $page['pre1Page'] = "<a href = '?page=".($page['pageNum'] - 1).$cateinfo."'>&nbsp<</a>";
+            $page['pre1Page'] = "<a href = '?page=".($page['pageNum'] - 1).$cateinfo.$searchinfo."'>&nbsp<</a>";
         }
 
         $page_hap = "";
         if($page['endPage'] != 0){
             for($i=$page['startPage']; $i<=$page['endPage']; $i++)
             {
-                $page_hap .= "<a href = '?page=".$i.$cateinfo."'>&nbsp".$i."&nbsp</a>";
+                $page_hap .= "<a href = '?page=".$i.$cateinfo.$searchinfo."'>&nbsp".$i."&nbsp</a>";
             }
         }else{
             $page_hap = "&nbsp1&nbsp";
@@ -163,14 +179,14 @@ return $validator;
             $page['next1Page'] = "";
         }else{
             if($page['endPage'] != 0){
-                $page['next1Page'] = "<a href = '?page=".($page['pageNum'] + 1).$cateinfo."'>&nbsp>&nbsp</a>";
+                $page['next1Page'] = "<a href = '?page=".($page['pageNum'] + 1).$cateinfo.$searchinfo."'>&nbsp>&nbsp</a>";
             }else{
                 $page['next1Page'] = "";
             }
         }
 
         if($page['endPage'] != 0){
-            $page['nextLastPage'] = "<a href = '?page=".$page['endPage'].$cateinfo."'>&nbsp>></a>";
+            $page['nextLastPage'] = "<a href = '?page=".$page['endPage'].$cateinfo.$searchinfo."'>&nbsp>></a>";
         }else{
             $page['nextLastPage'] = "&nbsp>>";
         }

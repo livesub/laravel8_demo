@@ -13,6 +13,38 @@
 </table>
 
 
+<table>
+<form name="search_form" id="search_form" method="get" action="{{ route('board.index',$tb_name) }}">
+<input type="hidden" name="page" id="page" value="{{ $pageNum }}">
+<input type="hidden" name="cate" id="cate" value="{{ $cate }}">
+    <tr>
+        <td>
+        @php
+            $selected1 = "";
+            $selected2 = "";
+            $selected3 = "";
+            if($keymethod == "bdt_subject" || $keymethod == "") $selected1 = "selected";
+            else if($keymethod == "bdt_content") $selected2 = "selected";
+            else $selected3 = "selected";
+        @endphp
+            <select name="keymethod" id="keymethod">
+                <option value="bdt_subject" {{ $selected1 }}>제목</option>
+                <option value="bdt_content" {{ $selected2 }}>내용</option>
+                <option value="all" {{ $selected3 }}>제목+내용</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" name="keyword" id="keyword" value="{{ $keyword }}">
+        </td>
+        <td>
+            <button type="button" onclick="search_chk();">검색</button>
+        </td>
+    </tr>
+</form>
+</table>
+
+
+
 <form name="blist" id="blist" method="post" action="{{ route('board.choice_del') }}">
 {!! csrf_field() !!}
 <input type="hidden" name="tb_name" id="tb_name" value="{{ $tb_name }}">
@@ -44,6 +76,10 @@
         @php
             $tr_num = 0;
             $bdt_file = "";
+            $search_link = "";
+            $cate_link = "";
+            if($keymethod != "" && $keyword != "") $search_link = "&keymethod=".$keymethod."&keyword=".$keyword;
+            if($cate != "") $cate_link = "&cate=".$cate;
         @endphp
 
         @foreach($board_lists as $board_list)
@@ -66,7 +102,7 @@
                     @endif
                 @endif
 
-                <a href="{{ route('board.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.'&cate='.$cate) }}">
+                <a href="{{ route('board.show',$tb_name.'?id='.$board_list->id.'&page='.$pageNum.$cate_link.$search_link) }}">
                 <table>
                     <tr>
                         <td>
@@ -148,7 +184,16 @@
     }
 </script>
 
-
+<script>
+    function search_chk(){
+        if($.trim($("#keyword").val()) == ""){
+            alert("검색어를 입력 하세요.");
+            $("#keyword").focus();
+            return false;
+        }
+        $("#search_form").submit();
+    }
+</script>
 
 
 
