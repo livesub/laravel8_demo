@@ -82,3 +82,5 @@ flush privileges;
 6. controller 이용 다국어 데모(구성만 갇춤)
 
 7. skin 게시판 형식 (resources/views/skin)
+
+8. 게시판 검색 기능 추가

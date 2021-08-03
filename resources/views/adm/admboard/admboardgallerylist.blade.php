@@ -101,7 +101,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>{{ mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len) }}</td>
+                        <td>{!! preg_replace("@({$keyword})@i", "<font color='red'>$1</font>", mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len)) !!}</td>
                     </tr>
                 </table>
                 </a>
