@@ -40,9 +40,6 @@
       return false;
     }
 
-
-//alert($('input[name=_token]').val());
-
     $.ajax({
           headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
           type: 'post',
