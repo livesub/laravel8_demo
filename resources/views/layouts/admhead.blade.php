@@ -41,6 +41,9 @@ header ('Pragma: no-cache');
                         <td><a href="{{ route('adm.cate.indx') }}">카테고리 관리</a></td>
                     </tr>
                     <tr>
+                        <td><a href="{{ route('adm.cate.index') }}">상품 관리</a></td>
+                    </tr>
+                    <tr>
                         <td><a href="{{ route('adm.boardmanage.index') }}">게시판 관리</a></td>
                     </tr>
                     <tr>

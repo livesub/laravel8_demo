@@ -5,34 +5,23 @@
 
 <table>
     <tr>
-        <td><h4>카테고리 등록</h4></td>
+        <td><h4>{{ $ca_name_kr }} 하위 분류 추가</h4></td>
     </tr>
 </table>
 
-<table>
+
+<table border=1>
     <tr>
-        <td>카테고리 선택</td>
-        <td>
-            <select name="ca_id" id="ca_id" onchange="cate_choice();">
-                <option value="">--1단계분류선택--</option>
-            @foreach($cate_1_infos as $cate_1_info)
-                @php
-                    $selected = "";
-                    if($ca_id != ""){
-                        if($ca_id == $cate_1_info->ca_id) $selected = "selected";
-                    }
-                @endphp
-                <option value="{{ $cate_1_info->ca_id }}" {{ $selected }}>{{ $cate_1_info->ca_name_kr }}</option>
-            @endforeach
-            </select>
-        </td>
+        <td>분류 코드</td>
+        <td>{{ $mk_ca_id }}</td>
     </tr>
 </table>
 
 <table border=1>
-<form name="addcate_form" id="addcate_form" method="post" action="{{ route('adm.cate.addcategorysave') }}">
+<form name="cate_add_form" id="cate_add_form" method="post" action="{{ route('adm.cate.cate_add_save') }}">
 {!! csrf_field() !!}
-<input type="hidden" name="ca_id" id="ca_id" value="{{ $ca_id }}">
+<input type="hidden" name="mk_ca_id" id="mk_ca_id" value="{{ $mk_ca_id }}">
+<input type="hidden" name="page" id="page" value="{{ $page }}">
     <tr>
         <td>한글명</td>
         <td><input type="text" name="ca_name_kr" id="ca_name_kr"></td>
@@ -54,14 +43,6 @@
 </form>
 </table>
 
-
-<script>
-    function cate_choice(){
-        var ca_id = $("#ca_id option:selected").val();
-        location.href = "{{ route('adm.cate.addcategory') }}?ca_id="+ca_id;
-    }
-</script>
-
 <script>
     function add_cate(){
         if($.trim($("#ca_name_kr").val()) == ""){
@@ -70,7 +51,7 @@
             return false;
         }
 
-        $("#addcate_form").submit();
+        $("#cate_add_form").submit();
     }
 </script>
 

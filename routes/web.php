@@ -308,16 +308,51 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@index',
     ]);
 
-    Route::get('adm/cateadd', [
-        'as' => 'adm.cate.addcategory',
-        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@addcategory',
+    Route::get('adm/catecreate', [
+        'as' => 'adm.cate.catecreate',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@catecreate',
     ]);
 
-    Route::post('adm/cateaddsave', [
-        'as' => 'adm.cate.addcategorysave',
-        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@addcategorysave',
+    Route::post('adm/catecreatesave', [
+        'as' => 'adm.cate.catecreatesave',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@catecreatesave',
     ]);
 
+    Route::post('adm/cate_add', [
+        'as' => 'adm.cate.cate_add',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@cate_add',
+    ]);
+
+    Route::post('adm/cate_add_save', [
+        'as' => 'adm.cate.cate_add_save',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@cate_add_save',
+    ]);
+
+    Route::post('adm/cate_modi', [
+        'as' => 'adm.cate.cate_modi',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@cate_modi',
+    ]);
+
+    Route::post('adm/cate_modi_save', [
+        'as' => 'adm.cate.cate_modi_save',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@cate_modi_save',
+    ]);
+
+    Route::post('adm/cate_delete', [
+        'as' => 'adm.cate.cate_delete',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@cate_delete',
+    ]);
+
+/*** 관리자 상품 관리 */
+    Route::get('adm/itemlist', [
+        'as' => 'adm.cate.index',
+        'uses' => 'App\Http\Controllers\adm\item\AdmitemContoller@index',
+    ]);
+
+    Route::get('adm/itemcreate', [
+        'as' => 'adm.cate.create',
+        'uses' => 'App\Http\Controllers\adm\item\AdmitemContoller@create',
+    ]);
 });
 
 

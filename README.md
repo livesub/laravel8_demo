@@ -84,3 +84,7 @@ flush privileges;
 7. skin 게시판 형식 (resources/views/skin)
 
 8. 게시판 검색 기능 추가
+
+9. 카테고리 관리
+
+10. 상품 관리 작업중

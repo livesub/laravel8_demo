@@ -101,10 +101,8 @@ return $validator;
         $cateinfo = '';
         $search_sql = "";
 
-        if($type == 'member'){
+        if($type == 'member' || $type == 'cate'){
             $total_cnt = DB::table($table_name)->count();
-        }else if($type == "cate"){
-            $total_cnt = DB::table($table_name)->where('ca_display', 'Y')->count();
         }else{
             //게시판일때
             if($keymethod != "" && $keyword != ""){

@@ -362,7 +362,12 @@ class Messages_kr extends Controller
     static $category = [
         'insert' => [
             'in_ok' => '카테고리가 추가 되었습니다.',
-        ]
+            'cate_no' => '분류를 더 이상 추가할 수 없습니다.\\n\\n5단계 분류까지만 가능합니다.',
+        ],
+
+        'update' => [
+            'up_ok' => '카테고리가 수정 되었습니다.',
+        ],
     ];
 }
 

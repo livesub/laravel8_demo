@@ -19,8 +19,9 @@ class CreateCategorysTable extends Migration
             $table->string('ca_name_kr')->comment('카테고리 한글명');
             $table->string('ca_name_en')->comment('카테고리 영어명');
             $table->enum('ca_display', ['N', 'Y'])->length(2)->default('Y')->comment('출력 여부 : N=>미출력,Y=>출력');
-            $table->integer('ca_rank')->nullable()->length(3)->comment('출력순서: 높을수록 먼저 나옴');
+            $table->integer('ca_rank')->default(0)->length(3)->comment('출력순서: 높을수록 먼저 나옴');
             $table->timestamps();
+            $table->index(['ca_id']);
         });
     }
 
