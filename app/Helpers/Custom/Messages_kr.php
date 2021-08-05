@@ -369,6 +369,14 @@ class Messages_kr extends Controller
             'up_ok' => '카테고리가 수정 되었습니다.',
         ],
     ];
+
+    static $item = [
+        'insert' => [
+            'in_ok' => '상품이 추가 되었습니다.',
+        ]
+
+    ];
+
 }
 
 

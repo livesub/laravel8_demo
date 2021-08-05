@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\boardmanager;    //모델 정의(게시판 관리 테이블)
 use App\Models\board_datas_table;    //게시판 모델 정의
 use App\Models\board_datas_comment_table;    //게시판 모델 정의
+use App\Models\items;    //상품 모델 정의
 
 class AdmeditorContoller extends Controller
 {
@@ -61,6 +62,30 @@ class AdmeditorContoller extends Controller
 
                 if (file_exists($editor_del_file_path)) {
                     @unlink($editor_del_file_path); //이미지 삭제
+                }
+            }
+        }
+
+        //상품 관리 일때
+        $k_item = 0;
+        $path_item = "data/item/editor/";
+        if(is_dir($path_item)) {
+            $files_item = array_values(array_diff(scandir($path_item), array(".", "..", "tmp")));
+
+            for($j_item = 0; $j_item < count($files_item); $j_item++){
+                $item_like = DB::table('items')->where('item_content', 'LIKE', "%{$files_item[$j_item]}%")->count();
+
+                if($item_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
+                    $editor_no_regi_img_item[$k] = $files_item[$j_item];
+                    $k_item++;
+                }
+
+                for($p_item = 0; $p_item < count($editor_no_regi_img_item); $p_item++){ //저장 되지 않은 이미지들 돌리며 삭제
+                    $editor_del_file_path_item = $path_item.$editor_no_regi_img_item[$p_item];
+
+                    if (file_exists($editor_del_file_path_item)) {
+                        @unlink($editor_del_file_path_item); //이미지 삭제
+                    }
                 }
             }
         }

@@ -88,3 +88,5 @@ flush privileges;
 9. 카테고리 관리
 
 10. 상품 관리 작업중
+
+    - 상품 등록시 ajax 를 이용한 연계형 5단계 카테고리 selectbox

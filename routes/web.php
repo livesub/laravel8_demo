@@ -358,6 +358,11 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'adm.cate.ajax_select',
         'uses' => 'App\Http\Controllers\adm\item\AdmitemContoller@ajax_select',
     ]);
+
+    Route::post('adm/itemcreate', [
+        'as' => 'adm.cate.createsave',
+        'uses' => 'App\Http\Controllers\adm\item\AdmitemContoller@createsave',
+    ]);
 });
 
 
