@@ -101,7 +101,7 @@ return $validator;
         $cateinfo = '';
         $search_sql = "";
 
-        if($type == 'member' || $type == 'cate'){
+        if($type == 'member' || $type == 'cate' || $type == 'items'){
             $total_cnt = DB::table($table_name)->count();
         }else{
             //게시판일때
@@ -487,6 +487,12 @@ $um_value='80/0.5/3'
     //셀렉트 박스 만들기
     public static function select_box($select_name, $value, $key, $selected_val='',$route_link='')
     {
+        //카테고리 게시판 일때 사용
+        //$select_name = 셀렉트 박스 이름
+        //$value = 멘트
+        //key = 키값
+        //selected_val = 저장 된 값
+        //route_link = onchange
         $value_cut = explode("@@",$value);
         $key_cut = explode("@@",$key);
 

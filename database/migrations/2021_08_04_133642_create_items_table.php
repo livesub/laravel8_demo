@@ -21,7 +21,7 @@ class CreateItemsTable extends Migration
             $table->enum('item_display', ['N', 'Y'])->length(2)->default('Y')->comment('출력 여부 : N=>미출력,Y=>출력');
             $table->integer('item_rank')->default(0)->length(3)->comment('출력순서: 높을수록 먼저 나옴');
             $table->text('item_content')->comment('내용');
-            $table->string('item_img')->nullable()->comment('상품 변경파일이름');
+            $table->text('item_img')->nullable()->comment('상품 변경파일이름(원본@@썸네일1@@썸네일2..)');
             $table->string('item_ori_img')->nullable()->comment('상품 원본파일이름');
             $table->timestamps();
             $table->index(['ca_id','item_code']);

@@ -8,7 +8,7 @@
         <td><h4>카테고리 관리</h4></td>
     </tr>
     <tr>
-        <td>※ 5단계까지 등록 하실수 있습니다.</td>
+        <td>※ 5단계까지 등록 하실수 있습니다.<br>※ 카테고리 삭제는 하위 카테고리가 없거나, 상품이 없어야 삭제 됩니다.<br>※ 상품과 하위 카테고리를 먼저 삭제해 주세요.</td>
     </tr>
 </table>
 
@@ -59,7 +59,17 @@
             @endif
 
             <button type="button" onclick="cate_add('{{ $cate_info->ca_id }}','modi');">수정</button>
-            <button type="button" onclick="cate_del('{{ $cate_info->id }}','{{ $cate_info->ca_id }}');">삭제</button></td>
+            @php
+                $de_cate_info = DB::table('categorys')->where('ca_id','like',$cate_info->ca_id.'%')->count();   //하위 카테고리 갯수
+                $de_item_info = DB::table('items')->where('ca_id','like',$cate_info->ca_id.'%')->count();   //상품 갯수
+            @endphp
+
+            @if($de_cate_info == 1 && $de_item_info == 0)
+                <button type="button" onclick="cate_del('{{ $cate_info->id }}','{{ $cate_info->ca_id }}');">삭제</button></td>
+            @endif
+
+
+
     </tr>
     @endforeach
 </table>

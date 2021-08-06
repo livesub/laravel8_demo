@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 use App\Models\items;    //상품 모델 정의
 use Validator;  //체크
+use App\Models\categorys;    //카테고리 모델 정의
 
 class AdmitemContoller extends Controller
 {
@@ -23,7 +24,7 @@ class AdmitemContoller extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
@@ -34,7 +35,53 @@ class AdmitemContoller extends Controller
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
 
+        $pageNum     = $request->input('page');
+        $writeList   = 10;  //페이지당 글수
+        $pageNumList = 10; //블럭당 페이지수
+
+        $tb_name = "items";
+        $type = 'items';
+        $cate = "";
+
+        //검색 selectbox 만들기
+        $search_selectboxs = DB::table('categorys')->orderby('ca_rank','DESC')->orderby('ca_id','ASC')->get();
+
+        //검색 처리
+        $cate_search    = $request->input('cate_search');
+        $item_search    = $request->input('item_search');
+        $keyword        = $request->input('keyword');
+
+
+
+
+$keymethod  = "";
+//다음 주에 (8/11) 검색 부분 다시 작업
+/*
+        $search_sql = "";
+        if($keymethod != "" && $keyword != ""){
+            if($keymethod == "all"){
+                $search_sql = " AND (bdt_subject LIKE '%{$keyword}%' OR bdt_content LIKE '%{$keyword}%') ";
+            }else{
+                $search_sql = " AND {$keymethod} LIKE '%{$keyword}%' ";
+            }
+        }
+*/
+        $page_control = CustomUtils::page_function('items',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate,$keymethod,$keyword);
+        $item_infos = DB::table('items')->orderby('id','DESC')->orderby('item_rank','ASC')->skip($page_control['startNum'])->take($writeList)->get();
+
+        $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
+
+
         return view('adm.item.itemlist',[
+            'item_infos'        => $item_infos,
+            'virtual_num'       => $page_control['virtual_num'],
+            'totalCount'        => $page_control['totalCount'],
+            'pageNum'           => $page_control['pageNum'],
+            'pageList'          => $pageList,
+            'cate_search'       => $cate_search,
+            'item_search'       => $item_search,
+            'keyword'           => $keyword,
+            'search_selectboxs' => $search_selectboxs,
         ]);
     }
 
@@ -104,6 +151,11 @@ class AdmitemContoller extends Controller
 
         $ca_id     = $request->input('ca_id');
         $length     = $request->input('length');
+
+        if($ca_id == "" && $length == ""){
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
+            exit;
+        }
 
         $qry = "";
         if($ca_id != ""){
@@ -211,7 +263,7 @@ class AdmitemContoller extends Controller
 
             if(!$attachment_result[0])
             {
-                return redirect()->route('adm.cate.create')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                return redirect()->route('adm.item.create')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
                 exit;
             }else{
                 for($k = 0; $k < 3; $k++){
@@ -234,64 +286,235 @@ class AdmitemContoller extends Controller
         $create_result = items::create($data);
         $create_result->save();
 
-        if($create_result = 1) return redirect(route('adm.cate.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
-        else return redirect(route('adm.cate.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        if($create_result = 1) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
+        else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
 
+    public function choice_del(Request $request){
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $path = 'data/item';     //첨부물 저장 경로
+        $editor_path = $path."/editor";     //스마트 에디터 첨부 저장 경로
+
+        for ($i = 0; $i < count($request->input('chk_id')); $i++) {
+            //선택된 상품 일괄 삭제
+            //먼저 상품을 검사하여 파일이 있는지 파악 하고 같이 삭제 함
+            $item_info = DB::table('items')->where('id', $request->input('chk_id')[$i])->first();
+
+            //스마트 에디터 내용에 첨부된 이미지 색제
+            $editor_img_del = CustomUtils::editor_img_del($item_info->item_content, $editor_path);
+
+            //첨부 파일 삭제
+            $item_img = $item_info->item_img;
+            if($item_img != ""){
+                $file_cnt = explode('@@',$item_img);
+
+                for($j = 0; $j < count($file_cnt); $j++){
+                    $img_path = "";
+                    $img_path = $path.'/'.$file_cnt[$j];
+                    if (file_exists($img_path)) {
+                        @unlink($img_path); //이미지 삭제
+                    }
+                }
+            }
+
+            DB::table('items')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
+        }
+        return redirect()->route('adm.item.index')->with('alert_messages', $Messages::$item['del']['del_ok']);
+    }
+
+    public function modify(Request $request)
     {
-        //
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $id = $request->input('id');
+        $ca_id = $request->input('ca_id');
+
+        if($id == "" && $ca_id == ""){
+            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+            exit;
+        }
+
+        //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
+        $item_directory = "item/editor";
+        setcookie('directory', $item_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
+
+        $item_info = DB::table('items')->where([['id',$id],['ca_id',$ca_id]])->first();
+
+        //1단계 가져옴
+        $one_str_cut = substr($item_info->ca_id,0,2);
+        $one_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 2')->orderby('ca_id', 'ASC')->get();
+
+
+        //2단계 가져옴
+        $two_str_cut = substr($item_info->ca_id,0,4);
+        $two_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 4')->orderby('ca_id', 'ASC')->get();
+
+        //3단계 가져옴
+        $three_str_cut = substr($item_info->ca_id,0,6);
+        $three_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 6')->orderby('ca_id', 'ASC')->get();
+
+        //4단계 가져옴
+        $four_str_cut = substr($item_info->ca_id,0,8);
+        $four_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 8')->orderby('ca_id', 'ASC')->get();
+
+        //5단계 가져옴
+        $five_str_cut = substr($item_info->ca_id,0,10);
+        $five_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 10')->orderby('ca_id', 'ASC')->get();
+
+        return view('adm.item.itemmodify',[
+            'one_step_infos'    => $one_step_infos,
+            'two_step_infos'    => $two_step_infos,
+            'three_step_infos'  => $three_step_infos,
+            'four_step_infos'   => $four_step_infos,
+            'five_step_infos'   => $five_step_infos,
+            'item_info'         => $item_info,
+            'ca_id'             => $ca_id,
+            'one_str_cut'       => $one_str_cut,
+            'two_str_cut'       => $two_str_cut,
+            'three_str_cut'     => $three_str_cut,
+            'four_str_cut'      => $four_str_cut,
+            'five_str_cut'      => $five_str_cut,
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function downloadfile(Request $request)
     {
-        //
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $id = $request->input('id');
+        $ca_id = $request->input('ca_id');
+
+        $item_info = DB::table('items')->select('item_img','item_ori_img')->where([['id', $id], ['ca_id',$ca_id]])->first();    //상품 정보 추출
+
+        $file_cut = explode("@@",$item_info->item_img);
+        $path = 'data/item';     //첨부물 저장 경로
+        $down_file = public_path($path.'/'.$file_cut[0]);
+        return response()->download($down_file, $item_info->item_ori_img);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function modifysave(Request $request)
     {
-        //
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $id                 = $request->input('id');
+        $ca_id              = $request->input('ca_id');
+        $length             = $request->input('length');
+        $last_choice_ca_id  = $request->input('last_choice_ca_id');
+        $item_code          = $request->input('item_code');
+        $item_name          = addslashes($request->input('item_name'));
+        $item_display       = $request->input('item_display');
+        $item_rank          = $request->input('item_rank');
+        $item_content       = $request->input('item_content');
+
+        if($id == "" && $ca_id == "" && $last_choice_ca_id == ""){
+            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+            exit;
+        }
+
+        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
+        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
+
+        $fileExtension = 'jpeg,jpg,png,gif,bmp,GIF,PNG,JPG,JPEG,BMP';  //이미지 일때 확장자 파악(이미지일 경우 썸네일 하기 위해)
+
+        $path = 'data/item';     //첨부물 저장 경로
+
+        $thumb_name = "";
+        if($item_rank == "") $item_rank = 0;
+
+        $item_info = DB::table('items')->where('id', $id)->first(); //기존 상품 정보
+
+        //DB 저장 배열 만들기
+        $data = array(
+            'ca_id'         => $last_choice_ca_id,
+            'item_code'     => $item_code,
+            'item_name'     => $item_name,
+            'item_display'  => $item_display,
+            'item_rank'     => $item_rank,
+            'item_content'  => $item_content,
+        );
+
+        $file_chk = $request->input('file_chk1'); //수정,삭제,새로등록 체크 파악
+        if($file_chk == 1){ //체크된 것들만 액션
+            if($request->hasFile('item_img'))    //첨부가 있음
+            {
+                $item_img = $request->file('item_img');
+                $file_type = $item_img->getClientOriginalExtension();    //이미지 확장자 구함
+                $file_size = $item_img->getSize();  //첨부 파일 사이즈 구함
+
+                //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
+                $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
+
+                //첨부 파일 용량 예외처리
+                Validator::validate($request->all(), [
+                    'item_img'  => ['max:'.$max_size_mb, 'mimes:'.$fileExtension]
+                ], ['max' => $upload_max_filesize."MB 까지만 저장 가능 합니다.", 'mimes' => $fileExtension.' 파일만 등록됩니다.']);
+
+                $attachment_result = CustomUtils::attachment_save($item_img,$path); //위의 패스로 이미지 저장됨
+                if(!$attachment_result[0])
+                {
+                    return redirect()->route('adm.item.index')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                    exit;
+                }else{
+                    for($k = 0; $k < 3; $k++){
+                        $resize_width_file_tmp = explode("%%","500%%300%%100");
+                        $resize_height_file_tmp = explode("%%","500%%300%%100");
+
+                        $thumb_width = $resize_width_file_tmp[$k];
+                        $thumb_height = $resize_height_file_tmp[$k];
+
+                        $is_create = false;
+                        $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
+                    }
+
+                    $data['item_ori_img'] = $attachment_result[2];  //배열에 추가 함
+                    $data['item_img'] = $attachment_result[1].$thumb_name;  //배열에 추가 함
+                }
+            }else{
+                $data['item_ori_img'] = "";  //배열에 추가 함
+                $data['item_img'] = "";  //배열에 추가 함
+            }
+
+            if($item_info->item_img != ""){   //기존 첨부가 있는지 파악 - 있다면 기존 파일 전체 삭제후 재 등록
+                $file_cnt1 = explode('@@',$item_info->item_img);
+                for($j = 0; $j < count($file_cnt1); $j++){
+                    $img_path = "";
+                    $img_path = $path.'/'.$file_cnt1[$j];
+                    if (file_exists($img_path)) {
+                        @unlink($img_path); //이미지 삭제
+                    }
+                }
+            }
+        }
+
+        $update_result = DB::table('items')->where('id', $id)->limit(1)->update($data);
+
+        if($update_result = 1) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['update']['up_ok']);
+        else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

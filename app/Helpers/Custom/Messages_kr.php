@@ -373,8 +373,15 @@ class Messages_kr extends Controller
     static $item = [
         'insert' => [
             'in_ok' => '상품이 추가 되었습니다.',
-        ]
+        ],
 
+        'del' => [
+            'del_ok' => '상품이 삭제 되었습니다.',
+        ],
+
+        'update' => [
+            'up_ok' => '상품이 수정 되었습니다.',
+        ]
     ];
 
 }
