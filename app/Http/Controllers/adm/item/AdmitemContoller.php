@@ -51,8 +51,12 @@ class AdmitemContoller extends Controller
         $item_search    = $request->input('item_search');
         $keyword        = $request->input('keyword');
 
-
-
+//select * from car_shop_item a , car_shop_category b where (a.ca_id = b.ca_id) and it_name like '%면허%' and (a.ca_id like '10%' or a.ca_id2 like '10%' or a.ca_id3 like '10%') order by it_id desc limit 0, 15
+//select  * from items a, categorys b where (a.ca_id = b.ca_id) and (a.ca_id like '40%') and a.item_name like '%54%' order by item_code desc limit 0, 15
+        $search_sql = "";
+        if($cate_search != ""){
+            $search_sql = " AND ca_id = '{$cate_search}' ";
+        }
 
 $keymethod  = "";
 //다음 주에 (8/11) 검색 부분 다시 작업
