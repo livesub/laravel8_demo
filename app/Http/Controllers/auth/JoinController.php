@@ -121,7 +121,7 @@ class JoinController extends Controller
 
         $subject = sprintf('[%s] '.$Messages::$join_confirm_ment['confirm']['message']['join_confirm'], $user_name);
 
-/*
+
         //이메일 함수 이용 발송
         $email_send_value = CustomUtils::email_send("auth.confirm_email",$user_name, $user_id, $subject, $data);
 
@@ -129,7 +129,7 @@ class JoinController extends Controller
         {
             //이메일 발송 실패 시에 뭘 할건지 나중에 생각해야함
         }
-*/
+
         if($create_result = 1) return redirect()->route('main.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['message']['join_success']);
         else return redirect()->route('main.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
 

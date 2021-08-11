@@ -88,7 +88,7 @@ class LoginController extends Controller
             return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['login_chk']);
             exit;
         }
-/*
+
         //이메일 인증이 안됬으면 로그아웃 시킴
         if(!auth()->user()->user_activated)
         {
@@ -96,7 +96,7 @@ class LoginController extends Controller
             return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['email_chk']);
             exit;
         }
-*/
+
         return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['login_ok']);
     }
 
