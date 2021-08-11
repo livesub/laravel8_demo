@@ -430,6 +430,11 @@ class AdmitemContoller extends Controller
             exit;
         }
 
+        if(!isset($_COOKIE['directory'])){  //쿠키 값이 사라진 후에 저장 되지 않게
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
+            exit;
+        }
+
         $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
         $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
