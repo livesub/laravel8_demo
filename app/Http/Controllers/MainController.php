@@ -40,6 +40,7 @@ class MainController extends Controller
                 'user_name' => $admin_name,
                 'password' => Hash::make($admin_pw),
                 'user_level' => $admin_level,
+                'user_activated' => 1,
             ])->exists(); //저장,실패 결과 값만 받아 오기 위해  exists() 를 씀
         }
 
