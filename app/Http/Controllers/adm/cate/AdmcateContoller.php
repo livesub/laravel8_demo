@@ -313,11 +313,10 @@ class AdmcateContoller extends Controller
 
         $cate_del = DB::table('categorys')->where([['id',$id],['ca_id',$ca_id]])->delete();   //row 삭제
         if($cate_del){
-            return redirect()->route('adm.cate.indx')->with('alert_messages', $Messages::$category['del']['del_ok']);
+            return redirect()->route('adm.cate.indx','page='.$page)->with('alert_messages', $Messages::$category['del']['del_ok']);
         }else{
             return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
         }
-
     }
 
 
