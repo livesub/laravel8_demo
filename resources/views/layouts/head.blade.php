@@ -44,7 +44,7 @@ header('Pragma: public');
             @if(!auth()->user())
                 <a href='{{ route('login.index') }}'>LOGIN</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('join.create') }}'>REGISTER</a>
             @else
-            <a href='{{ route('mypage.index') }}'>MYPAGE</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('logout.destroy') }}'>LOGOUT</a>
+                <a href='{{ route('mypage.index') }}'>MYPAGE</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href='{{ route('logout.destroy') }}'>LOGOUT</a>
             @endif
             </td>
 
@@ -64,6 +64,7 @@ header('Pragma: public');
                     @php
                         $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
                     @endphp
+
                     @foreach($b_lists as $b_list)
                         <td><a href="/board/list/{{ $b_list->bm_tb_name }}"> {{ $b_list->bm_tb_subject }}</a></td>
                     @endforeach
@@ -72,6 +73,25 @@ header('Pragma: public');
                 </table>
             </td>
         </tr>
+        <tr>
+            <td>제품 소개</td>
+        </tr>
+        <tr>
+            <td>
+                <table border=1>
+                    <tr>
+                    @php
+                        $cate_lists = DB::table('categorys')->select('id', 'ca_id', 'ca_name_kr')->where('ca_display','Y')->whereRaw("length(ca_id) = '2'")->orderBy('ca_rank', 'desc')->get();
+                    @endphp
+
+                    @foreach($cate_lists as $cate_list)
+                        <td>{{ $cate_list->ca_name_kr }}</td>
+                    @endforeach
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
     </table>
 
 
