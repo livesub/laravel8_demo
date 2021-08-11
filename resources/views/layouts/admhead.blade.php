@@ -38,16 +38,22 @@ header('Pragma: public');
                         <td><a href="{{ route('adm.member.index') }}">회원 관리</a></td>
                     </tr>
                     <tr>
-                        <td><a href="{{ route('adm.cate.indx') }}">카테고리 관리</a></td>
+                        <td><a href="{{ route('adm.boardmanage.index') }}">게시판 관리</a></td>
+                    </tr>
+                    <tr>
+                        <td><br><a href="{{ route('adm.cate.indx') }}">카테고리 관리</a></td>
                     </tr>
                     <tr>
                         <td><a href="{{ route('adm.item.index') }}">상품 관리</a></td>
                     </tr>
+
+
                     <tr>
-                        <td><a href="{{ route('adm.boardmanage.index') }}">게시판 관리</a></td>
+                        <td><a href="{{ route('adm.menu.indx') }}"><br>메뉴 관리</a></td>
                     </tr>
+
                     <tr>
-                        <td>게시판 리스트</td>
+                        <td><br><br><br>게시판 리스트</td>
                     </tr>
                     @php
                         $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();

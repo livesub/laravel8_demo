@@ -384,7 +384,16 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\item\AdmitemContoller@modifysave',
     ]);
 
+/*** 관리자 메뉴 관리 */
+    Route::get('adm/menu', [       //메뉴 카테고리 리스트
+        'as' => 'adm.menu.indx',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@index',
+    ]);
 
+    Route::get('adm/menucreate', [      //1단계 메뉴 카테고리 등록 페이지
+        'as' => 'adm.menu.create',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@create',
+    ]);
 
 });
 
