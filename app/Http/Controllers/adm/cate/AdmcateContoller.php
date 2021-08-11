@@ -311,7 +311,13 @@ class AdmcateContoller extends Controller
         $ca_id          = $request->input('ca_id');
         $page           = $request->input('page');
 
-dd("상품 부터 지운뒤 카테 고리 삭제");
+        $cate_del = DB::table('categorys')->where([['id',$id],['ca_id',$ca_id]])->delete();   //row 삭제
+        if($cate_del){
+            return redirect()->route('adm.cate.indx')->with('alert_messages', $Messages::$category['del']['del_ok']);
+        }else{
+            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+        }
+
     }
 
 

@@ -368,6 +368,10 @@ class Messages_kr extends Controller
         'update' => [
             'up_ok' => '카테고리가 수정 되었습니다.',
         ],
+
+        'del' => [
+            'del_ok' => '카테고리가 삭제 되었습니다.',
+        ],
     ];
 
     static $item = [
