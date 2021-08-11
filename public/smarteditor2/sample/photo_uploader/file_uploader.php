@@ -9,7 +9,7 @@ if(bSuccessUpload) {
 	$name = $_FILES['Filedata']['name'];
 
 	$filename_ext = strtolower(array_pop(explode('.',$name)));
-	$allow_file = array("jpg", "png", "bmp", "gif");
+	$allow_file = array("jpg","jpeg", "png", "bmp", "gif");
 
 	if(!in_array($filename_ext, $allow_file)) {
 		$url .= '&errstr='.$name;

@@ -84,7 +84,7 @@ return $validator;
         return $Messages;
     }
 
-    public static function page_function($table_name,$pageNum,$writeList,$pageNumList,$type,$bm_tb_name='',$cate='',$keymethod='',$keyword='')
+    public static function page_function($table_name, $pageNum, $writeList, $pageNumList, $type, $bm_tb_name='', $cate='', $keymethod='', $keyword='')
     {
         //$table_name = 테이블 이름
         //$pageNum = get 방식의 호출 페이지 번호
@@ -100,9 +100,16 @@ return $validator;
         $searchinfo = "";
         $cateinfo = '';
         $search_sql = "";
+        $search_cate = "";
 
-        if($type == 'member' || $type == 'cate' || $type == 'items'){
+        if($type == 'member' || $type == 'cate'){
             $total_cnt = DB::table($table_name)->count();
+        }else if($type == 'items'){
+            if($cate != "") $search_sql = " AND a.ca_id = b.ca_id AND a.ca_id LIKE '{$cate}%' AND a.{$keymethod} LIKE '%{$keyword}%' ";
+            else $search_sql = " AND a.ca_id = b.ca_id AND a.{$keymethod} LIKE '%{$keyword}%' ";
+
+            $total_tmp = DB::select("select count(*) as cnt from items a, categorys b where 1 {$search_sql} ");
+            $total_cnt = $total_tmp[0]->cnt;
         }else{
             //게시판일때
             if($keymethod != "" && $keyword != ""){

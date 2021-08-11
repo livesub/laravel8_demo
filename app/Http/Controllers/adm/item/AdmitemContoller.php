@@ -51,33 +51,20 @@ class AdmitemContoller extends Controller
         $item_search    = $request->input('item_search');
         $keyword        = $request->input('keyword');
 
-
-//select  * from items a, categorys b where (a.ca_id = b.ca_id) and (a.ca_id like '40%') and a.item_name like '%54%' order by item_code desc limit 0, 15
+        if($item_search == "") $item_search = "item_name";
         $search_sql = "";
+
         if($cate_search != ""){
-            $search_sql = " AND a.ca_id LIKE '{$cate_search}%' ";
-            $search_sql .= " AND a.{$item_search} LIKE '%{$keyword}%' ";
+            $search_sql = " AND a.ca_id = b.ca_id AND a.ca_id LIKE '{$cate_search}%' AND a.{$item_search} LIKE '%{$keyword}%' ";
         }else{
-            $search_sql .= " AND a.{$item_search} LIKE '%{$keyword}%' ";
+            $search_sql .= " AND a.ca_id = b.ca_id AND a.{$item_search} LIKE '%{$keyword}%' ";
         }
 
-$keymethod  = "";
-//다음 주에 (8/11) 검색 부분 다시 작업
-/*
-        $search_sql = "";
-        if($keymethod != "" && $keyword != ""){
-            if($keymethod == "all"){
-                $search_sql = " AND (bdt_subject LIKE '%{$keyword}%' OR bdt_content LIKE '%{$keyword}%') ";
-            }else{
-                $search_sql = " AND {$keymethod} LIKE '%{$keyword}%' ";
-            }
-        }
-*/
-        $page_control = CustomUtils::page_function('items',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate,$keymethod,$keyword);
-        $item_infos = DB::table('items')->orderby('id','DESC')->orderby('item_rank','ASC')->skip($page_control['startNum'])->take($writeList)->get();
+        $page_control = CustomUtils::page_function('items',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate_search,$item_search,$keyword);
+
+        $item_infos = DB::select("select a.*, b.ca_id from items a, categorys b where 1 {$search_sql} order by a.id DESC, a.item_rank ASC limit {$page_control['startNum']}, {$writeList} ");
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
-
 
         return view('adm.item.itemlist',[
             'item_infos'        => $item_infos,

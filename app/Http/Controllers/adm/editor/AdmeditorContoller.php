@@ -69,9 +69,10 @@ class AdmeditorContoller extends Controller
         //상품 관리 일때
         $k_item = 0;
         $path_item = "data/item/editor/";
+        $editor_no_regi_img_item = array();
+
         if(is_dir($path_item)) {
             $files_item = array_values(array_diff(scandir($path_item), array(".", "..", "tmp")));
-
             for($j_item = 0; $j_item < count($files_item); $j_item++){
                 $item_like = DB::table('items')->where('item_content', 'LIKE', "%{$files_item[$j_item]}%")->count();
 

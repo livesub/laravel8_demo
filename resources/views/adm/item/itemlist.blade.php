@@ -31,14 +31,14 @@
         <td>
             <select name="item_search" id="item_search">
                 @php
-                    if($item_search == "iteam_name") $iteam_name_selected = "selected";
-                    else $iteam_name_selected = "";
+                    if($item_search == "item_name" || $item_search == "") $item_name_selected = "selected";
+                    else $item_name_selected = "";
 
-                    if($item_search == "iteam_code") $iteam_code_selected = "selected";
-                    else $iteam_code_selected = "";
+                    if($item_search == "item_code") $item_code_selected = "selected";
+                    else $item_code_selected = "";
                 @endphp
-                <option value="iteam_name" {{ $iteam_name_selected }}>상품명</option>
-                <option value="iteam_code" {{ $iteam_code_selected }}>상품코드</option>
+                <option value="item_name" {{ $item_name_selected }}>상품명</option>
+                <option value="item_code" {{ $item_code_selected }}>상품코드</option>
             </select>
         </td>
         <td>
@@ -54,9 +54,9 @@
     <tr>
         <td>선택<br><input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);" class="selec_chk"></td>
         <td>번호</td>
-        <td>상품코드</td>
-        <td>분류</td>
         <td>이미지</td>
+        <td>분류</td>
+        <td>상품코드</td>
         <td>상품명</td>
         <td>출력순서</td>
         <td>관리</td>
@@ -101,9 +101,9 @@
     <tr>
         <td><input type="checkbox" name="chk_id[]" value="{{ $item_info->id }}" id="chk_id_{{ $item_info->id }}" class="selec_chk"></td>
         <td>{{ $virtual_num-- }}</td>
-        <td>{{ $item_info->item_code }}</td>
-        <td>{{ $ca_name_hap }}</td>
         <td><img src="{{ $item_img_disp }}"></td>
+        <td>{{ $ca_name_hap }}</td>
+        <td>{{ $item_info->item_code }}</td>
         <td>{{ stripslashes($item_info->item_name) }}</td>
         <td>{{ $item_info->item_rank }}</td>
         <td>
