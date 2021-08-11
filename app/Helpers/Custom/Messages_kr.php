@@ -372,6 +372,10 @@ class Messages_kr extends Controller
         'del' => [
             'del_ok' => '카테고리가 삭제 되었습니다.',
         ],
+
+        'del' => [
+            'del_chk' => '하위 카테고리가 있거나 상품이 존재 합니다.',
+        ],
     ];
 
     static $item = [

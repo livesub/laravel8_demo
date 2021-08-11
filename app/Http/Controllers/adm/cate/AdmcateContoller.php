@@ -311,13 +311,19 @@ class AdmcateContoller extends Controller
         $ca_id          = $request->input('ca_id');
         $page           = $request->input('page');
 
-        $cate_del = DB::table('categorys')->where([['id',$id],['ca_id',$ca_id]])->delete();   //row 삭제
-        if($cate_del){
-            return redirect()->route('adm.cate.indx','page='.$page)->with('alert_messages', $Messages::$category['del']['del_ok']);
+        //blade 에서 제어 했으나 한번더 제어 함(하위 카테고리가 있거나 상품이 있을 경우 삭제 안되게)
+        $de_cate_info = DB::table('categorys')->where('ca_id','like',$ca_id.'%')->count();   //하위 카테고리 갯수
+        $de_item_info = DB::table('items')->where('ca_id','like',$ca_id.'%')->count();   //상품 갯수
+
+        if($de_cate_info == 1 && $de_item_info == 0){
+            $cate_del = DB::table('categorys')->where([['id',$id],['ca_id',$ca_id]])->delete();   //row 삭제
+            if($cate_del){
+                return redirect()->route('adm.cate.indx','page='.$page)->with('alert_messages', $Messages::$category['del']['del_ok']);
+            }else{
+                return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+            }
         }else{
-            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+            return redirect()->route('adm.cate.indx','page='.$page)->with('alert_messages', $Messages::$category['del']['del_chk']);
         }
     }
-
-
 }
