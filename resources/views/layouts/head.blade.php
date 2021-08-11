@@ -37,8 +37,7 @@ header('Pragma: public');
             >Englsh</option>
         </select>
     </div>
-<table>
-</table>
+
     <table>
         <tr>
             <td>
