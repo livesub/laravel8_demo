@@ -304,7 +304,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 /*** 관리자 카테고리 관리 */
     Route::get('adm/cate', [       //카테고리 리스트
-        'as' => 'adm.cate.indx',
+        'as' => 'adm.cate.index',
         'uses' => 'App\Http\Controllers\adm\cate\AdmcateContoller@index',
     ]);
 
@@ -386,7 +386,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 /*** 관리자 메뉴 관리 */
     Route::get('adm/menu', [       //메뉴 카테고리 리스트
-        'as' => 'adm.menu.indx',
+        'as' => 'adm.menu.index',
         'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@index',
     ]);
 
@@ -422,7 +422,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('adm/menu_delete', [    //메뉴 카테고리 삭제
         'as' => 'adm.menu.delete',
-        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@delete',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@delete_save',
     ]);
 
 });

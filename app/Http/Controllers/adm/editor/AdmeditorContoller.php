@@ -91,6 +91,32 @@ class AdmeditorContoller extends Controller
             }
         }
 
+
+        //메뉴 관리 일때
+        $k_menu = 0;
+        $path_menu = "data/menu/editor/";
+        $editor_no_regi_img_menu = array();
+
+        if(is_dir($path_menu)) {
+            $files_menu = array_values(array_diff(scandir($path_menu), array(".", "..", "tmp")));
+            for($j_menu = 0; $j_menu < count($files_menu); $j_menu++){
+                $menu_like = DB::table('menuses')->where('menu_content', 'LIKE', "%{$files_menu[$j_menu]}%")->count();
+
+                if($menu_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
+                    $editor_no_regi_img_menu[$k] = $files_menu[$j_menu];
+                    $k_menu++;
+                }
+
+                for($p_menu = 0; $p_menu < count($editor_no_regi_img_menu); $p_menu++){ //저장 되지 않은 이미지들 돌리며 삭제
+                    $editor_del_file_path_menu = $path_menu.$editor_no_regi_img_menu[$p_menu];
+
+                    if (file_exists($editor_del_file_path_menu)) {
+                        @unlink($editor_del_file_path_menu); //이미지 삭제
+                    }
+                }
+            }
+        }
+
         return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$board_editor['editor']['del_ok']);
         exit;
     }

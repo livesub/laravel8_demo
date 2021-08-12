@@ -2,6 +2,9 @@
 
 @section('content')
 
+<!-- smarteditor2 호출 -->
+<script type="text/javascript" src="/smarteditor2/js/HuskyEZCreator.js" charset="utf-8"></script>
+<!-- smarteditor2 호출 -->
 
 <table>
     <tr>
@@ -26,6 +29,7 @@
                 <strong>{{ $message }}</strong>
             @enderror
             <br>※ 게시판 타입일 경우 게시판명을 입력 하세요.
+            <br>※ 영문명은 수정 되지 않습니다.
         </td>
 
         <td>한글명</td>
@@ -52,6 +56,22 @@
             <input type="radio" name="menu_page_type" id="menu_page_type_b" value="B"> 게시판 타입
         </td>
     </tr>
+    <tr>
+        <td>내용</td>
+        <td colspan=3>
+            <textarea name="menu_content" id="menu_content" style="width:100%;height:220px;">{{ old('menu_content') }}</textarea>
+<script type="text/javascript">
+    var oEditors = [];
+    nhn.husky.EZCreator.createInIFrame({
+        oAppRef: oEditors,
+        elPlaceHolder: "menu_content",
+        sSkinURI: "/smarteditor2/SmartEditor2Skin.html",
+        fCreator: "createSEditor2",
+        htParams : {fOnBeforeUnload : function(){}} // 이페이지 나오기 alert 삭제
+    });
+</script>
+        </td>
+    </tr>
 
 </table>
 
@@ -75,8 +95,15 @@
     });
 </script>
 
+
+
+
 <script>
-    function add_menu(){
+    function add_menu(elClickedObj) {
+        oEditors.getById["menu_content"].exec("UPDATE_CONTENTS_FIELD", []);	// 에디터의 내용이 textarea에 적용됩니다.
+        // 에디터의 내용에 대한 값 검증은 이곳에서 document.getElementById("menu_content").value를 이용해서 처리하면 됩니다.
+        var menu_content = $("#menu_content").val();
+
         if($("#menu_name_en").val() == ""){
             alert("영문명을 입력 하세요.");
             $("#menu_name_en").focus();
@@ -89,9 +116,20 @@
             return false;
         }
 
+        if( menu_content == ""  || menu_content == null || menu_content == '&nbsp;' || menu_content == '<p>&nbsp;</p>')  {
+             alert("내용을 입력하세요.");
+             oEditors.getById["menu_content"].exec("FOCUS"); //포커싱
+             return;
+        }try {
+            elClickedObj.form.submit();
+        } catch(e) {}
+
         $("#menu_form").submit();
     }
 </script>
+
+
+
 
 
 

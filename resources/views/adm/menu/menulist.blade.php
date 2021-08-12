@@ -67,7 +67,7 @@
             @endphp
 
             @if($down_memu_info == 1)
-            <button type="button">삭제</button>
+            <button type="button" onclick="menu_del('{{ $menu_info->id }}','{{ $menu_info->menu_id }}');">삭제</button>
             @endif
         </td>
     </tr>
@@ -97,6 +97,13 @@
     <input type="hidden" name="page" id="page" value="{{ $pageNum }}">
 </form>
 
+<form name="menu_del_form" id="menu_del_form" method="post" action="{{ route('adm.menu.delete') }}">
+{!! csrf_field() !!}
+    <input type="hidden" name="id" id="id">
+    <input type="hidden" name="menu_id" id="del_menu_id">
+    <input type="hidden" name="page" id="del_page" value="{{ $pageNum }}">
+</form>
+
 <script>
     function menu_type(menu_id, type){
         $("#menu_id").val(menu_id);
@@ -110,6 +117,18 @@
     }
 </script>
 
+<script>
+    function menu_del(id,menu_id){
+        $("#id").val(id);
+        $("#del_menu_id").val(menu_id);
+
+        if (confirm("메뉴를 삭제하시겠습니까?") == true){
+            $("#menu_del_form").submit();
+        }else{
+            return false;
+        }
+    }
+</script>
 
 
 @endsection

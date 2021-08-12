@@ -402,6 +402,11 @@ class Messages_kr extends Controller
             'up_ok' => '메뉴가 수정 되었습니다.',
         ],
 
+        'del' => [
+            'del_ok' => '메뉴가 삭제 되었습니다.',
+            'del_chk' => '하위 메뉴가 존재 합니다.',
+        ],
+
         'validate' => [
             'mk_menu_id.required' => '분류코드가 생성 되지 않았습니다.',
             'mk_menu_id.unique' => '같은 분류코드가 존재 합니다.',

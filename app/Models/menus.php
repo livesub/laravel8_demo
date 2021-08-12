@@ -17,6 +17,7 @@ class menus extends Model
         'menu_display',
         'menu_rank',
         'menu_page_type',
+        'menu_content',
     ];
 
     protected $hidden = [
