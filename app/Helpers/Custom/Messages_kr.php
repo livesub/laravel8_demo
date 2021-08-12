@@ -392,6 +392,32 @@ class Messages_kr extends Controller
         ]
     ];
 
+    static $menu = [
+        'insert' => [
+            'menu_no' => '분류를 더 이상 추가할 수 없습니다.\\n\\n3단계 분류까지만 가능합니다.',
+            'in_ok' => '메뉴가 추가 되었습니다.',
+        ],
+
+        'update' => [
+            'up_ok' => '메뉴가 수정 되었습니다.',
+        ],
+
+        'validate' => [
+            'mk_menu_id.required' => '분류코드가 생성 되지 않았습니다.',
+            'mk_menu_id.unique' => '같은 분류코드가 존재 합니다.',
+            'mk_menu_id.max' => '3단계 까지만 생성 됩니다.',
+
+            'menu_name_en.required' => '영문명을 입력 하세요.',
+            'menu_name_en.unique' => '같은 영문명이 존재 합니다.',
+            'menu_name_en.max' => '20자 이내로 입력 하세요.',
+
+            'menu_name_kr.required' => '한글명을 입력 하세요.',
+            'menu_name_kr.max' => '20자 이내로 입력 하세요.',
+        ]
+
+
+    ];
+
 }
 
 

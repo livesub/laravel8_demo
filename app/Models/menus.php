@@ -7,5 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class menus extends Model
 {
+    //use HasFactory, Notifiable;
     use HasFactory;
+
+    protected $fillable = [
+        'menu_id',
+        'menu_name_kr',
+        'menu_name_en',
+        'menu_display',
+        'menu_rank',
+        'menu_page_type',
+    ];
+
+    protected $hidden = [
+    ];
+
+    protected $casts = [
+    ];
 }

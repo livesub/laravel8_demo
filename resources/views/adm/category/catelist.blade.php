@@ -15,12 +15,13 @@
 <table border=1>
     <tr>
         <td>번호</td>
+        <td>분류 코드</td>
         <td>분류 한글명</td>
         <td>분류 영문명</td>
-        <td>분류</td>
+        <td>단계</td>
         <td>출력여부</td>
         <td>출력순위</td>
-        <td>수정/삭제</td>
+        <td>추가/수정/삭제</td>
     </tr>
 
     @foreach($cate_infos as $cate_info)
@@ -48,6 +49,7 @@
 
     <tr {{ $tr_bg }}>
         <td>{{ $virtual_num-- }}</td>
+        <td>{{ $cate_info->ca_id }}</td>
         <td>{!! $blank !!}{{ $mark }}{{ $cate_info->ca_name_kr }}</td>
         <td>{{ $cate_info->ca_name_en }}</td>
         <td>{{ $level+1 }}단계</td>
@@ -55,10 +57,10 @@
         <td>{{ $cate_info->ca_rank }}</td>
         <td>
             @if($level+2 < 6)
-            <button type="button" onclick="cate_add('{{ $cate_info->ca_id }}','add');">추가</button>
+            <button type="button" onclick="cate_type('{{ $cate_info->ca_id }}','add');">추가</button>
             @endif
 
-            <button type="button" onclick="cate_add('{{ $cate_info->ca_id }}','modi');">수정</button>
+            <button type="button" onclick="cate_type('{{ $cate_info->ca_id }}','modi');">수정</button>
             @php
                 $de_cate_info = DB::table('categorys')->where('ca_id','like',$cate_info->ca_id.'%')->count();   //하위 카테고리 갯수
                 $de_item_info = DB::table('items')->where('ca_id','like',$cate_info->ca_id.'%')->count();   //상품 갯수
@@ -67,9 +69,6 @@
             @if($de_cate_info == 1 && $de_item_info == 0)
                 <button type="button" onclick="cate_del('{{ $cate_info->id }}','{{ $cate_info->ca_id }}');">삭제</button></td>
             @endif
-
-
-
     </tr>
     @endforeach
 </table>
@@ -100,7 +99,7 @@
 </form>
 
 <script>
-    function cate_add(ca_id, type){
+    function cate_type(ca_id, type){
         $("#ca_id").val(ca_id);
         if(type == "add"){
             $("#cate_form").attr("action", "{{ route('adm.cate.cate_add') }}");

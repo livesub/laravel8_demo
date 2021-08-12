@@ -5,13 +5,14 @@
 
 <table>
     <tr>
-        <td><h4>1단계 메뉴 등록</h4></td>
+        <td><h4>{{ $menu_name_kr }} 하위 분류 추가</h4></td>
     </tr>
 </table>
 
-<form name="menu_form" id="menu_form" method="post" action="{{ route('adm.menu.createsave') }}">
+<form name="menu_add_form" id="menu_add_form" method="post" action="{{ route('adm.menu.menu_add_save') }}">
 {!! csrf_field() !!}
 <input type="hidden" name="menu_id" id="mk_menu_id" value="{{ $mk_menu_id }}">
+<input type="hidden" name="page" id="page" value="{{ $page }}">
 
 <table border=1>
     <tr>
@@ -89,7 +90,7 @@
             return false;
         }
 
-        $("#menu_form").submit();
+        $("#menu_add_form").submit();
     }
 </script>
 

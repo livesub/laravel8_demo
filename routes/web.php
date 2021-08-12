@@ -395,6 +395,36 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@create',
     ]);
 
+    Route::post('adm/menucreate', [      //1단계 메뉴 카테고리 저장 처리
+        'as' => 'adm.menu.createsave',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@createsave',
+    ]);
+
+    Route::get('adm/menu_add', [       //메뉴 카테고리 추가 페이지
+        'as' => 'adm.menu.menu_add',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@menu_add',
+    ]);
+
+    Route::post('adm/menu_add_save', [      //메뉴 카테고리 추가 처리
+        'as' => 'adm.menu.menu_add_save',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@menu_add_save',
+    ]);
+
+    Route::get('adm/menu_modi', [      //메뉴 카테고리 수정
+        'as' => 'adm.menu.menu_modi',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@menu_modi',
+    ]);
+
+    Route::post('adm/menu_modi_save', [     //메뉴 카테고리 수정 처리
+        'as' => 'adm.menu.modi_save',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@modi_save',
+    ]);
+
+    Route::post('adm/menu_delete', [    //메뉴 카테고리 삭제
+        'as' => 'adm.menu.delete',
+        'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@delete',
+    ]);
+
 });
 
 

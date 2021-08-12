@@ -18,7 +18,7 @@
 </table>
 
 <table border=1>
-<form name="cate_add_form" id="cate_add_form" method="post" action="{{ route('adm.cate.cate_modi_save') }}">
+<form name="cate_modi_form" id="cate_modi_form" method="post" action="{{ route('adm.cate.cate_modi_save') }}">
 {!! csrf_field() !!}
 <input type="hidden" name="id" id="id" value="{{ $categorys_info->id }}">
 <input type="hidden" name="ca_id" id="ca_id" value="{{ $categorys_info->ca_id }}">
@@ -63,7 +63,7 @@
             return false;
         }
 
-        $("#cate_add_form").submit();
+        $("#cate_modi_form").submit();
     }
 </script>
 
