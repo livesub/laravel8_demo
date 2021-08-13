@@ -45,7 +45,8 @@
             }
 
             if($menu_info->menu_page_type == "P") $menu_page_type = "일반 HTML";
-            else $menu_page_type = "게시판";
+            elseif($menu_info->menu_page_type == "B") $menu_page_type = "게시판";
+            else $menu_page_type = "상품";
         @endphp
     <tr {{ $tr_bg }}>
         <td>{{ $virtual_num-- }}</td>

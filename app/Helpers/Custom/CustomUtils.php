@@ -602,12 +602,15 @@ $um_value='80/0.5/3'
 
     public static function menu_page_link2($info)
     {
+        $page_link = "";
         if($info->menu_page_type == "P"){  //페이지 타입
             //$page_link = "/defalut_html/{$info->menu_name_en}/{$info->menu_id}";
             $page_link = route('defalut.index',$info->menu_name_en,$info->menu_id);
         }elseif($info->menu_page_type == "B"){ //게시판 타입
             $page_link = route('board.index',$info->menu_name_en);
             //$page_link = "/board/list/{$info->menu_name_en}/{$info->menu_id}";
+        }else{  //상품 타입
+            $page_link = route('item.index');
         }
 
         return $page_link;

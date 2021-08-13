@@ -64,16 +64,24 @@
         @php
             $page_disp_p = "";
             $page_disp_b = "";
+            $page_disp_I = "";
             if($menu_info->menu_page_type == "P"){
                 $page_disp_p = "checked";
                 $page_disp_b = "";
-            }else{
+                $page_disp_I = "";
+            }elseif($menu_info->menu_page_type == "B"){
                 $page_disp_p = "";
                 $page_disp_b = "checked";
+                $page_disp_I = "";
+            }else{
+                $page_disp_p = "";
+                $page_disp_b = "";
+                $page_disp_I = "checked";
             }
         @endphp
             <input type="radio" name="menu_page_type" id="menu_page_type_p" value="P" {{ $page_disp_p }}>일반 HTML 타입
             <input type="radio" name="menu_page_type" id="menu_page_type_b" value="B" {{ $page_disp_b }}> 게시판 타입
+            <input type="radio" name="menu_page_type" id="menu_page_type_I" value="I" {{ $page_disp_I }}> 상품 타입
         </td>
     </tr>
     <tr>

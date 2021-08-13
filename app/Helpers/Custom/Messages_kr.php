@@ -369,8 +369,8 @@ class Messages_kr extends Controller
             'up_ok' => '카테고리가 수정 되었습니다.',
         ],
 
-        'del' => [
-            'del_ok' => '카테고리가 삭제 되었습니다.',
+        'cate_del' => [
+            'cate_del_ok' => '카테고리가 삭제 되었습니다.',
         ],
 
         'del' => [

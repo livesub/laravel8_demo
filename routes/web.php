@@ -524,7 +524,10 @@ Route::get('/defalut_html/{pg_name}', [
     'uses' => 'App\Http\Controllers\defalut\Defalut_htmlController@index',
 ]);
 
-
-
+//상품 페이지 일때 처리
+Route::get('/item/item_page', [
+    'as' => 'item.index',
+    'uses' => 'App\Http\Controllers\item\ItemController@index',
+]);
 
 

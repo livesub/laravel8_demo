@@ -15,7 +15,7 @@
 
 <table border="1">
     <tr>
-        <td><h4>{!! $menu_content !!}</h4></td>
+        <td>{!! $menu_content !!}</td>
     </tr>
 </table>
 

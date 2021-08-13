@@ -54,6 +54,7 @@
         <td colspan="3">
             <input type="radio" name="menu_page_type" id="menu_page_type_p" value="P" checked>일반 HTML 타입
             <input type="radio" name="menu_page_type" id="menu_page_type_b" value="B"> 게시판 타입
+            <input type="radio" name="menu_page_type" id="menu_page_type_I" value="I"> 상품 타입
         </td>
     </tr>
     <tr>
