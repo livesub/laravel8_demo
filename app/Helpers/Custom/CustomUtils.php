@@ -574,4 +574,42 @@ $um_value='80/0.5/3'
         @rmdir($dir);
     }
 
+    //하위 카테고리가 있을시 하위 카테고리로 링크 걸리게(수정 해야함)
+    public static function menu_page_link($db_results,$info)
+    {
+        $page_link = "";
+        if(count($db_results) != 0){
+            foreach($db_results as $db_result)
+            {
+                if($db_result->menu_page_type == "P"){  //페이지 타입
+                    $page_link = route('defalut.index',$db_result->menu_name_en);
+                }elseif($db_result->menu_page_type == "B"){ //게시판 타입
+                    $page_link = route('board.index',$db_result->menu_name_en);
+                }
+
+                return $page_link;
+            }
+        }else{
+            if($info->menu_page_type == "P"){  //페이지 타입
+                $page_link = route('defalut.index',$info->menu_name_en);
+            }elseif($info->menu_page_type == "B"){ //게시판 타입
+                $page_link = route('board.index',$info->menu_name_en);
+            }
+
+            return $page_link;
+        }
+    }
+
+    public static function menu_page_link2($info)
+    {
+        if($info->menu_page_type == "P"){  //페이지 타입
+            //$page_link = "/defalut_html/{$info->menu_name_en}/{$info->menu_id}";
+            $page_link = route('defalut.index',$info->menu_name_en,$info->menu_id);
+        }elseif($info->menu_page_type == "B"){ //게시판 타입
+            $page_link = route('board.index',$info->menu_name_en);
+            //$page_link = "/board/list/{$info->menu_name_en}/{$info->menu_id}";
+        }
+
+        return $page_link;
+    }
 }

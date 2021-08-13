@@ -57,6 +57,14 @@ header('Pragma: public');
                 @endif
             @endif
         </tr>
+    </table>
+
+<!-- 메뉴 불러 오기 -->
+    @include('head_menu')
+<!-- 메뉴 불러 오기 -->
+<!--
+    <table>
+
         <tr>
             <td>
                 <table border=1>
@@ -73,6 +81,7 @@ header('Pragma: public');
                 </table>
             </td>
         </tr>
+
         <tr>
             <td>제품 소개</td>
         </tr>
@@ -93,7 +102,7 @@ header('Pragma: public');
         </tr>
 
     </table>
-
+-->
 
 
     {{-- 각 내용 뿌리기 --}}
