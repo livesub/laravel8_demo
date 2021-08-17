@@ -92,12 +92,12 @@
                 @endif
 
                 @if ($board_list->bdt_depth == 0)
-                    {!! preg_replace("@({$keyword})@i", "<font color='red'>$1</font>", mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len)) !!}
+                    {!! preg_replace("@({$keyword})@iu", "<font color='red'>$1</font>", mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len)) !!}
                 @else
                 @for ($i=0; $i<$board_list->bdt_depth; $i++)
                     &nbsp&nbsp
                 @endfor
-                └{!! preg_replace("@({$keyword})@i", "<font color='red'>$1</font>", mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len)) !!}
+                └{!! preg_replace("@({$keyword})@iu", "<font color='red'>$1</font>", mb_substr(stripslashes($board_list->bdt_subject), 0, $board_set_info->bm_subject_len)) !!}
                 @endif
 
                 @if($board_list->bdt_del != 'Y')

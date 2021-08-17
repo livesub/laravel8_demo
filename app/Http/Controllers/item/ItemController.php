@@ -20,23 +20,57 @@ class ItemController extends Controller
         $ca_id          = $request->input('ca_id');
         $length         = strlen($ca_id);
 
-        if($ca_id == ""){
-            $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 2')->orderby('ca_rank', 'DESC')->get();
+        //pgae 관련
+        $pageNum     = $request->input('page');
+        $writeList   = 16;  //페이지당 글수
+        $pageNumList = 16; //블럭당 페이지수
 
-            $item_infos = DB::table('items')->select('ca_id', 'item_code', 'item_name', 'item_img')->where('item_display','Y')->orderby('item_rank', 'DESC')->get();
-        }else{
-            $length = $length + 2;
-            $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->where('ca_id','<>',$ca_id )->whereRaw('length(ca_id) = '.$length)->whereRaw("ca_id like '{$ca_id}%'")->orderby('ca_rank', 'DESC')->get();
+        //검색 처리
+        $keymethod      = $request->input('keymethod');
+        $keyword        = $request->input('keyword');
+        if($keymethod == "") $keymethod = "item_name";
 
-            $item_infos = DB::table('items')->select('ca_id', 'item_code', 'item_name', 'item_img')->where('item_display','Y')->whereRaw("ca_id like '{$ca_id}%'")->orderby('item_rank', 'DESC')->get();
+        $tb_name = "items";
+        $type = 'items';
+        $cate = "";
+
+        $search_sql = "";
+        if($keymethod != "" && $keyword != ""){
+            $search_sql = " AND a.{$keymethod} LIKE '%{$keyword}%' ";
         }
 
+        $page_control = CustomUtils::page_function('items',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate,$keymethod,$keyword);
 
+
+        if($ca_id == ""){
+            $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 2')->orderby('ca_rank', 'DESC')->get();
+            $item_infos = DB::select("select a.*, b.ca_id from items a, categorys b where 1 AND item_display = 'Y' AND a.ca_id = b.ca_id  {$search_sql} order by a.item_rank DESC limit {$page_control['startNum']}, {$writeList} ");
+
+        }else{
+            $down_cate = DB::table('categorys')->where('ca_id','like',$ca_id.'%')->count();   //하위 카테고리 갯수
+            if($down_cate != 1){
+                $length = $length + 2;
+                $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->where('ca_id','<>',$ca_id )->whereRaw('length(ca_id) = '.$length)->whereRaw("ca_id like '{$ca_id}%'")->orderby('ca_rank', 'DESC')->get();
+            }else{  //하위 카테고리가 없을때 처리
+                $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->where('ca_id','=',$ca_id )->whereRaw('length(ca_id) = '.$length)->whereRaw("ca_id like '{$ca_id}%'")->orderby('ca_rank', 'DESC')->get();
+            }
+
+            $item_infos = DB::select("select a.*, b.ca_id from items a, categorys b where 1 AND item_display = 'Y' AND a.ca_id = b.ca_id AND a.ca_id like '{$ca_id}%' {$search_sql} order by a.item_rank DESC limit {$page_control['startNum']}, {$writeList} ");
+        }
+
+        $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
 
 
         return view('item.item_page',[
+            'ca_id'         => $ca_id,
             'cate_infos'    => $cate_infos,
             'item_infos'    => $item_infos,
+            'pageList'      => $pageList,
+            'keymethod'     => $keymethod,
+            'keyword'       => $keyword,
+            'totalCount'    => $page_control['totalCount'],
+            'pageNum'       => $page_control['pageNum'],
+            'pageList'      => $pageList,
         ]);
     }
 
