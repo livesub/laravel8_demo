@@ -91,7 +91,7 @@
                 </tr>
                 <tr>
 
-                    <td>{!! preg_replace("@({$keyword})@iu", "<font color='red'>$1</font>", mb_substr(stripslashes($item_info->item_name), 0, 5)) !!}</td>
+                    <td>{!! preg_replace("@({$keyword})@iu", "<font color='red'>$1</font>", mb_substr(stripslashes($item_info->item_name), 0, 10)) !!}</td>
                 </tr>
             </table>
         </td>
