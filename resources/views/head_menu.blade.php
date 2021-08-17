@@ -88,13 +88,24 @@
                             @php
                                 $one_page_link = "";
                                 $two_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw("menu_id like '{$one_step_info->menu_id}%'")->whereRaw('length(menu_id) = 4')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
-
-                                //$one_page_link = CustomUtils::menu_page_link($two_step_infos,$one_step_info);
                                 $one_page_link = CustomUtils::menu_page_link2($one_step_info);
                             @endphp
 
                         <li>
                             <a href="{{ $one_page_link }}">{{ $one_step_info->menu_name_kr }}</a>
+
+                            @if($one_step_info->menu_page_type == "I")  <!-- 상품 일때 처리 -->
+                                @php
+                                    $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 2')->orderby('ca_rank', 'DESC')->get();
+                                @endphp
+                            <ul class="main2">
+                                @foreach($cate_infos as $cate_info)
+                                <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a>
+                                </li>
+                                @endforeach
+                            </ul>
+                            @endif
+
 
                             @if(count($two_step_infos) != 0)
 
