@@ -44,7 +44,8 @@ return $validator;
             //function($message) use ($to_name, $to_email) {
             function($message) use ($user_name, $user_id, $subject) {
                 $message->to($user_id, $user_name)->subject($subject);
-                $message->from("yskim@yongsanzip.com","김영여영11111");
+                //이메일, 이름
+                $message->from(config('app.ADMIN_ID'),config('app.ADMIN_NAME'));
             }
         );
 
@@ -102,7 +103,7 @@ return $validator;
         $search_sql = "";
         $search_cate = "";
 
-        if($type == 'member' || $type == 'cate' || $type == 'menu'){
+        if($type == 'member' || $type == 'cate' || $type == 'menu' || $type == 'email'){
             $total_cnt = DB::table($table_name)->count();
         }else if($type == 'items'){
             if($cate != "") $search_sql = " AND a.ca_id = b.ca_id AND a.ca_id LIKE '{$cate}%' AND a.{$keymethod} LIKE '%{$keyword}%' ";

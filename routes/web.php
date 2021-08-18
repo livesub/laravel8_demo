@@ -425,6 +425,22 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\menu\AdmmenuContoller@delete_save',
     ]);
 
+/*** 관리자 이메일 발송 관리 */
+    Route::get('adm/admemail', [    //회원 이메일 리스트
+        'as' => 'adm.admemail.index',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@index',
+    ]);
+
+    Route::get('adm/admemail_create', [    //회원 이메일 내용 추가
+        'as' => 'adm.admemail.create',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@create',
+    ]);
+
+    Route::post('adm/admemail_create', [    //회원 이메일 내용 추가
+        'as' => 'adm.admemail.createsave',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@createsave',
+    ]);
+
 });
 
 

@@ -419,8 +419,12 @@ class Messages_kr extends Controller
             'menu_name_kr.required' => '한글명을 입력 하세요.',
             'menu_name_kr.max' => '20자 이내로 입력 하세요.',
         ]
+    ];
 
-
+    static $email = [
+        'e_ment' => [
+            'e_save' => '저장 되었습니다.',
+        ]
     ];
 
 }
