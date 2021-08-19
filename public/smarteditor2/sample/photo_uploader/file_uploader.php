@@ -22,12 +22,18 @@ if(bSuccessUpload) {
 
 		$newPath = $uploadDir.urlencode($_FILES['Filedata']['name']);
 
+		if(array_key_exists('HTTPS',$_SERVER)) {
+			$uploadDir_url = "https://".$_SERVER['HTTP_HOST']."/data/{$_COOKIE['directory']}/";
+		}else{
+			$uploadDir_url = "http://".$_SERVER['HTTP_HOST']."/data/{$_COOKIE['directory']}/";
+		}
+
 		@move_uploaded_file($tmp_name, $newPath);
 
 		$url .= "&bNewLine=true";
 		$url .= "&sFileName=".urlencode(urlencode($name));
 		//$url .= "&sFileURL=../../../data/smarteditor/".urlencode(urlencode($name));
-		$url .= "&sFileURL={$uploadDir}".urlencode(urlencode($name));
+		$url .= "&sFileURL={$uploadDir_url}".urlencode(urlencode($name));
 	}
 }
 // FAILED

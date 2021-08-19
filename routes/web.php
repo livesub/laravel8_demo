@@ -441,7 +441,37 @@ Route::group(['middleware' => ['auth']], function () {
         'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@createsave',
     ]);
 
+    Route::post('adm/admemail_choice_del', [    //이메일 선택 삭제
+        'as' => 'adm.admemail.choice_del',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@choice_del',
+    ]);
+
+    Route::get('adm/admemail_send_mem_chk', [    //이메일 보내기 (회원 선택 화면)
+        'as' => 'adm.admemail.send_mem_chk',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@send_mem_chk',
+    ]);
+
+    Route::post('adm/admemail_send_ok', [    //이메일 발송
+        'as' => 'adm.admemail.send_ok',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@send_ok',
+    ]);
+
+    Route::get('adm/admemail_modify', [    //회원 이메일 내용 수정
+        'as' => 'adm.admemail.modify',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@modify',
+    ]);
+
+    Route::post('adm/admemail_modifysave', [    //회원 이메일 내용 수정 저장
+        'as' => 'adm.admemail.modifysave',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@modifysave',
+    ]);
 });
+
+/* 이메일 확인 리턴(외부에서 접속 해야 하기에 밖으로 뺌) */
+Route::get('email/{token}', [
+    'as' => 'email.sendconfirm.index',
+    'uses' => 'App\Http\Controllers\email\SendconfirmController@index',
+]);
 
 
 /*** 프론트 게시판 관리 */

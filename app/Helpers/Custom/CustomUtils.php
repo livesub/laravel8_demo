@@ -35,7 +35,7 @@ return $validator;
 //        else return true;
     }
 */
-    //이메일 보내기 함수
+    //가입 이메일 보내기 함수
     public static function email_send($email_blade, $user_name, $user_id, $subject, $data)
     {
         Mail::send(
@@ -44,6 +44,35 @@ return $validator;
             //function($message) use ($to_name, $to_email) {
             function($message) use ($user_name, $user_id, $subject) {
                 $message->to($user_id, $user_name)->subject($subject);
+                //이메일, 이름
+                $message->from(config('app.ADMIN_ID'),config('app.ADMIN_NAME'));
+            }
+        );
+
+        if(count(Mail::failures()) > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    //회원 이메일 보내기 함수(첨부파일)
+//$email_send_value = CustomUtils::email_mem_send("email.email_mem_send", $data, $files);
+    public static function email_mem_send($email_blade, $data, $files = '')
+    {
+        Mail::send(
+            $email_blade,
+            $data,
+            //function($message) use ($to_name, $to_email) {
+            function($message) use ($data, $files) {
+                $message->to($data["email"], $data["name"])->subject($data["subject"]);
+
+                if($files != ""){
+                    foreach ($files as $file){
+                        $message->attach($file);
+                    }
+                }
+
                 //이메일, 이름
                 $message->from(config('app.ADMIN_ID'),config('app.ADMIN_NAME'));
             }

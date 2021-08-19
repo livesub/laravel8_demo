@@ -424,6 +424,8 @@ class Messages_kr extends Controller
     static $email = [
         'e_ment' => [
             'e_save' => '저장 되었습니다.',
+            'e_del' => '삭제 되었습니다.',
+            'email_send' => '이메일이 발송 되었습니다.',
         ]
     ];
 

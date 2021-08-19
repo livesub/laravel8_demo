@@ -28,11 +28,17 @@
 
 		$newPath = $uploadDir.$file->name;
 
+		if(array_key_exists('HTTPS',$_SERVER)) {
+			$uploadDir_url = "https://".$_SERVER['HTTP_HOST']."/data/{$_COOKIE['directory']}/";
+		}else{
+			$uploadDir_url = "http://".$_SERVER['HTTP_HOST']."/data/{$_COOKIE['directory']}/";
+		}
+
 		if(file_put_contents($newPath, $file->content)) {
 			$sFileInfo .= "&bNewLine=true";
 			$sFileInfo .= "&sFileName=".$filename;
 			//$sFileInfo .= "&sFileURL=../../../data/smarteditor/".$file->name;
-			$sFileInfo .= "&sFileURL={$uploadDir}".$file->name;
+			$sFileInfo .= "&sFileURL={$uploadDir_url}".$file->name;
 		}
 
 		echo $sFileInfo;
