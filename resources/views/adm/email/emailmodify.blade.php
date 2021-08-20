@@ -14,6 +14,10 @@
 <table border=1 width="800">
 <form name="emailForm" id="emailForm" action="{{ route('adm.admemail.modifysave') }}" method="POST" enctype='multipart/form-data'>
 {!! csrf_field() !!}
+    <input type="hidden" name="type_name" id="type_name">
+    <input type="hidden" name="email_id" id="email_id" value="{{ $email_info->id }}">
+    <input type="hidden" name="file_num" id="file_num">
+
     <tr>
         <td>이메일 제목</td>
         <td><input type="text" name="email_subject" id="email_subject" value="{{ stripslashes($email_info->email_subject) }}"></td>
@@ -41,6 +45,9 @@
         <td>첨부파일{{ $i }}</td>
         <td>
             <input type="file" name="email_file{{ $i }}" id="email_file{{ $i }}">
+            @error('email_file'.$i)
+                <strong>{{ $message }}</strong>
+            @enderror
         @php
             $email_ori_file = "email_ori_file$i";
         @endphp
@@ -52,7 +59,7 @@
 
 
     <tr>
-        <td colspan="10"><button type="button" onclick="add_email()">메일 내용 저장</button></td>
+        <td colspan="10"><button type="button" onclick="modi_email()">메일 내용 수정</button></td>
     </tr>
 </form>
 </table>
@@ -61,7 +68,7 @@
 
 
 <script>
-    function add_email(elClickedObj) {
+    function modi_email(elClickedObj) {
         oEditors.getById["email_content"].exec("UPDATE_CONTENTS_FIELD", []);	// 에디터의 내용이 textarea에 적용됩니다.
         // 에디터의 내용에 대한 값 검증은 이곳에서 document.getElementById("email_content").value를 이용해서 처리하면 됩니다.
         var email_content = $("#email_content").val();
@@ -72,7 +79,7 @@
             return;
         }
 
-        if( email_content == ""  || email_content == null || email_content == '&nbsp;' || email_content == '<p>&nbsp;</p>')  {
+        if(email_content == ""  || email_content == null || email_content == '&nbsp;' || email_content == '<p>&nbsp;</p>')  {
              alert("내용을 입력하세요.");
              oEditors.getById["email_content"].exec("FOCUS"); //포커싱
              return;
@@ -80,12 +87,21 @@
             elClickedObj.form.submit();
         } catch(e) {}
 
+        $("#emailForm").attr("action", "{{ route('adm.admemail.modifysave') }}");
         $("#emailForm").submit();
     }
 </script>
 
 
-
+<script>
+    function file_down(type_name, email_id, file_num){
+        $("#type_name").val(type_name);
+        $("#email_id").val(email_id);
+        $("#file_num").val(file_num);
+        $("#emailForm").attr("action", "{{ route('adm.admemail.downloadfile') }}");
+        $("#emailForm").submit();
+    }
+</script>
 
 
 

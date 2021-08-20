@@ -12,6 +12,7 @@ use App\Models\boardmanager;    //모델 정의(게시판 관리 테이블)
 use App\Models\board_datas_table;    //게시판 모델 정의
 use App\Models\board_datas_comment_table;    //게시판 모델 정의
 use App\Models\items;    //상품 모델 정의
+use App\Models\emails;    //이메일 모델 정의
 
 class AdmeditorContoller extends Controller
 {
@@ -112,6 +113,31 @@ class AdmeditorContoller extends Controller
 
                     if (file_exists($editor_del_file_path_menu)) {
                         @unlink($editor_del_file_path_menu); //이미지 삭제
+                    }
+                }
+            }
+        }
+
+        //회원 이메일 발송 관리 일때
+        $k_email = 0;
+        $path_email = "data/email/editor/";
+        $editor_no_regi_img_email = array();
+
+        if(is_dir($path_email)) {
+            $files_email = array_values(array_diff(scandir($path_email), array(".", "..", "tmp")));
+            for($j_email = 0; $j_email < count($files_email); $j_email++){
+                $email_like = DB::table('emails')->where('email_content', 'LIKE', "%{$files_email[$j_email]}%")->count();
+
+                if($email_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
+                    $editor_no_regi_img_email[$k] = $files_email[$j_email];
+                    $k_email++;
+                }
+
+                for($p_email = 0; $p_email < count($editor_no_regi_img_email); $p_email++){ //저장 되지 않은 이미지들 돌리며 삭제
+                    $editor_del_file_path_email = $path_email.$editor_no_regi_img_email[$p_email];
+
+                    if (file_exists($editor_del_file_path_email)) {
+                        @unlink($editor_del_file_path_email); //이미지 삭제
                     }
                 }
             }

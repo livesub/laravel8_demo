@@ -465,6 +465,16 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'adm.admemail.modifysave',
         'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@modifysave',
     ]);
+
+    Route::post('adm/admemail_downloadfile/', [  //회원 이메일 첨부파일 다운로드 처리
+        'as' => 'adm.admemail.downloadfile',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@downloadfile',
+    ]);
+
+    Route::get('adm/admemail_sendlist/', [  //회원 이메일 첨부파일 다운로드 처리
+        'as' => 'adm.admemail.sendlist',
+        'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@sendlist',
+    ]);
 });
 
 /* 이메일 확인 리턴(외부에서 접속 해야 하기에 밖으로 뺌) */

@@ -426,6 +426,7 @@ class Messages_kr extends Controller
             'e_save' => '저장 되었습니다.',
             'e_del' => '삭제 되었습니다.',
             'email_send' => '이메일이 발송 되었습니다.',
+            'e_modisave' => '수정 되었습니다.',
         ]
     ];
 

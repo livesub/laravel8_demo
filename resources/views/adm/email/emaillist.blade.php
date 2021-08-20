@@ -17,9 +17,9 @@
         <td>번호</td>
         <td>제목</td>
         <td>작성일</td>
-        <td>발송인원</td>
-        <td>확인인원</td>
-        <td>발송실패</td>
+        <td>발송 인원</td>
+        <td>메일 확인 인원</td>
+        <td>발송 실패</td>
         <td>관리</td>
     </tr>
 
@@ -40,7 +40,10 @@
         <td>{{ $send_cnt }}</td>
         <td>{{ $receive_cnt }}</td>
         <td>{{ $send_fail_cnt }}</td>
-        <td><button type="button" onclick="location.href='{{ route('adm.admemail.send_mem_chk','id='.$email_list->id) }}'">보내기</button></td>
+        <td>
+            <button type="button" onclick="location.href='{{ route('adm.admemail.send_mem_chk','id='.$email_list->id) }}'">메일 발송</button>
+            <button type="button" onclick="location.href='{{ route('adm.admemail.sendlist','id='.$email_list->id) }}'">발송 명단 보기</button>
+        </td>
     </tr>
     @endforeach
     </form>

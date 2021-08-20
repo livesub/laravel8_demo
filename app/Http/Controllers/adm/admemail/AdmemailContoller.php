@@ -42,7 +42,7 @@ class AdmemailContoller extends Controller
 
         $page_control = CustomUtils::page_function('emails',$pageNum,$writeList,$pageNumList,'email','','','','');
 
-        //이메일 일기
+        //이메일 읽기
         $email_lists = DB::table('emails')->orderby('id', 'DESC')->skip($page_control['startNum'])->take($writeList)->get();
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
@@ -111,8 +111,6 @@ class AdmemailContoller extends Controller
         $email_subject = addslashes($request->input('email_subject'));
         $email_content = $request->input('email_content');
 
-
-        $file_cnt = 2;    //설정시 사용할 첨부 갯수
         $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
         $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
@@ -201,7 +199,7 @@ dd("email_send 테이블도 정리 해야함!!!");
         $id = $request->input('id');
 
         //이메일 인증이 완료된 회원과 관리자를 제외한 회원을 뽑아 온다
-        //$user_lists = DB::table('users')->select('id','user_id','user_name','user_phone')->where('user_level','>',config('app.ADMIN_LEVEL'))->whereRaw('user_confirm_code is null')->orderby('id', 'DESC')->get();
+        //$user_lists = DB::table('users')->select('id','user_id','user_name','user_phone')->where([['user_level','>',config('app.ADMIN_LEVEL')],['user_type','N']])->whereRaw('user_confirm_code is null')->orderby('id', 'DESC')->get();
         //테스트 용도\
         $user_lists = DB::table('users')->select('id','user_id','user_name','user_phone')->whereRaw('user_confirm_code is null')->orderby('id', 'DESC')->get();
 
@@ -229,9 +227,11 @@ dd("email_send 테이블도 정리 해야함!!!");
 
         //첨부 파일 생성
         $m = 0;
+        $files = array();
         for($k = 1; $k <= 2; $k++){
             $email_file = 'email_file'.$k;
-            if($email_file != ""){
+
+            if($email_info->$email_file != ""){
                 $files[$m] = public_path('data/email/'.$email_info->$email_file);
                 $m++;
             }
@@ -306,4 +306,140 @@ dd("email_send 테이블도 정리 해야함!!!");
         ],$Messages::$mypage['mypage']['message']);
     }
 
+    public function downloadfile(Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $type_name = $request->input('type_name');
+        $email_id = $request->input('email_id');
+        $file_num = $request->input('file_num');
+
+        $email_ori_file = "email_ori_file$file_num";
+        $email_file = "email_file$file_num";
+
+        $email_info = DB::table('emails')->select($email_ori_file, $email_file)->where('id', $email_id)->first();    //게시물 정보 추출
+
+        $path = 'data/email';     //첨부물 저장 경로
+        $down_file = public_path($path.'/'.$email_info->$email_file);
+
+        return response()->download($down_file, $email_info->$email_ori_file);
+    }
+
+    public function modifysave(Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        //스마트 에디터 쿠키 때문에 일정 시간 지나면 글 못쓰게
+        if(!isset($_COOKIE['directory'])){
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['time_over']);
+            exit;
+        }
+
+        $email_subject = addslashes($request->input('email_subject'));
+        $email_content = $request->input('email_content');
+
+        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
+        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
+        $path = 'data/email';     //첨부물 저장 경로
+
+        $email_info = DB::table('emails')->where('id', $request->input('email_id'))->first();   //이메일 정보 읽기
+
+        //DB 저장 배열 만들기
+        $data = array(
+            'email_subject' => $email_subject,
+            'email_content' => $email_content,
+        );
+
+        for($i = 1; $i <= 2; $i++){
+            $file_chk_tmp = 'file_chk'.$i;
+            $file_chk = $request->input($file_chk_tmp); //수정,삭제,새로등록 체크 파악
+            if($file_chk == 1){ //체크된 것들만 액션
+                if($request->hasFile('email_file'.$i))
+                {
+                    $email_file[$i] = $request->file('email_file'.$i);
+                    //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
+                    $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
+
+                    //첨부 파일 용량 예외처리
+                    Validator::validate($request->all(), [
+                        'email_file'.$i  => ['max:'.$max_size_mb]
+                    ], [$upload_max_filesize."MB 까지만 저장 가능 합니다."]);
+
+                    $attachment_result = CustomUtils::attachment_save($email_file[$i],$path); //위의 패스로 이미지 저장됨
+
+                    $data['email_ori_file'.$i] = $attachment_result[2];  //배열에 추가 함
+                    $data['email_file'.$i] = $attachment_result[1];  //배열에 추가 함
+
+                    //기존 첨부 파일 처리
+                    $email_file_tmp = 'email_file'.$i;
+                    if($email_info->$email_file_tmp != ""){   //기존 첨부가 있는지 파악 - 있다면 기존 파일 전체 삭제후 재 등록
+                        $img_path = $path.'/'.$email_info->$email_file_tmp;
+
+                        if (file_exists($img_path)) {
+                            @unlink($img_path); //이미지 삭제
+                        }
+                    }
+                }else{  //첨부가 없음
+                    //기존 첨부 파일 처리
+                    $email_file_tmp = 'email_file'.$i;
+                    if($email_info->$email_file_tmp != ""){   //기존 첨부가 있는지 파악 - 있다면 기존 파일 전체 삭제후 재 등록
+                        $img_path = $path.'/'.$email_info->$email_file_tmp;
+
+                        if (file_exists($img_path)) {
+                            @unlink($img_path); //이미지 삭제
+                        }
+                    }
+
+                    $data['email_ori_file'.$i] = "";  //배열에 추가 함
+                    $data['email_file'.$i] = "";  //배열에 추가 함
+                }
+            }
+
+            $update_result = DB::table('emails')->where('id', $request->input('email_id'))->limit(1)->update($data);
+        }
+
+        if($update_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_modisave']);
+        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+    }
+
+    public function sendlist(Request $request)
+    {
+        $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
+        if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
+            return redirect()->route('main.index');
+            exit;
+        }
+
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $email_id       = $request->input('id');
+        $pageNum        = $request->input('page');
+        $writeList      = 30;  //페이지당 글수
+        $pageNumList    = 30; //블럭당 페이지수
+
+        $page_control = CustomUtils::page_function('email_sends',$pageNum,$writeList,$pageNumList,'email_send','','','email_id',$email_id);
+
+        $email_send_lists = DB::table('email_sends')->where('email_id',$email_id)->orderby('id', 'asc')->skip($page_control['startNum'])->take($writeList)->get();
+
+        $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
+
+        return view('adm.email.emailsendlist',[
+            'virtual_num'           => $page_control['virtual_num'],
+            'email_send_lists'      => $email_send_lists,
+            'pageNum'               => $page_control['pageNum'],
+            'pageList'              => $pageList,
+        ],$Messages::$mypage['mypage']['message']);
+    }
 }

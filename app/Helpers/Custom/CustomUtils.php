@@ -57,7 +57,6 @@ return $validator;
     }
 
     //회원 이메일 보내기 함수(첨부파일)
-//$email_send_value = CustomUtils::email_mem_send("email.email_mem_send", $data, $files);
     public static function email_mem_send($email_blade, $data, $files = '')
     {
         Mail::send(
@@ -67,7 +66,7 @@ return $validator;
             function($message) use ($data, $files) {
                 $message->to($data["email"], $data["name"])->subject($data["subject"]);
 
-                if($files != ""){
+                if(count($files) != 0){
                     foreach ($files as $file){
                         $message->attach($file);
                     }
@@ -123,8 +122,8 @@ return $validator;
         //$type = 게시판 페이징인지 다른 곳 페이징인지 선택
         //$bm_tb_name = 게시판 이름
         //$cate = 카테고리 선택시
-        //$keymethod = 검색 이 있을시 (칼럼)
-        //$keyword = 검색 이 있을시 (검색어)
+        //$keymethod = 검색 이 있을시 (칼럼) - 조건으로도 쓰임
+        //$keyword = 검색 이 있을시 (검색어) - 조건으로도 쓰임
 
         $page = array();
         $searchinfo = "";
@@ -140,6 +139,10 @@ return $validator;
 
             $total_tmp = DB::select("select count(*) as cnt from items a, categorys b where 1 {$search_sql} ");
             $total_cnt = $total_tmp[0]->cnt;
+        }else if($type == 'email_send'){
+            //이메일 발송 리스트 일때
+            $total_cnt = DB::table($table_name)->where($keymethod,$keyword)->count();
+            $cateinfo = "&id=".$keyword;
         }else{
             //게시판일때
             if($keymethod != "" && $keyword != ""){
