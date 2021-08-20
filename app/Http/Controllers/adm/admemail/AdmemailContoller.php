@@ -157,7 +157,7 @@ class AdmemailContoller extends Controller
         }
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
-dd("email_send 테이블도 정리 해야함!!!");
+
         $path = 'data/email';     //첨부물 저장 경로
         $editor_path = $path."/editor";     //스마트 에디터 첨부 저장 경로
 
@@ -180,7 +180,8 @@ dd("email_send 테이블도 정리 해야함!!!");
                 }
             }
 
-            DB::table('emails')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
+            DB::table('emails')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제(본문)
+            DB::table('email_sends')->where('email_id',$request->input('chk_id')[$i])->delete();   //row 삭제(발송자명단)
         }
 
         return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_del']);

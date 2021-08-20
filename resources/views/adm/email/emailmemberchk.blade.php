@@ -5,7 +5,7 @@
 
 <table>
     <tr>
-        <td><h4>메일발송 대상 회원 선택</h4></td>
+        <td><h4>메일발송 대상 회원 선택</h4><br><font color="red"><b>※ 발송 완료 메세지가 나올때 까지 기다리세요.</b></font></td>
     </tr>
 </table>
 
