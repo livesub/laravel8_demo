@@ -199,7 +199,7 @@ class AdmemailContoller extends Controller
 
         $id = $request->input('id');
 
-        //이메일 인증이 완료된 회원과 관리자를 제외한 회원을 뽑아 온다
+        //이메일 인증이 완료된 회원과 관리자, 탈퇴 회원을 제외한 회원을 뽑아 온다
         //$user_lists = DB::table('users')->select('id','user_id','user_name','user_phone')->where([['user_level','>',config('app.ADMIN_LEVEL')],['user_type','N']])->whereRaw('user_confirm_code is null')->orderby('id', 'DESC')->get();
         //테스트 용도\
         $user_lists = DB::table('users')->select('id','user_id','user_name','user_phone')->whereRaw('user_confirm_code is null')->orderby('id', 'DESC')->get();
