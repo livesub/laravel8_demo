@@ -572,7 +572,7 @@ Route::post('board/commemtdelete/{tb_name}', [  //게시판 댓글 삭제 처리
 
 
 
-
+/*** 프론트 메뉴 관리 */
 //일반 페이지(html) 처리
 //Route::get('/defalut_html/{pg_name}/{pg_code}', [
 Route::get('/defalut_html/{pg_name}', [
