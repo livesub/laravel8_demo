@@ -30,7 +30,7 @@
         }try {
             elClickedObj.form.submit();
         } catch(e) {}
-
+        $("#item_form").attr("action", "{{ route('adm.item.modifysave') }}");
         $("#item_form").submit();
     }
 </script>
