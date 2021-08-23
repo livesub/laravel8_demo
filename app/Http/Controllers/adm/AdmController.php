@@ -36,7 +36,7 @@ class AdmController extends Controller
 
             if(!$this->user){
                 //로그인이 되지 않았다면
-                return redirect()->route('adm.login.index');
+                return redirect()->route('login.index');
                 exit;
             }else{
                 //로그인이 되었다면..
