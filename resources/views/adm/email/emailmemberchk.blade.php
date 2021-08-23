@@ -105,12 +105,14 @@
         //화면의 높이와 너비를 구합니다.
         var maskHeight = $(document).height();
         var maskWidth  = window.document.body.clientWidth;
+        var imgHeight = maskHeight / 3;
+        var imgWidth = maskWidth / 2;
 
         //화면에 출력할 마스크를 설정해줍니다.
         var mask       = "<div id='mask' style='position:absolute; z-index:100; background-color:#000000; display:none; left:0; top:0;'></div>";
         var loadingImg = '';
 
-        loadingImg += "<div id='loadingImg' style='width:700px;height:200px; text-align: center'>";
+        loadingImg += "<div id='loadingImg' style='width:"+imgWidth+"px;height:"+imgHeight+"px; text-align: center'>";
         loadingImg += " <img src='"+gif+"' id='loading-image' style='position: relative; display: block; margin: 0px auto;'/>";
         loadingImg += "</div>";
 
