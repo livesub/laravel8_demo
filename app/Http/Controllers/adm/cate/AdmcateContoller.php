@@ -35,8 +35,8 @@ class AdmcateContoller extends Controller
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $pageNum     = $request->input('page');
-        $writeList   = 20;  //10갯씩 뿌리기
-        $pageNumList = 20; // 한 페이지당 표시될 글 갯수
+        $writeList   = 10;  //10갯씩 뿌리기
+        $pageNumList = 10; // 한 페이지당 표시될 글 갯수
         $type = 'cate';
 
         $page_control = CustomUtils::page_function('categorys',$pageNum,$writeList,$pageNumList,$type,'','','','');

@@ -69,7 +69,7 @@
             LoadingWithMask('/img/loading.gif');
             setTimeout("closeLoadingWithMask()", 300000);
 
-            f.submit();
+            //f.submit();
         }else{
             return;
         }
