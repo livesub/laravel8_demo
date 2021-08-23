@@ -365,15 +365,15 @@ class AdmitemContoller extends Controller
 
         //3단계 가져옴
         $three_str_cut = substr($item_info->ca_id,0,6);
-        $three_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 6')->orderby('ca_id', 'ASC')->get();
+        $three_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$two_str_cut.'%']])->whereRaw('length(ca_id) = 6')->orderby('ca_id', 'ASC')->get();
 
         //4단계 가져옴
         $four_str_cut = substr($item_info->ca_id,0,8);
-        $four_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 8')->orderby('ca_id', 'ASC')->get();
+        $four_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$three_str_cut.'%']])->whereRaw('length(ca_id) = 8')->orderby('ca_id', 'ASC')->get();
 
         //5단계 가져옴
         $five_str_cut = substr($item_info->ca_id,0,10);
-        $five_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$one_str_cut.'%']])->whereRaw('length(ca_id) = 10')->orderby('ca_id', 'ASC')->get();
+        $five_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where([['ca_display','Y'],['ca_id','like',$four_str_cut.'%']])->whereRaw('length(ca_id) = 10')->orderby('ca_id', 'ASC')->get();
 
         return view('adm.item.itemmodify',[
             'one_step_infos'    => $one_step_infos,
