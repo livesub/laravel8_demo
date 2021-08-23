@@ -37,12 +37,13 @@ class BoardmanageController extends Controller
 
     public function index()
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         //select 쿼리
@@ -66,12 +67,13 @@ class BoardmanageController extends Controller
      */
     public function create(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $bm_tb_name       = $request->input('bm_tb_name');
@@ -116,12 +118,13 @@ class BoardmanageController extends Controller
      */
     public function store(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $num       = $request->input('num');
@@ -173,12 +176,13 @@ class BoardmanageController extends Controller
      */
     public function show(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $num        = $request->input('num');
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
@@ -228,12 +232,13 @@ class BoardmanageController extends Controller
      */
     public function destroy(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $b_id           = $request->input('b_id');

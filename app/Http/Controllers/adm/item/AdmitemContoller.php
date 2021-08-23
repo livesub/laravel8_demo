@@ -26,12 +26,13 @@ class AdmitemContoller extends Controller
 
     public function index(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
 
@@ -86,12 +87,13 @@ class AdmitemContoller extends Controller
      */
     public function create(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $ca_id     = $request->input('ca_id');
@@ -135,12 +137,13 @@ class AdmitemContoller extends Controller
 
     public function ajax_select(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $ca_id     = $request->input('ca_id');
@@ -198,12 +201,13 @@ class AdmitemContoller extends Controller
 
     public function createsave(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         if(!isset($_COOKIE['directory'])){  //쿠키 값이 사라진 후에 저장 되지 않게
@@ -284,13 +288,15 @@ class AdmitemContoller extends Controller
         else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
     }
 
-    public function choice_del(Request $request){
+    public function choice_del(Request $request)
+    {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $path = 'data/item';     //첨부물 저장 경로
@@ -325,12 +331,13 @@ class AdmitemContoller extends Controller
 
     public function modify(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $id = $request->input('id');
@@ -386,12 +393,13 @@ class AdmitemContoller extends Controller
 
     public function downloadfile(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $id = $request->input('id');
@@ -407,12 +415,13 @@ class AdmitemContoller extends Controller
 
     public function modifysave(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $id                 = $request->input('id');

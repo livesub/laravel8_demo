@@ -39,12 +39,13 @@ class MemberlistController extends Controller
 
     public function index(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $pageNum     = $request->input('page');
@@ -84,12 +85,13 @@ class MemberlistController extends Controller
      */
     public function store(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $mode       = $request->input('mode');
@@ -283,12 +285,13 @@ class MemberlistController extends Controller
      */
     public function show(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $mode       = $request->input('mode');
@@ -375,12 +378,13 @@ class MemberlistController extends Controller
 
     public function pw_change(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $user_pw = trim($request->get('user_pw'));
@@ -428,12 +432,13 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
 
     public function imgdel(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $num        = $request->input('num');
@@ -474,12 +479,13 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
 
     public function member_out(Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         for ($i = 0; $i < count($request->input('chk_id')); $i++) {

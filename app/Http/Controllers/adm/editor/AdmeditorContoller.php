@@ -23,12 +23,13 @@ class AdmeditorContoller extends Controller
 
     public function destroy()
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         //현재 게시판에만 쓰였지만 다른 곳에 쓰일 경우 계속 추가 해야 함

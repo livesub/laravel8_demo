@@ -149,7 +149,8 @@ Route::post('adm/login', [
 ]);
 
 /* 로그인 사용자만 볼수 있는 페이지를 group 로 묶는다(관리자) */
-Route::group(['middleware' => ['auth']], function () {
+//Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 만들어서 관리자 가 아니먄 튕기게 한다
     /* 회원 리스트 */
     Route::get('adm/member', [
         'as' => 'adm.member.index',
