@@ -122,6 +122,18 @@
 
                                 <li><a href="{{ $two_page_link }}">{{ $two_step_info->menu_name_kr }}</a>
 
+                                    @if($two_step_info->menu_page_type == "I")  <!-- 상품 일때 처리 -->
+                                        @php
+                                            $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 2')->orderby('ca_rank', 'DESC')->get();
+                                        @endphp
+                                    <ul class="main3">
+                                        @foreach($cate_infos as $cate_info)
+                                        <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
+
                                     @if(count($three_step_infos) != 0)
 
                                     <ul class="main3">
@@ -133,6 +145,20 @@
                                         @endphp
 
                                         <li><a href="{{ $three_page_link }}">{{ $three_step_info->menu_name_kr }}</a></li>
+
+                                        @if($three_step_info->menu_page_type == "I")  <!-- 상품 일때 처리 -->
+                                            @php
+                                                $cate_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 2')->orderby('ca_rank', 'DESC')->get();
+                                            @endphp
+                                        <ul class="main3">
+                                            @foreach($cate_infos as $cate_info)
+                                            <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                        @endif
+
+
                                         @endforeach
                                     </ul>
 
