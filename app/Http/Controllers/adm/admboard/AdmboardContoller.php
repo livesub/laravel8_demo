@@ -54,7 +54,7 @@ class AdmboardContoller extends Controller
 
         //글list 제어
         if($user_level > $board_set_info->bm_list_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_list_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_list_chk']);
             exit;
         }
 
@@ -157,7 +157,7 @@ class AdmboardContoller extends Controller
 
         //글쓰기 권한 제어
         if($user_level > $board_set_info->bm_write_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
             exit;
         }
 
@@ -215,7 +215,7 @@ class AdmboardContoller extends Controller
 
         //글쓰기 권한 제어
         if($user_level > $board_set_info->bm_write_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_write_chk']);
             exit;
         }
 
@@ -357,7 +357,7 @@ class AdmboardContoller extends Controller
 
         //글보기 권한 제어
         if($user_level > $board_set_info->bm_view_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_view_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_view_chk']);
             exit;
         }
 
@@ -529,7 +529,7 @@ class AdmboardContoller extends Controller
 
         //삭제 권한 제어
         if($user_level > $board_set_info->bm_delete_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_del_chk']);
             exit;
         }
 
@@ -717,7 +717,8 @@ class AdmboardContoller extends Controller
 
         if($tb_name == "" || $b_id == "" || $upw == ""){
             //예외 처리
-            return redirect()->route('adm.admboard.index',$tb_name);
+            //return redirect()->route('adm.admboard.index',$tb_name);
+            return redirect()->back();
             exit;
         }
 
@@ -799,7 +800,7 @@ class AdmboardContoller extends Controller
 
         //답글 쓰기 제어
         if($user_level > $board_set_info->bm_reply_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_reply_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_reply_chk']);
             exit;
         }
 
@@ -844,7 +845,7 @@ class AdmboardContoller extends Controller
 
         //답글쓰기 권한 제어
         if($user_level > $board_set_info->bm_reply_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_reply_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_reply_chk']);
             exit;
         }
 
@@ -1003,7 +1004,7 @@ class AdmboardContoller extends Controller
 
         //수정 권한 제어
         if($user_level > $board_set_info->bm_modify_chk){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_view_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_view_chk']);
             exit;
         }
 
@@ -1234,7 +1235,7 @@ class AdmboardContoller extends Controller
 
         //댓글 권한 제어(회원만 댓글 가능)
         if(Auth::user()->user_level == "" || $board_set_info->bm_coment_type != 1){
-            return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_comment_chk']);
+            return redirect()->back()->with('alert_messages', $Messages::$board['b_ment']['b_comment_chk']);
             exit;
         }
 
