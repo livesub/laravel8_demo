@@ -158,7 +158,6 @@
                                         </ul>
                                         @endif
 
-
                                         @endforeach
                                     </ul>
 
