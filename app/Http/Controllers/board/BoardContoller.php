@@ -160,11 +160,11 @@ class BoardContoller extends Controller
         $write_blade = "skin.".$board_set_info->bm_skin.".write";
 
         return view($write_blade,[
-            'tb_name'                   => $tb_name,
-            'board_set_info'            => $board_set_info,
-            'user_level'                => $user_level,
-            'user_id'                   => $user_id,
-            'select_disp'               => $select_disp,
+            'tb_name'               => $tb_name,
+            'board_set_info'        => $board_set_info,
+            'user_level'            => $user_level,
+            'user_id'               => $user_id,
+            'select_disp'           => $select_disp,
         ],$Messages::$mypage['mypage']['message']);
     }
 
@@ -231,17 +231,17 @@ class BoardContoller extends Controller
 
         //DB 저장 배열 만들기
         $data = array(
-            'bm_tb_name' => $tb_name,
-            'bdt_chk_secret' => $bdt_chk_secret,
-            'bdt_uid' => $bdt_uid,
-            'bdt_uname' => $bdt_uname,
-            'bdt_upw' => $bdt_upw,
-            'bdt_subject' => $bdt_subject,
-            'bdt_content' => $bdt_content,
-            'bdt_category' => $bdt_category,
-            'bdt_ip' => $bdt_ip,
-            'bdt_sort' => 0,
-            'bdt_depth' => 0,
+            'bm_tb_name'        => $tb_name,
+            'bdt_chk_secret'    => $bdt_chk_secret,
+            'bdt_uid'           => $bdt_uid,
+            'bdt_uname'         => $bdt_uname,
+            'bdt_upw'           => $bdt_upw,
+            'bdt_subject'       => $bdt_subject,
+            'bdt_content'       => $bdt_content,
+            'bdt_category'      => $bdt_category,
+            'bdt_ip'            => $bdt_ip,
+            'bdt_sort'          => 0,
+            'bdt_depth'         => 0,
         );
 
         for($i = 1; $i <= $file_cnt; $i++){
@@ -459,19 +459,19 @@ class BoardContoller extends Controller
         $view_blade = "skin.".$board_set_info->bm_skin.".view";
 
         return view($view_blade,[
-            'tb_name'                   => $tb_name,
-            'category_ment'             => $category_ment,
-            'board_set_info'            => $board_set_info,
-            'board_info'                => $board_info_display, //게시판 내용
-            'write_button'              => $write_button,
-            'reply_button'              => $reply_button,
-            'modi_button'               => $modi_button,
-            'del_button'                => $del_button,
-            'list_button'               => $list_button,
-            'page'                      => $page,
-            'cate'                      => $cate,
-            'b_id'                      => $request->input('id'),
-            'comment_infos'             => $comment_infos,
+            'tb_name'           => $tb_name,
+            'category_ment'     => $category_ment,
+            'board_set_info'    => $board_set_info,
+            'board_info'        => $board_info_display, //게시판 내용
+            'write_button'      => $write_button,
+            'reply_button'      => $reply_button,
+            'modi_button'       => $modi_button,
+            'del_button'        => $del_button,
+            'list_button'       => $list_button,
+            'page'              => $page,
+            'cate'              => $cate,
+            'b_id'              => $request->input('id'),
+            'comment_infos'     => $comment_infos,
         ],$Messages::$mypage['mypage']['message']);
     }
 
@@ -545,15 +545,15 @@ class BoardContoller extends Controller
         $board_sort = DB::table('board_datas_tables')->where([['bdt_grp', $board_info->bdt_grp], ['bm_tb_name',$tb_name],['bdt_sort','>',$board_info->bdt_sort]])->count();
         if($board_sort >= 1){   //댓글이 있는 상태
             $data = array(
-                'bdt_uid' => '',
-                'bdt_uname' => '',
-                'bdt_upw' => '',
-                'bdt_subject' => '삭제된 글입니다.',
-                'bdt_content' => '',
-                'bdt_hit' => 0,
-                'bdt_comment_cnt' => 0,
-                'bdt_down_cnt' => 0,
-                'bdt_del' => 'Y',
+                'bdt_uid'           => '',
+                'bdt_uname'         => '',
+                'bdt_upw'           => '',
+                'bdt_subject'       => '삭제된 글입니다.',
+                'bdt_content'       => '',
+                'bdt_hit'           => 0,
+                'bdt_comment_cnt'   => 0,
+                'bdt_down_cnt'      => 0,
+                'bdt_del'           => 'Y',
             );
 
             for($p = 1; $p <= $board_set_info->bm_file_num; $p++){  //단순 첨부 파일 DB 만 지우기 위해
@@ -615,15 +615,15 @@ class BoardContoller extends Controller
             $board_sort = DB::table('board_datas_tables')->where([['bdt_grp', $board_info->bdt_grp], ['bm_tb_name',$tb_name],['bdt_sort','>',$board_info->bdt_sort]])->count();
             if($board_sort >= 1){   //답글이 있는 상태
                 $data = array(
-                    'bdt_uid' => '',
-                    'bdt_uname' => '',
-                    'bdt_upw' => '',
-                    'bdt_subject' => '삭제된 글입니다.',
-                    'bdt_content' => '',
-                    'bdt_hit' => 0,
-                    'bdt_comment_cnt' => 0,
-                    'bdt_down_cnt' => 0,
-                    'bdt_del' => 'Y',
+                    'bdt_uid'           => '',
+                    'bdt_uname'         => '',
+                    'bdt_upw'           => '',
+                    'bdt_subject'       => '삭제된 글입니다.',
+                    'bdt_content'       => '',
+                    'bdt_hit'           => 0,
+                    'bdt_comment_cnt'   => 0,
+                    'bdt_down_cnt'      => 0,
+                    'bdt_del'           => 'Y',
                 );
 
                 for($p = 1; $p <= $board_set_info->bm_file_num; $p++){  //단순 첨부 파일 DB 만 지우기 위해
@@ -646,7 +646,7 @@ class BoardContoller extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        $id = $request->input('id');
+        $id   = $request->input('id');
         $page = $request->input('page');
         $cate = $request->input('cate');
         $mode = $request->input('mode');
@@ -841,18 +841,18 @@ class BoardContoller extends Controller
 
         //DB 저장 배열 만들기
         $data = array(
-            'bm_tb_name' => $tb_name,
-            'bdt_chk_secret' => $bdt_chk_secret,
-            'bdt_uid' => $bdt_uid,
-            'bdt_uname' => $bdt_uname,
-            'bdt_upw' => $bdt_upw,
-            'bdt_subject' => $bdt_subject,
-            'bdt_content' => $bdt_content,
-            'bdt_category' => $bdt_category,
-            'bdt_ip' => $bdt_ip,
-            'bdt_grp' => $bdt_grp,
-            'bdt_sort' => $bdt_sort + 1,
-            'bdt_depth' => $bdt_depth + 1,
+            'bm_tb_name'        => $tb_name,
+            'bdt_chk_secret'    => $bdt_chk_secret,
+            'bdt_uid'           => $bdt_uid,
+            'bdt_uname'         => $bdt_uname,
+            'bdt_upw'           => $bdt_upw,
+            'bdt_subject'       => $bdt_subject,
+            'bdt_content'       => $bdt_content,
+            'bdt_category'      => $bdt_category,
+            'bdt_ip'            => $bdt_ip,
+            'bdt_grp'           => $bdt_grp,
+            'bdt_sort'          => $bdt_sort + 1,
+            'bdt_depth'         => $bdt_depth + 1,
         );
 
         for($i = 1; $i <= $file_cnt; $i++){
@@ -975,13 +975,13 @@ class BoardContoller extends Controller
         $modify_blade = "skin.".$board_set_info->bm_skin.".modify";
 
         return view($modify_blade,[
-            'tb_name'                   => $tb_name,
-            'ori_num'                   => $ori_num,
-            'user_level'                => $user_level,
-            'user_id'                   => $user_id,
-            'select_disp'               => $select_disp,
-            'board_info'                => $board_info,
-            'board_set_info'            => $board_set_info,
+            'tb_name'           => $tb_name,
+            'ori_num'           => $ori_num,
+            'user_level'        => $user_level,
+            'user_id'           => $user_id,
+            'select_disp'       => $select_disp,
+            'board_info'        => $board_info,
+            'board_set_info'    => $board_set_info,
         ],$Messages::$board['b_ment']);
     }
 
@@ -1038,15 +1038,15 @@ class BoardContoller extends Controller
 
         //DB 저장 배열 만들기
         $data = array(
-            'bm_tb_name' => $tb_name,
-            'bdt_chk_secret' => $bdt_chk_secret,
-            'bdt_uid' => $bdt_uid,
-            'bdt_uname' => $bdt_uname,
-            'bdt_upw' => $bdt_upw,
-            'bdt_subject' => $bdt_subject,
-            'bdt_content' => $bdt_content,
-            'bdt_category' => $bdt_category,
-            'bdt_ip' => $bdt_ip,
+            'bm_tb_name'        => $tb_name,
+            'bdt_chk_secret'    => $bdt_chk_secret,
+            'bdt_uid'           => $bdt_uid,
+            'bdt_uname'         => $bdt_uname,
+            'bdt_upw'           => $bdt_upw,
+            'bdt_subject'       => $bdt_subject,
+            'bdt_content'       => $bdt_content,
+            'bdt_category'      => $bdt_category,
+            'bdt_ip'            => $bdt_ip,
         );
 
         $path = 'data/board/'.$tb_name;     //첨부물 저장 경로
@@ -1157,9 +1157,9 @@ class BoardContoller extends Controller
             exit;
         }
 
-        $cate     = $request->input('cate');
-        $page     = $request->input('page');
-        $b_id     = $request->input('b_id');
+        $cate = $request->input('cate');
+        $page = $request->input('page');
+        $b_id = $request->input('b_id');
 
         //$board_info = DB::table('board_datas_tables')->where([['id', $b_id], ['bm_tb_name',$tb_name]])->first();   //게시판 정보 읽기
 
@@ -1177,14 +1177,14 @@ class BoardContoller extends Controller
 
         //DB 저장 배열 만들기
         $data = array(
-            'bm_tb_name' => $tb_name,
-            'bdt_id' => $b_id,
-            'bdct_uid' => $bdct_uid,
-            'bdct_uname' => $bdct_uname,
-            'bdct_memo' => $bdct_memo,
-            'bdct_ip' => $bdct_ip,
-            'bdct_sort' => 0,
-            'bdct_depth' => 0,
+            'bm_tb_name'    => $tb_name,
+            'bdt_id'        => $b_id,
+            'bdct_uid'      => $bdct_uid,
+            'bdct_uname'    => $bdct_uname,
+            'bdct_memo'     => $bdct_memo,
+            'bdct_ip'       => $bdct_ip,
+            'bdct_sort'     => 0,
+            'bdct_depth'    => 0,
         );
 
         $create_result = board_datas_comment_table::create($data);
@@ -1233,15 +1233,15 @@ class BoardContoller extends Controller
 
         //DB 저장 배열 만들기
         $data = array(
-            'bm_tb_name' => $tb_name,
-            'bdt_id' => $b_id,
-            'bdct_uid' => $bdct_uid,
-            'bdct_uname' => $bdct_uname,
-            'bdct_memo' => $bdct_memo,
-            'bdct_grp' => $bdct_grp,
-            'bdct_sort' => $bdct_sort + 1,
-            'bdct_depth' => $bdct_depth + 1,
-            'bdct_ip' => $bdct_ip,
+            'bm_tb_name'    => $tb_name,
+            'bdt_id'        => $b_id,
+            'bdct_uid'      => $bdct_uid,
+            'bdct_uname'    => $bdct_uname,
+            'bdct_memo'     => $bdct_memo,
+            'bdct_grp'      => $bdct_grp,
+            'bdct_sort'     => $bdct_sort + 1,
+            'bdct_depth'    => $bdct_depth + 1,
+            'bdct_ip'       => $bdct_ip,
         );
 
         //저장 처리
@@ -1303,10 +1303,10 @@ class BoardContoller extends Controller
         $b_comment_sort = DB::table('board_datas_comment_tables')->where([['bdct_grp', $b_c_info->bdct_grp], ['bm_tb_name',$tb_name],['bdct_sort','>',$b_c_info->bdct_sort]])->count();
         if($b_comment_sort >= 1){   //댓글이 있는 상태
             $data = array(
-                'bdct_uid' => '',
-                'bdct_uname' => '',
-                'bdct_memo' => '삭제된 글입니다.',
-                'bdct_del' => 'Y',
+                'bdct_uid'      => '',
+                'bdct_uname'    => '',
+                'bdct_memo'     => '삭제된 글입니다.',
+                'bdct_del'      => 'Y',
             );
             $update_result = DB::table('board_datas_comment_tables')->where('id', $c_id)->limit(1)->update($data);
         }else{
