@@ -1,6 +1,10 @@
 @php
     use App\Helpers\Custom\CustomUtils; //사용자 공동 함수
+
+    $one_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw('length(menu_id) = 2')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
 @endphp
+
+    @if(count($one_step_infos) != "0")
 
 <style>
 /*가로메뉴형*/
@@ -74,11 +78,6 @@
 }
 </style>
 
-@php
-    $one_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw('length(menu_id) = 2')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
-@endphp
-
-    @if(count($one_step_infos) != "0")
     <table>
         <tr>
             <td>
