@@ -75,7 +75,7 @@ class BoardContoller extends Controller
 
         //선택 삭제 제어
         $choice_del_button = "";
-        if($user_level == config('app.ADMIN_LEVEL')){
+        if($user_level <= config('app.ADMIN_LEVEL')){
             $choice_del_button = "<td><button type='button' onclick='choice_del();'>{$Messages::$board['b_ment']['b_choice_del_ment']}</button></td>";
         }
 
