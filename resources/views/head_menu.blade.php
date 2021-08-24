@@ -100,8 +100,7 @@
                                 @endphp
                             <ul class="main2">
                                 @foreach($cate_infos as $cate_info)
-                                <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a>
-                                </li>
+                                <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a></li>
                                 @endforeach
                             </ul>
                             @endif
@@ -115,8 +114,6 @@
                                     @php
                                         $two_page_link = "";
                                         $three_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw("menu_id like '{$two_step_info->menu_id}%'")->whereRaw('length(menu_id) = 6')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
-
-                                        //$two_page_link = CustomUtils::menu_page_link($three_step_infos,$two_step_info);
                                         $two_page_link = CustomUtils::menu_page_link2($two_step_info);
                                     @endphp
 
@@ -128,8 +125,7 @@
                                         @endphp
                                     <ul class="main3">
                                         @foreach($cate_infos as $cate_info)
-                                        <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a>
-                                        </li>
+                                        <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a></li>
                                         @endforeach
                                     </ul>
                                     @endif
@@ -139,10 +135,9 @@
                                     <ul class="main3">
 
                                         @foreach($three_step_infos as $three_step_info)
-                                        @php
-                                            //$three_page_link = CustomUtils::menu_page_link($three_step_infos,$three_step_info);
-                                            $three_page_link = CustomUtils::menu_page_link2($three_step_info);
-                                        @endphp
+                                            @php
+                                                $three_page_link = CustomUtils::menu_page_link2($three_step_info);
+                                            @endphp
 
                                         <li><a href="{{ $three_page_link }}">{{ $three_step_info->menu_name_kr }}</a></li>
 
@@ -152,8 +147,7 @@
                                             @endphp
                                         <ul class="main3">
                                             @foreach($cate_infos as $cate_info)
-                                            <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a>
-                                            </li>
+                                            <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a></li>
                                             @endforeach
                                         </ul>
                                         @endif
