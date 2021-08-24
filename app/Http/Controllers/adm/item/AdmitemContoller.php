@@ -185,15 +185,15 @@ class AdmitemContoller extends Controller
         $output = "";
         if($num_rows > 0){
             if($length == '2'){
-                $output = '<select name="ca_id" size="15" id="caa_id2"class="cid"  >';
+                $output = '<select name="ca_id" size="10" id="caa_id2"class="cid"  >';
             }elseif($length == '4'){
-                $output = '<select name="ca_id" size="15" id="caa_id3"class="cid" >';
+                $output = '<select name="ca_id" size="10" id="caa_id3"class="cid" >';
             }elseif($length == '6'){
-                $output = '<select name="ca_id" size="15" id="caa_id4"class="cid" >';
+                $output = '<select name="ca_id" size="10" id="caa_id4"class="cid" >';
             }elseif($length == '8'){
-                $output = '<select name="ca_id" size="15" id="caa_id5"class="cid" >';
+                $output = '<select name="ca_id" size="10" id="caa_id5"class="cid" >';
             }elseif($length == '10'){
-                $output = '<select name="ca_id" size="15" id="caa_id6"class="cid" >';
+                $output = '<select name="ca_id" size="10" id="caa_id6"class="cid" >';
             }
 
             foreach($cate_infos as $cate_info){

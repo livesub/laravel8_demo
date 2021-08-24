@@ -66,7 +66,7 @@
                         <table id="cate1">
                         <tr>
                             <td>
-                                <select size="15" name="ca_id" id="caa_id" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id" class="cid" >
                                 @foreach($one_step_infos as $one_step_info)
                                     <option value="{{ $one_step_info->ca_id }}">{{ $one_step_info->ca_name_kr }}</option>
                                 @endforeach
@@ -82,7 +82,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 4)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id2" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id2" class="cid" >
                                 @foreach($two_step_infos as $two_step_info)
                                     <option value="{{ $two_step_info->ca_id }}">{{ $two_step_info->ca_name_kr }}</option>
                                 @endforeach
@@ -100,7 +100,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 6)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id3" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id3" class="cid" >
                                 @foreach($three_step_infos as $three_step_info)
                                     <option value="{{ $three_step_info->ca_id }}">{{ $three_step_info->ca_name_kr }}</option>
                                 @endforeach
@@ -117,7 +117,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 8)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id4" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id4" class="cid" >
                                 @foreach($four_step_infos as $four_step_info)
                                     <option value="{{ $four_step_info->ca_id }}">{{ $four_step_info->ca_name_kr }}</option>
                                 @endforeach
@@ -134,7 +134,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 10)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id5" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id5" class="cid" >
                                 @foreach($five_step_infos as $five_step_info)
                                     <option value="{{ $five_step_info->ca_id }}">{{ $five_step_info->ca_name_kr }}</option>
                                 @endforeach
