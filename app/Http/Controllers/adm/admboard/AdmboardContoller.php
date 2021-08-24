@@ -37,12 +37,13 @@ class AdmboardContoller extends Controller
 
     public function index($tb_name,Request $request)
     {
+/*
         $admin_chk = CustomUtils::admin_access(Auth::user()->user_level,config('app.ADMIN_LEVEL'));
         if(!$admin_chk){    //관리자 권한이 없을때 메인으로 보내 버림
             return redirect()->route('main.index');
             exit;
         }
-
+*/
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $board_set_info = DB::table('boardmanagers')->where('bm_tb_name', $tb_name)->first();
