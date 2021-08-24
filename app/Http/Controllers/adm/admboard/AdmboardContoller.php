@@ -576,9 +576,9 @@ class AdmboardContoller extends Controller
         }
 
 	    //답글이 달린 글이면 삭제 하지 않고(bdt_del 플러그 값 Y로 바꾸고, 제목,내용,글쓴이 등등 'null' 업뎃  첨부물은 삭제)
-        //댓글이 있는지 파악
+        //답글이 있는지 파악
         $board_sort = DB::table('board_datas_tables')->where([['bdt_grp', $board_info->bdt_grp], ['bm_tb_name',$tb_name],['bdt_sort','>',$board_info->bdt_sort]])->count();
-        if($board_sort >= 1){   //댓글이 있는 상태
+        if($board_sort >= 1){   //답글이 있는 상태
             $data = array(
                 'bdt_uid' => '',
                 'bdt_uname' => '',
@@ -599,6 +599,10 @@ class AdmboardContoller extends Controller
         }else{
             DB::table('board_datas_tables')->where('id',$b_id)->delete();   //row 삭제
         }
+
+        //답글이 있던 없던 덧글은 삭제 한다.
+        $bdct_del = DB::table('board_datas_comment_tables')->where([['bdt_id',$b_id],['bm_tb_name',$tb_name]])->delete();   //게시판 댓글 row 삭제
+
         return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
     }
 
@@ -643,9 +647,9 @@ class AdmboardContoller extends Controller
             }
 
             //답글이 달린 글이면 삭제 하지 않고(bdt_del 플러그 값 Y로 바꾸고, 제목,내용,글쓴이 등등 'null' 업뎃  첨부물은 삭제)
-            //댓글이 있는지 파악
+            //답글이 있는지 파악
             $board_sort = DB::table('board_datas_tables')->where([['bdt_grp', $board_info->bdt_grp], ['bm_tb_name',$tb_name],['bdt_sort','>',$board_info->bdt_sort]])->count();
-            if($board_sort >= 1){   //댓글이 있는 상태
+            if($board_sort >= 1){   //답글이 있는 상태
                 $data = array(
                     'bdt_uid' => '',
                     'bdt_uname' => '',
@@ -668,6 +672,8 @@ class AdmboardContoller extends Controller
                 DB::table('board_datas_tables')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
             }
 
+            //답글이 있던 없던 덧글은 삭제 한다.
+            $bdct_del = DB::table('board_datas_comment_tables')->where([['bdt_id',$request->input('chk_id')[$i]],['bm_tb_name',$tb_name]])->delete();   //게시판 댓글 row 삭제
         }
         return redirect()->route('adm.admboard.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
     }
