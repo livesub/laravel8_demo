@@ -3,7 +3,7 @@
 #
 #		파일이름		:		LoginController.php
 #		파일설명		:		로그인
-#		저작권			:		저작권은 제작자 있지만 누구나 사용합니다.
+#		저작권			:		저작권은 제작자에 있지만 누구나 사용합니다.
 #		제작자			:		김영섭
 #		최초제작일	    :		2021년 07월 14일
 #		최종수정일		:		2021년 07월 14일
@@ -44,16 +44,6 @@ class LoginController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -63,7 +53,6 @@ class LoginController extends Controller
      /**************************************************************************/
      /* $user_pw 을 사용 하면 로그인이 되지 않으므로 칼럼명을 password 로 바꾼다 */
      /**************************************************************************/
-
     public function store(Request $request)
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
@@ -98,40 +87,6 @@ class LoginController extends Controller
         }
 
         return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['login_ok']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**

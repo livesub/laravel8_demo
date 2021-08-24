@@ -3,7 +3,7 @@
 #
 #		파일이름		:		MemberlistController.php
 #		파일설명		:		관리자페이지 - 회원 리스트,수정,삭제,비번 수정
-#		저작권			:		저작권은 제작자 있지만 누구나 사용합니다.
+#		저작권			:		저작권은 제작자에 있지만 누구나 사용합니다.
 #		제작자			:		김영섭
 #		최초제작일	    :		2021년 07월 14일
 #		최종수정일		:		2021년 07월 14일
@@ -65,16 +65,6 @@ class MemberlistController extends Controller
             'pageNum'=>$page_control['pageNum'],
             'pageList'=>$pageList
         ]); // 요청된 정보 처리 후 결과 되돌려줌
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        //
     }
 
     /**
@@ -394,7 +384,6 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
             exit;
         }
     }
-
 
     public function imgdel(Request $request)
     {

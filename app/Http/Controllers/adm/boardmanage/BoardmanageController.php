@@ -3,7 +3,7 @@
 #
 #		파일이름		:		BoardmanageController.php
 #		파일설명		:		관리자페이지 게시판 설정
-#		저작권			:		저작권은 제작자 있지만 누구나 사용합니다.
+#		저작권			:		저작권은 제작자에 있지만 누구나 사용합니다.
 #		제작자			:		김영섭
 #		최초제작일	    :		2021년 07월 16일
 #		최종수정일		:		2021년 07월 16일
@@ -199,29 +199,6 @@ class BoardmanageController extends Controller
             "board_info"        => $board_info,
             "directory_disp"    => $directory_disp,
         ],$Messages::$mypage['mypage']['message']);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
