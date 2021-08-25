@@ -73,7 +73,7 @@
             @foreach($item_infos as $item_info)
             @php
                 if($item_info->item_img == "") {
-                    $item_img_disp = "no_img";
+                    $item_img_disp = asset("img/no_img.jpg");
                 }else{
                     $item_img_cut = explode("@@",$item_info->item_img);
 
@@ -87,7 +87,7 @@
         <td>
             <table>
                 <tr>
-                    <td><img src="{{ $item_img_disp }}"></td>
+                    <td><img src="{{ $item_img_disp }}" style="width:300px;height:300px;"></td>
                 </tr>
                 <tr>
 

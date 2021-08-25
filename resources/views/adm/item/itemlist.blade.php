@@ -92,7 +92,7 @@
 
             //이미지 처리
             if($item_info->item_img == "") {
-                $item_img_disp = "no_img";
+                $item_img_disp = asset("img/no_img.jpg");
             }else{
                 $item_img_cut = explode("@@",$item_info->item_img);
                 $item_img_disp = "/data/item/".$item_img_cut[3];
@@ -101,7 +101,7 @@
     <tr>
         <td><input type="checkbox" name="chk_id[]" value="{{ $item_info->id }}" id="chk_id_{{ $item_info->id }}" class="selec_chk"></td>
         <td>{{ $virtual_num-- }}</td>
-        <td><img src="{{ $item_img_disp }}"></td>
+        <td><img src="{{ $item_img_disp }}" style="width:100px;height:100px;"></td>
         <td>{{ $ca_name_hap }}</td>
         <td>{{ $item_info->item_code }}</td>
         <td>{{ stripslashes($item_info->item_name) }}</td>

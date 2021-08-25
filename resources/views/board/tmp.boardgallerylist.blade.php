@@ -48,7 +48,7 @@
         @foreach($board_lists as $board_list)
             @php
                 if($board_list->bdt_file1 == "") {
-                    $bdt_file1_disp = "no_img";
+                    $bdt_file1_disp = asset("img/no_img.jpg");
                 }else{
                     $bdt_file1_cut = explode("@@",$board_list->bdt_file1);
                     $bdt_file1_disp = "/data/board/{$board_list->bm_tb_name}/".$bdt_file1_cut[1];
@@ -66,7 +66,7 @@
                 <table>
                     <tr>
                         <td>
-                            <img src="{{ $bdt_file1_disp }}">
+                            <img src="{{ $bdt_file1_disp }}" style="width:{{ $board_set_info->bm_resize_width_file }}px;height:{{ $board_set_info->bm_resize_height_file }}px;">
                         </td>
                     </tr>
                     <tr>
