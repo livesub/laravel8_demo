@@ -8,7 +8,7 @@
         @php
             //url 주소의 / 를 잘라내어 마지막 배열값(페이지명)을 가져 온다
             $path_cut = explode("/",Request::path());
-            $path_chk = end($path_cut);
+            $path_chk = array_pop($path_cut);
         @endphp
 <style>
 /*가로메뉴형*/
