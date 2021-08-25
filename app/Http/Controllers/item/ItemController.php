@@ -32,8 +32,8 @@ class ItemController extends Controller
 
         //pgae 관련
         $pageNum     = $request->input('page');
-        $writeList   = 16;  //페이지당 글수
-        $pageNumList = 16; //블럭당 페이지수
+        $writeList   = 15;  //페이지당 글수
+        $pageNumList = 15; //블럭당 페이지수
 
         //검색 처리
         $keymethod      = $request->input('keymethod');
