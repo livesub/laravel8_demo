@@ -5,7 +5,11 @@
 @endphp
 
     @if(count($one_step_infos) != "0")
-
+        @php
+            //url 주소의 / 를 잘라내어 마지막 배열값(페이지명)을 가져 온다
+            $path_cut = explode("/",Request::path());
+            $path_chk = end($path_cut);
+        @endphp
 <style>
 /*가로메뉴형*/
 #menu {
@@ -91,7 +95,15 @@
                             @endphp
 
                         <li>
-                            <a href="{{ $one_page_link }}">{{ $one_step_info->menu_name_kr }}</a>
+                            @php
+                            //타이틀 bold 처리 하기 위해
+                            if($path_chk == $one_step_info->menu_name_en){
+                                $menu_name_kr = "<b><font color='red'>$one_step_info->menu_name_kr</font></b>";
+                            } else {
+                                $menu_name_kr = "$one_step_info->menu_name_kr";
+                            }
+                            @endphp
+                            <a href="{{ $one_page_link }}">{!! $menu_name_kr !!}</a>
 
                             @if($one_step_info->menu_page_type == "I")  <!-- 상품 일때 처리 -->
                                 @php
@@ -99,7 +111,14 @@
                                 @endphp
                             <ul class="main2">
                                 @foreach($cate_infos as $cate_info)
-                                <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a></li>
+                                    @php
+                                        if(Request::input('ca_id') == $cate_info->ca_id){
+                                            $ca_name_kr = "<b><font color='red'>$cate_info->ca_name_kr</font></b>";
+                                        }else{
+                                            $ca_name_kr = "$cate_info->ca_name_kr";
+                                        }
+                                    @endphp
+                                <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{!! $ca_name_kr !!}</a></li>
                                 @endforeach
                             </ul>
                             @endif
@@ -114,9 +133,16 @@
                                         $two_page_link = "";
                                         $three_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw("menu_id like '{$two_step_info->menu_id}%'")->whereRaw('length(menu_id) = 6')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
                                         $two_page_link = CustomUtils::menu_page_link2($two_step_info);
+
+                                        //타이틀 bold 처리 하기 위해
+                                        if($path_chk == $two_step_info->menu_name_en){
+                                            $menu_name_kr = "<b><font color='red'>$two_step_info->menu_name_kr</font></b>";
+                                        } else {
+                                            $menu_name_kr = "$two_step_info->menu_name_kr";
+                                        }
                                     @endphp
 
-                                <li><a href="{{ $two_page_link }}">{{ $two_step_info->menu_name_kr }}</a>
+                                <li><a href="{{ $two_page_link }}">{!! $menu_name_kr !!}</a>
 
                                     @if($two_step_info->menu_page_type == "I")  <!-- 상품 일때 처리 -->
                                         @php
@@ -124,7 +150,14 @@
                                         @endphp
                                     <ul class="main3">
                                         @foreach($cate_infos as $cate_info)
-                                        <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a></li>
+                                            @php
+                                                if(Request::input('ca_id') == $cate_info->ca_id){
+                                                    $ca_name_kr = "<b><font color='red'>$cate_info->ca_name_kr</font></b>";
+                                                }else{
+                                                    $ca_name_kr = "$cate_info->ca_name_kr";
+                                                }
+                                            @endphp
+                                        <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{!! $ca_name_kr !!}</a></li>
                                         @endforeach
                                     </ul>
                                     @endif
@@ -136,9 +169,16 @@
                                         @foreach($three_step_infos as $three_step_info)
                                             @php
                                                 $three_page_link = CustomUtils::menu_page_link2($three_step_info);
+
+                                                //타이틀 bold 처리 하기 위해
+                                                if($path_chk == $three_step_info->menu_name_en){
+                                                    $menu_name_kr = "<b><font color='red'>$three_step_info->menu_name_kr</font></b>";
+                                                } else {
+                                                    $menu_name_kr = "$three_step_info->menu_name_kr";
+                                                }
                                             @endphp
 
-                                        <li><a href="{{ $three_page_link }}">{{ $three_step_info->menu_name_kr }}</a></li>
+                                        <li><a href="{{ $three_page_link }}">{!! $menu_name_kr !!}</a></li>
 
                                         @if($three_step_info->menu_page_type == "I")  <!-- 상품 일때 처리 -->
                                             @php
@@ -146,7 +186,14 @@
                                             @endphp
                                         <ul class="main3">
                                             @foreach($cate_infos as $cate_info)
-                                            <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{{ $cate_info->ca_name_kr }}</a></li>
+                                                @php
+                                                    if(Request::input('ca_id') == $cate_info->ca_id){
+                                                        $ca_name_kr = "<b><font color='red'>$cate_info->ca_name_kr</font></b>";
+                                                    }else{
+                                                        $ca_name_kr = "$cate_info->ca_name_kr";
+                                                    }
+                                                @endphp
+                                            <li><a href="{{ route('item.index','ca_id='.$cate_info->ca_id) }}">{!! $ca_name_kr !!}</a></li>
                                             @endforeach
                                         </ul>
                                         @endif
