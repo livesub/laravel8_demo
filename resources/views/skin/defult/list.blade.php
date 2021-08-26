@@ -61,7 +61,6 @@
     </tr>
     @endif
 
-
     <tr>
         @if(Auth::user() != "")
             @if(Auth::user()->user_level <= config('app.ADMIN_LEVEL'))
@@ -73,9 +72,11 @@
         <td>제목</td>
         <td>글쓴이</td>
         <td>조회수</td>
-        <td>덧글수</td>
-    </tr>
 
+        @if($board_set_info->bm_coment_type == "1")
+        <td>댓글수</td>
+        @endif
+    </tr>
 
     @foreach($board_lists as $board_list)
     <tr>
@@ -107,10 +108,12 @@
 
         <td>{{ $board_list->bdt_uname }}</td>
         <td>{{ $board_list->bdt_hit }}</td>
+
+        @if($board_set_info->bm_coment_type == "1")
         <td>{{ $board_list->bdt_comment_cnt }}</td>
+        @endif
     </tr>
     @endforeach
-
 
     </form>
 </table>

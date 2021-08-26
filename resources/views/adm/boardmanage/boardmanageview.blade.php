@@ -54,8 +54,8 @@
                 $bm_type2 = "selected";
             }
             @endphp
-            <select name="bm_type" id="bm_type">
 
+            <select name="bm_type" id="bm_type">
                 <option value="1" {{ $bm_type1 }}>일반게시판</option>
                 <option value="2" {{ $bm_type2 }}>갤러리게시판</option>
             </select>
@@ -73,8 +73,8 @@
         <td>
             <table>
                 <tr>
-                </tr>
                     <td><input type="text" name="bm_resize_file_num" id="bm_resize_file_num" value="{{ $board_info->bm_resize_file_num }}" size="3"> (리사이징될 파일개수 - 원본제외)</td>
+                </tr>
                 <tr>
                     <td>
                         <input type="text" name="bm_resize_width_file" id="bm_resize_width_file" value="{{ $board_info->bm_resize_width_file }}"> (리사이징될 파일 넓이 - '%%'구분자사용)<br>
@@ -84,7 +84,6 @@
                 <tr>
                     <td><font color="red">※ 리사이징 파일 갯수를 지정 했을시 넓이와 높이를 꼭 지정 하세요.</font></td>
                 </tr>
-
             </table>
         </td>
     </tr>
@@ -110,7 +109,7 @@
             카테고리 값
         </td>
         <td>
-            <input type="text" name="bm_category_key" id="bm_category_key" value="{{ $board_info->bm_category_key }}"> (카테고리설정시 필요한 키값을 넣으세요..구분자 '@@'사용)
+            <input type="text" name="bm_category_key" id="bm_category_key" value="{{ $board_info->bm_category_key }}"> (카테고리설정시 필요한 키값을 넣으세요.구분자 '@@'사용)
         </td>
     </tr>
 

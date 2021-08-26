@@ -565,7 +565,7 @@ class BoardContoller extends Controller
             DB::table('board_datas_tables')->where('id',$b_id)->delete();   //row 삭제
         }
 
-        //답글이 있던 없던 덧글은 삭제 한다.
+        //답글이 있던 없던 댓글은 삭제 한다.
         $bdct_del = DB::table('board_datas_comment_tables')->where([['bdt_id',$b_id],['bm_tb_name',$tb_name]])->delete();   //게시판 댓글 row 삭제
 
         return redirect()->route('board.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
@@ -636,7 +636,7 @@ class BoardContoller extends Controller
                 DB::table('board_datas_tables')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
             }
 
-            //답글이 있던 없던 덧글은 삭제 한다.
+            //답글이 있던 없던 댓글은 삭제 한다.
             $bdct_del = DB::table('board_datas_comment_tables')->where([['bdt_id',$request->input('chk_id')[$i]],['bm_tb_name',$tb_name]])->delete();   //게시판 댓글 row 삭제
         }
         return redirect()->route('board.index',$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
