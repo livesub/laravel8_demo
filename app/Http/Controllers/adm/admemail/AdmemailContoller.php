@@ -84,7 +84,7 @@ class AdmemailContoller extends Controller
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $directory = "email/editor";
+        $directory = "data/email/editor";
         setcookie('directory', $directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         //첨부 파일 저장소
@@ -307,7 +307,7 @@ class AdmemailContoller extends Controller
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $directory = "email/editor";
+        $directory = "data/email/editor";
         setcookie('directory', $directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         //첨부 파일 저장소

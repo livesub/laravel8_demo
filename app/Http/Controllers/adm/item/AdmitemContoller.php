@@ -124,7 +124,7 @@ class AdmitemContoller extends Controller
         $five_step_infos = DB::table('categorys')->select('ca_id', 'ca_name_kr', 'ca_name_en')->where('ca_display','Y')->whereRaw('length(ca_id) = 10')->orderby('ca_id', 'ASC')->get();
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $item_directory = "item/editor";
+        $item_directory = "data/item/editor";
         setcookie('directory', $item_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         //첨부 파일 저장소
@@ -359,7 +359,7 @@ class AdmitemContoller extends Controller
         }
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $item_directory = "item/editor";
+        $item_directory = "data/item/editor";
         setcookie('directory', $item_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         $item_info = DB::table('items')->where([['id',$id],['ca_id',$ca_id]])->first();

@@ -194,7 +194,6 @@ class BoardmanageController extends Controller
         $directory = array_values(array_diff(scandir($path), array(".", "..", "tmp")));
         $directory_disp = CustomUtils::select_box_skin("bm_skin",$directory,$board_info->bm_skin);
 
-
         return view('adm.boardmanage.boardmanageview',[
             "board_info"        => $board_info,
             "directory_disp"    => $directory_disp,

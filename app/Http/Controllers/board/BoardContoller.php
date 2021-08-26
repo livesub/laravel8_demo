@@ -153,7 +153,7 @@ class BoardContoller extends Controller
         }
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $tb_name_directory = "board/{$tb_name}/editor";
+        $tb_name_directory = "data/board/{$tb_name}/editor";
         setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         //현재 리스트를 제외한 스킨은 공통으로 쓰고 있음
@@ -750,7 +750,7 @@ class BoardContoller extends Controller
         $board_ori_info = DB::table('board_datas_tables')->select('bdt_grp','bdt_sort','bdt_depth','bdt_category','bdt_subject','bdt_content')->where([['id', $ori_num], ['bm_tb_name',$tb_name]])->first();    //게시물 정보 추출
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $tb_name_directory = "board/{$tb_name}/editor";
+        $tb_name_directory = "data/board/{$tb_name}/editor";
         setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         $reply_blade = "skin.".$board_set_info->bm_skin.".reply";
@@ -969,7 +969,7 @@ class BoardContoller extends Controller
         }
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $tb_name_directory = "board/{$tb_name}/editor";
+        $tb_name_directory = "data/board/{$tb_name}/editor";
         setcookie('directory', $tb_name_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         $modify_blade = "skin.".$board_set_info->bm_skin.".modify";

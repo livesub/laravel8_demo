@@ -21,7 +21,8 @@
 		$file->content = file_get_contents("php://input");
 
 		//$uploadDir = '../../../data/smarteditor/';
-		$uploadDir = "../../../data/{$_COOKIE['directory']}/";		//다른 곳에 쓰일경우 COOKIE['directory'] 설정 변경(현재 게시판)
+
+		$uploadDir = "../../../{$_COOKIE['directory']}/";		//다른 곳에 쓰일경우 COOKIE['directory'] 설정 변경(현재 게시판)
 		if(!is_dir($uploadDir)){
 			mkdir($uploadDir, 0777);
 		}
@@ -29,9 +30,9 @@
 		$newPath = $uploadDir.$file->name;
 
 		if(array_key_exists('HTTPS',$_SERVER)) {
-			$uploadDir_url = "https://".$_SERVER['HTTP_HOST']."/data/{$_COOKIE['directory']}/";
+			$uploadDir_url = "https://".$_SERVER['HTTP_HOST']."/".$_COOKIE['directory']."/";
 		}else{
-			$uploadDir_url = "http://".$_SERVER['HTTP_HOST']."/data/{$_COOKIE['directory']}/";
+			$uploadDir_url = "http://".$_SERVER['HTTP_HOST']."/".$_COOKIE['directory']."/";
 		}
 
 		if(file_put_contents($newPath, $file->content)) {

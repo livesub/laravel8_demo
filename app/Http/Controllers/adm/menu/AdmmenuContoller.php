@@ -96,7 +96,7 @@ class AdmmenuContoller extends Controller
         }
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $edit_directory = "menu/editor";
+        $edit_directory = "data/menu/editor";
         setcookie('directory', $edit_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         $len2 = $len + 1;
@@ -200,7 +200,7 @@ class AdmmenuContoller extends Controller
         }
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $edit_directory = "menu/editor";
+        $edit_directory = "data/menu/editor";
         setcookie('directory', $edit_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         $menu_name = DB::table('menuses')->select('menu_name_kr','menu_name_en')->where('menu_id', $menu_id)->first();   //카테고리 이름 가져 오기
@@ -312,7 +312,7 @@ class AdmmenuContoller extends Controller
         }
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
-        $edit_directory = "menu/editor";
+        $edit_directory = "data/menu/editor";
         setcookie('directory', $edit_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
 
         $menu_info = DB::table('menuses')->where('menu_id', $menu_id)->first();   //카테고리 정보 가져 오기
