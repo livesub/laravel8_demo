@@ -67,7 +67,7 @@
                         <table id="cate1">
                         <tr>
                             <td>
-                                <select size="15" name="ca_id" id="caa_id" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id" class="cid" >
                                 @foreach($one_step_infos as $one_step_info)
                                     @php
                                         if($one_str_cut == $one_step_info->ca_id) $one_selected = "selected";
@@ -88,7 +88,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 4)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id2" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id2" class="cid" >
                                 @foreach($two_step_infos as $two_step_info)
                                     @php
                                         if($two_str_cut == $two_step_info->ca_id) $two_selected = "selected";
@@ -109,7 +109,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 6)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id3" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id3" class="cid" >
                                 @foreach($three_step_infos as $three_step_info)
                                     @php
                                         if($three_str_cut == $three_step_info->ca_id) $three_selected = "selected";
@@ -130,7 +130,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 8)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id4" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id4" class="cid" >
                                 @foreach($four_step_infos as $four_step_info)
                                     @php
                                         if($four_str_cut == $four_step_info->ca_id) $four_selected = "selected";
@@ -152,7 +152,7 @@
                         <tr>
                             @if($ca_id && strlen($ca_id) >= 10)
                             <td>
-                                <select size="15" name="ca_id" id="caa_id5" class="cid" >
+                                <select size="10" name="ca_id" id="caa_id5" class="cid" >
                                 @foreach($five_step_infos as $five_step_info)
                                     @php
                                         if($five_str_cut == $five_step_info->ca_id) $five_selected = "selected";
@@ -247,141 +247,152 @@
 <script>
 	$(document).ready(function() {
         $(document).on("click", "#caa_id", function() {
-			var company_is = $('#caa_id').val();
+			var cate_is = $('#caa_id').val();
 
-			$.ajax({
-                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
-                type: 'post',
-                url: '{{ route('adm.cate.ajax_select') }}',
-                dataType: 'text',
-                data: {
-                    'ca_id'   : $('#caa_id').val(),
-                    'length'  : $('#caa_id').val().length,
-                },
-				success: function(result) {
-                    var data = JSON.parse(result);
-//alert(data.ca_name_kr);
-					if(data.success == 0) {
-						console.log(data.msg);
-					}else{
-                        $('#last_choice_ca_id').val(data.ca_id);
-						$('#cate2').css('display', 'block');
-						$('#cate2').html(data.data);
-						$('#cate3').html('');
-						$('#cate4').html('');
-                        $('#cate5').html('');
-					}
+            if(cate_is != null){
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                    type: 'post',
+                    url: '{{ route('adm.cate.ajax_select') }}',
+                    dataType: 'text',
+                    data: {
+                        'ca_id'   : $('#caa_id').val(),
+                        'length'  : $('#caa_id').val().length,
+                    },
+                    success: function(result) {
+                        var data = JSON.parse(result);
+    //alert(data.ca_name_kr);
+                        if(data.success == 0) {
+                            console.log(data.msg);
+                        }else{
+                            $('#last_choice_ca_id').val(data.ca_id);
+                            $('#cate2').css('display', 'block');
+                            $('#cate2').html(data.data);
+                            $('#cate3').html('');
+                            $('#cate4').html('');
+                            $('#cate5').html('');
+                        }
 
-				},error: function(result) {
-                    console.log(result);
-                }
-			});
+                    },error: function(result) {
+                        console.log(result);
+                    }
+                });
+            }
 		});
 
 		$(document).on("click", "#caa_id2", function() {
-			var company_is = $('#caa_id2').val();
+			var cate_is = $('#caa_id2').val();
 
-			$.ajax({
-                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
-				url: '{{ route('adm.cate.ajax_select') }}',
-				type: 'post',
-                dataType: 'text',
-				data: {
-                    ca_id   : $('#caa_id2').val(),
-                    length  : $('#caa_id2').val().length,
-                },
-				success: function(result) {
-					var data = JSON.parse(result);
-					if(data.success == 0) {
-						console.log(data.msg);
-					}else{
-                        $('#last_choice_ca_id').val(data.ca_id);
-						$('#cate3').css('display', 'block');
-						$('#cate3').html(data.data);
-						$('#cate4').html('');
-                        $('#cate5').html('');
-					}
-				},error: function(result) {
-                    console.log(result);
-                }
-			});
+            if(cate_is != null){
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                    url: '{{ route('adm.cate.ajax_select') }}',
+                    type: 'post',
+                    dataType: 'text',
+                    data: {
+                        ca_id   : $('#caa_id2').val(),
+                        length  : $('#caa_id2').val().length,
+                    },
+                    success: function(result) {
+                        var data = JSON.parse(result);
+                        if(data.success == 0) {
+                            console.log(data.msg);
+                        }else{
+                            $('#last_choice_ca_id').val(data.ca_id);
+                            $('#cate3').css('display', 'block');
+                            $('#cate3').html(data.data);
+                            $('#cate4').html('');
+                            $('#cate5').html('');
+                        }
+                    },error: function(result) {
+                        console.log(result);
+                    }
+                });
+            }
 		});
 
 		$(document).on("click", "#caa_id3", function() {
-			var company_is = $('#caa_id3').val();
+			var cate_is = $('#caa_id3').val();
 
-			$.ajax({
-                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
-				url: '{{ route('adm.cate.ajax_select') }}',
-				type: 'post',
-                dataType: 'text',
-				data: {
-                    ca_id   : $('#caa_id3').val(),
-                    length  : $('#caa_id3').val().length,
-                },
-				success: function(result) {
-					var data = JSON.parse(result);
-					if(data.success == 0) {
-						console.log(data.msg);
-					}else{
-                        $('#last_choice_ca_id').val(data.ca_id);
-						$('#cate4').css('display', 'block');
-						$('#cate4').html(data.data);
-                        $('#cate5').html('');
-					}
-				}
-			});
+            if(cate_is != null){
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                    url: '{{ route('adm.cate.ajax_select') }}',
+                    type: 'post',
+                    dataType: 'text',
+                    data: {
+                        ca_id   : $('#caa_id3').val(),
+                        length  : $('#caa_id3').val().length,
+                    },
+                    success: function(result) {
+                        var data = JSON.parse(result);
+                        if(data.success == 0) {
+                            console.log(data.msg);
+                        }else{
+                            $('#last_choice_ca_id').val(data.ca_id);
+                            $('#cate4').css('display', 'block');
+                            $('#cate4').html(data.data);
+                            $('#cate5').html('');
+                        }
+                    }
+                });
+            }
 		});
 
 		$(document).on("click", "#caa_id4", function() {
-			var company_is = $('#caa_id4').val();
-			$.ajax({
-                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
-				url: '{{ route('adm.cate.ajax_select') }}',
-				type: 'post',
-                dataType: 'text',
-				data: {
-                    ca_id   : $('#caa_id4').val(),
-                    length  : $('#caa_id4').val().length,
-                },
-				success: function(result) {
-					var data = JSON.parse(result);
-					if(data.success == 0) {
-						console.log(data.msg);
-					}else{
-                        $('#last_choice_ca_id').val(data.ca_id);
-						$('#cate5').css('display', 'block');
-						$('#cate5').html(data.data);
-					}
-				}
-			});
+			var cate_is = $('#caa_id4').val();
+
+            if(cate_is != null){
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                    url: '{{ route('adm.cate.ajax_select') }}',
+                    type: 'post',
+                    dataType: 'text',
+                    data: {
+                        ca_id   : $('#caa_id4').val(),
+                        length  : $('#caa_id4').val().length,
+                    },
+                    success: function(result) {
+                        var data = JSON.parse(result);
+                        if(data.success == 0) {
+                            console.log(data.msg);
+                        }else{
+                            $('#last_choice_ca_id').val(data.ca_id);
+                            $('#cate5').css('display', 'block');
+                            $('#cate5').html(data.data);
+                        }
+                    }
+                });
+            }
 		});
 
 		$(document).on("click", "#caa_id5", function() {
             var num = 0;
-		    var company_is = $('#caa_id5').val();
+		    var cate_is = $('#caa_id5').val();
 
-			$.ajax({
-                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
-				url: '{{ route('adm.cate.ajax_select') }}',
-				type: 'post',
-                dataType: 'text',
-				data: {
-                    ca_id   : $('#caa_id5').val(),
-                    length  : $('#caa_id5').val().length,
-                },
-				success: function(result) {
-					var data = JSON.parse(result);
-//alert(data.ca_id);
-					if(data.success == 0) {
-						console.log(data.msg);
-					}else{
-                        $('#last_choice_ca_id').val(data.ca_id);
-						//$('#cate5').css('display', 'block');
-						//$('#cate5').html(data.data);
-					}
-				}
-			});
+            if(cate_is != null){
+                $.ajax({
+                    headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                    url: '{{ route('adm.cate.ajax_select') }}',
+                    type: 'post',
+                    dataType: 'text',
+                    data: {
+                        ca_id   : $('#caa_id5').val(),
+                        length  : $('#caa_id5').val().length,
+                    },
+                    success: function(result) {
+                        var data = JSON.parse(result);
+    //alert(data.ca_id);
+                        if(data.success == 0) {
+                            console.log(data.msg);
+                        }else{
+                            $('#last_choice_ca_id').val(data.ca_id);
+                            //$('#cate5').css('display', 'block');
+                            //$('#cate5').html(data.data);
+                        }
+                    }
+                });
+            }
 		});
 
     });
