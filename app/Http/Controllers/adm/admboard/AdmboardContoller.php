@@ -255,17 +255,17 @@ class AdmboardContoller extends Controller
 
         //DB 저장 배열 만들기
         $data = array(
-            'bm_tb_name' => $tb_name,
-            'bdt_chk_secret' => $bdt_chk_secret,
-            'bdt_uid' => $bdt_uid,
-            'bdt_uname' => $bdt_uname,
-            'bdt_upw' => $bdt_upw,
-            'bdt_subject' => $bdt_subject,
-            'bdt_content' => $bdt_content,
-            'bdt_category' => $bdt_category,
-            'bdt_ip' => $bdt_ip,
-            'bdt_sort' => 0,
-            'bdt_depth' => 0,
+            'bm_tb_name'        => $tb_name,
+            'bdt_chk_secret'    => $bdt_chk_secret,
+            'bdt_uid'           => $bdt_uid,
+            'bdt_uname'         => $bdt_uname,
+            'bdt_upw'           => $bdt_upw,
+            'bdt_subject'       => $bdt_subject,
+            'bdt_content'       => $bdt_content,
+            'bdt_category'      => $bdt_category,
+            'bdt_ip'            => $bdt_ip,
+            'bdt_sort'          => 0,
+            'bdt_depth'         => 0,
         );
 
         for($i = 1; $i <= $file_cnt; $i++){

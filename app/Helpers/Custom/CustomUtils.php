@@ -648,4 +648,40 @@ $um_value='80/0.5/3'
 
         return $page_link;
     }
+
+
+    /* 통계 관련 */
+	// 쿠키변수값 얻음
+	public static function get_cookie($cookie_name)
+	{
+		$cookie = md5($cookie_name);
+
+		if (array_key_exists($cookie, $_COOKIE))
+			return base64_decode($_COOKIE[$cookie]);
+		else
+			return "";
+	}
+
+	// 쿠키변수 생성
+	public static function set_cookie($cookie_name, $value, $expire)
+	{
+		//setcookie(md5($cookie_name), base64_encode($value), time() + $expire, '/', $_SERVER["HTTP_HOST"]);
+        setcookie(md5($cookie_name), base64_encode($value), time() + $expire, '/');
+	}
+
+	function ip_details($ip) {
+		$json = $this::get_content("http://ipinfo.io/");
+		$details = json_decode($json, true);
+		return $details;
+	}
+
+    //통계 ip 접속 나라/지역 찾기에..
+	function get_content($URL){
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_URL, $URL);
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return $data;
+	}
 }
