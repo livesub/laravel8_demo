@@ -97,7 +97,6 @@ class MemberlistController extends Controller
             $user_phone = trim($request->get('user_phone'));
             $user_confirm_code = str::random(60);  //사용자 이메일 확인을 위해서..
 
-
             //trans('messages.join_Validator')) class 컨트롤러에서 표현 할때
             //예외처리
             Validator::validate($request->all(), [
@@ -106,8 +105,7 @@ class MemberlistController extends Controller
                 'user_pw'  => ['required', 'string', 'min:6', 'max:16', 'confirmed'],
                 'user_pw_confirmation'  => ['required', 'string', 'min:6', 'max:16', 'same:user_pw'],
                 'user_phone'  => ['required', 'max:20']
-            ], $Messages::$validate['join']['message']);
-
+            ], $Messages::$validate['join']);
 
             if($request->hasFile('user_imagepath'))
             {
@@ -118,14 +116,14 @@ class MemberlistController extends Controller
                     //예외처리
                     Validator::validate($request->all(), [
                         'user_imagepath.*'  => ['max:10240', 'mimes:jpeg,jpg,gif']
-                    ], $Messages::$file_chk['file_chk']['message']);
+                    ], $Messages::$file_chk['file_chk']);
 
                     $path = 'data/member';     //이미지 저장 경로
                     $attachment_result = CustomUtils::attachment_save($file,$path);
 
                     if(!$attachment_result[0])
                     {
-                        return redirect()->route('adm.member.show')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                        return redirect()->route('adm.member.show')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
                         exit;
                     }else{
                         //서버에 올라간 파일을 썸네일 만든다.
@@ -158,11 +156,11 @@ class MemberlistController extends Controller
             $data = array(
                 'user_name' => $user_name,
                 'user_confirm_code' => $user_confirm_code,
-                'name_welcome' => $Messages::$email_certificate['email_certificate']['message']['name_welcome'],
-                'join_open' => $Messages::$email_certificate['email_certificate']['message']['join_open'],
+                'name_welcome' => $Messages::$email_certificate['email_certificate']['name_welcome'],
+                'join_open' => $Messages::$email_certificate['email_certificate']['join_open'],
             );
 
-            $subject = sprintf('[%s] '.$Messages::$join_confirm_ment['confirm']['message']['join_confirm'], $user_name);
+            $subject = sprintf('[%s] '.$Messages::$join_confirm_ment['confirm']['join_confirm'], $user_name);
 
             //이메일 함수 이용 발송
             $email_send_value = CustomUtils::email_send("auth.confirm_email",$user_name, $user_id, $subject, $data);
@@ -172,13 +170,13 @@ class MemberlistController extends Controller
                 //이메일 발송 실패 시에 뭘 할건지 나중에 생각해야함
             }
 
-            if($create_result = 1) return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['message']['adm_join_success']);
-            else return redirect()->route('adm.member.create')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+            if($create_result = 1) return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['adm_join_success']);
+            else return redirect()->route('adm.member.create')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
         }else{
             //수정일때
             Validator::validate($request->all(), [
                 'user_name'  => ['required', 'string']
-            ], $Messages::$validate['join']['message']);
+            ], $Messages::$validate['join']);
 
             $user_info = DB::table('users')->select('user_id', 'user_imagepath', 'user_thumb_name')->where('id', $num)->first();
 
@@ -198,14 +196,14 @@ class MemberlistController extends Controller
                     //예외처리
                     Validator::validate($request->all(), [
                         'user_imagepath.*'  => ['max:10240', 'mimes:jpeg,jpg,gif']
-                    ], $Messages::$file_chk['file_chk']['message']);
+                    ], $Messages::$file_chk['file_chk']);
 
                     $path = 'data/member';     //이미지 저장 경로
                     $attachment_result = CustomUtils::attachment_save($file,$path);
 
                     if(!$attachment_result[0])
                     {
-                        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
                         exit;
                     }else{
                         //서버에 올라간 파일을 썸네일 만든다.
@@ -226,7 +224,7 @@ class MemberlistController extends Controller
 
                     if(!$result_up)
                     {
-                        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
                         exit;
                     }else{
 
@@ -244,7 +242,7 @@ class MemberlistController extends Controller
                             $deleted = File::delete (public_path ('/data/member/'.$user_info->user_thumb_name));
                         }
 
-                        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$mypage['mypage']['message']['my_change']);
+                        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$mypage['mypage']['my_change']);
                         exit;
                     }
                 }
@@ -257,10 +255,10 @@ class MemberlistController extends Controller
 
                 if(!$result_up)
                 {
-                    return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                    return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
                     exit;
                 }else{
-                    return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$mypage['mypage']['message']['my_change']);
+                    return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$mypage['mypage']['my_change']);
                     exit;
                 }
             }
@@ -302,7 +300,7 @@ class MemberlistController extends Controller
                 'user_phone'            => '',
                 'user_imagepath'        => '',
                 'select_disp'           => $select_disp,
-            ],$Messages::$mypage['mypage']['message']);
+            ],$Messages::$mypage['mypage']);
         }else{
             //수정
             //회원 정보를 찾아 놓음
@@ -328,7 +326,7 @@ class MemberlistController extends Controller
                 'select_disp'           => $select_disp,
                 'user_status'           => $user_status,
 
-            ],$Messages::$mypage['mypage']['message']);
+            ],$Messages::$mypage['mypage']);
         }
     }
 
@@ -350,7 +348,7 @@ class MemberlistController extends Controller
         $validator = Validator::make($request->all(), [
             'user_pw'  => ['required', 'string', 'min:6', 'max:16', 'confirmed'],
             'user_pw_confirmation'  => ['required', 'string', 'min:6', 'max:16', 'same:user_pw'],
-        ], $Messages::$mypage['validate']['message']);
+        ], $Messages::$mypage['validate']);
 
 
         $user_info = DB::table('users')->select('user_id', 'password')->where('id', $num)->first();
@@ -368,7 +366,7 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
         if (Auth::attempt($credentials))
         {
             //기존 비밀번호와 같을때 에러 처리
-            return response()->json(['status_ment' => $Messages::$mypage['validate']['message']['pwsame_false'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$mypage['validate']['pwsame_false'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
             exit;
         }
 */
@@ -377,10 +375,10 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
 
         if(!$result_up)
         {
-            return response()->json(['status_ment' => $Messages::$fatal_fail_ment['fatal_fail']['message']['error'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$fatal_fail_ment['fatal_fail']['error'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
             exit;
         }else{
-            return response()->json(['status_ment' => $Messages::$mypage['validate']['message']['admpwchange_ok'],'status' => 'true'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$mypage['validate']['admpwchange_ok'],'status' => 'true'], 200, [], JSON_PRETTY_PRINT);
             exit;
         }
     }
@@ -426,9 +424,9 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
         $result_up = $user->save();
 
         if($img == "Y" && $img_thumb == "Y" && $result_up){
-            return response()->json(['status_ment' => $Messages::$mypage['validate']['message']['img_del_ok'],'status' => 'true'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$mypage['validate']['img_del_ok'],'status' => 'true'], 200, [], JSON_PRETTY_PRINT);
         }else{
-            return response()->json(['status_ment' => $Messages::$fatal_fail_ment['fatal_fail']['message']['error'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$fatal_fail_ment['fatal_fail']['error'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
         }
     }
 
@@ -453,6 +451,6 @@ Auth::attempt($credentials) 응 통해 비교 했다가 비교 했던 아이디�
             $user->user_type = $type_change;
             $result_up = $user->save();
         }
-        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$adm_mem_chk['mem_chk']['message']['out_ok']);
+        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$adm_mem_chk['mem_chk']['out_ok']);
     }
 }

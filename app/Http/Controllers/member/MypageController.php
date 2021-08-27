@@ -39,7 +39,7 @@ class MypageController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        $data = $Messages::$mypage['mypage']['message'];
+        $data = $Messages::$mypage['mypage'];
 
         $array_make = array(
             "type" => 'member_'.Auth::user()->id,   //원하는 첨부파일 경로와 순번 값을 함쳐서 보낸다.
@@ -67,7 +67,7 @@ class MypageController extends Controller
         Validator::validate($request->all(), [
             'user_pw'  => ['required', 'string', 'min:6', 'max:16', 'confirmed'],
             'user_pw_confirmation'  => ['required', 'string', 'min:6', 'max:16', 'same:user_pw'],
-        ], $Messages::$mypage['validate']['message']);
+        ], $Messages::$mypage['validate']);
 
         //새로 들어온 비밀 번호가 현재 비밀 번호와 같으면 튕기게 하기
         $user_id = Auth::user()->user_id;
@@ -79,7 +79,7 @@ class MypageController extends Controller
         if (Auth::attempt($credentials))
         {
             //기존 비밀번호와 같을때 에러 처리
-            return response()->json(['status_ment' => $Messages::$mypage['validate']['message']['pwsame_false'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$mypage['validate']['pwsame_false'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
             exit;
         }
 
@@ -87,11 +87,11 @@ class MypageController extends Controller
 
         if(!$result_up)
         {
-            return response()->json(['status_ment' => $Messages::$fatal_fail_ment['fatal_fail']['message']['error'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$fatal_fail_ment['fatal_fail']['error'],'status' => 'false'], 200, [], JSON_PRETTY_PRINT);
             exit;
         }else{
             auth()->logout();
-            return response()->json(['status_ment' => $Messages::$mypage['validate']['message']['pwchange_ok'],'status' => 'true'], 200, [], JSON_PRETTY_PRINT);
+            return response()->json(['status_ment' => $Messages::$mypage['validate']['pwchange_ok'],'status' => 'true'], 200, [], JSON_PRETTY_PRINT);
             exit;
         }
     }

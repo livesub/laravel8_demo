@@ -54,6 +54,6 @@ class MainController extends Controller
         }
 
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
-        return view('main',$Messages::$main['main']['message']);
+        return view('main',$Messages::$main['main']);
     }
 }

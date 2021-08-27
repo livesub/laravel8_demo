@@ -36,7 +36,7 @@ class AdmloginController extends Controller
     {
         //
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
-        return view('adm.admlogin',$Messages::$adm_log_ment['admlogin']['message']);
+        return view('adm.admlogin',$Messages::$adm_log_ment['admlogin']);
     }
 
     /**
@@ -55,7 +55,7 @@ class AdmloginController extends Controller
         Validator::validate($request->all(), [
             'user_id'  => ['required', 'regex:/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/', 'max:200'],
             'user_pw'  => ['required', 'string', 'min:6', 'max:16'],
-        ], $Messages::$login_Validator['login_Validator']['message']);
+        ], $Messages::$login_Validator['login_Validator']);
 
 
         $credentials = [
@@ -66,11 +66,11 @@ class AdmloginController extends Controller
 
         if (!Auth::attempt($credentials))
         {
-            return redirect()->route('adm.login.index')->with('alert_messages', $Messages::$adm_login_chk['login_chk']['message']['login_chk']);
+            return redirect()->route('adm.login.index')->with('alert_messages', $Messages::$adm_login_chk['login_chk']['login_chk']);
             exit;
         }
 
-        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$adm_login_chk['login_chk']['message']['login_ok']);
+        return redirect()->route('adm.member.index')->with('alert_messages', $Messages::$adm_login_chk['login_chk']['login_ok']);
     }
 
 }

@@ -39,7 +39,7 @@ class PwchangeController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        return view('auth.pwchange',$Messages::$pwchange['pwchange']['message']);
+        return view('auth.pwchange',$Messages::$pwchange['pwchange']);
     }
 
     /**
@@ -56,7 +56,7 @@ class PwchangeController extends Controller
 
         Validator::validate($request->all(), [
             'user_id'  => ['required', 'string', 'regex:/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/', 'max:200', 'exists:users'],
-        ], $Messages::$pwchange['pwchange']['message']);
+        ], $Messages::$pwchange['pwchange']);
 
         //table를 검색 해서 아이디와 이름을 가져 온다
         $user = DB::table('users')->where('user_id', $pw_user_id)->first();
@@ -74,10 +74,10 @@ class PwchangeController extends Controller
         //->exists(); //저장,실패 결과 값만 받아 오기 위해  exists() 를 씀
         $data = array(
             'pw_token' => $pw_token,
-            'email_body' => $Messages::$pwchange['pwchange']['message']['email_body'],
+            'email_body' => $Messages::$pwchange['pwchange']['email_body'],
         );
 
-        $subject = sprintf('[%s] '.$Messages::$pwchange['pwchange']['message']['email_change'], $user_name);
+        $subject = sprintf('[%s] '.$Messages::$pwchange['pwchange']['email_change'], $user_name);
         //이메일 함수 이용 발송
         $email_send_value = CustomUtils::email_send("auth.pwchange_email",$user_name, $user_id, $subject, $data);
 
@@ -86,8 +86,8 @@ class PwchangeController extends Controller
             //이메일 발송 실패 시에 뭘 할건지 나중에 생각해야함
         }
 
-        if($insert_result) return redirect()->route('login.index')->with('alert_messages', $Messages::$pwchange['pwchange']['message']['email_send']);
-        else return redirect()->route('login.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+        if($insert_result) return redirect()->route('login.index')->with('alert_messages', $Messages::$pwchange['pwchange']['email_send']);
+        else return redirect()->route('login.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
 }

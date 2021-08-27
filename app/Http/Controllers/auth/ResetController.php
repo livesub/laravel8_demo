@@ -38,7 +38,7 @@ class ResetController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        $data = $Messages::$pwreset['pwreset']['message'];
+        $data = $Messages::$pwreset['pwreset'];
         $data = array_merge($data, array("token"=>$token));
 
         return view('auth.pwreset', $data);
@@ -64,7 +64,7 @@ class ResetController extends Controller
             'user_id'  => ['required', 'string', 'regex:/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/', 'max:200', 'exists:users'],
             'user_pw'  => ['required', 'string', 'min:6', 'max:16', 'confirmed'],
             'user_pw_confirmation'  => ['required', 'string', 'min:6', 'max:16', 'same:user_pw'],
-        ], $Messages::$pwreset['pwreset_Validator']['message']);
+        ], $Messages::$pwreset['pwreset_Validator']);
 
         $users_status = DB::table('password_resets')->where([
             ['pw_user_id', '=', $user_id],
@@ -72,7 +72,7 @@ class ResetController extends Controller
         ])->first();
 
         if(!$users_status){
-            return back()->with('alert_messages', $Messages::$pwreset['pwreset_false']['message']['pwreset_false']);
+            return back()->with('alert_messages', $Messages::$pwreset['pwreset_false']['pwreset_false']);
             exit;
         }
 
@@ -86,7 +86,7 @@ class ResetController extends Controller
         {
             auth()->logout();
             //기존 비밀번호와 같을때 에러 처리
-            return back()->with('alert_messages', $Messages::$pwreset['pwreset_false']['message']['pwsame_false']);
+            return back()->with('alert_messages', $Messages::$pwreset['pwreset_false']['pwsame_false']);
             exit;
         }
 
@@ -94,13 +94,13 @@ class ResetController extends Controller
 
         if(!$result_up)
         {
-            return back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+            return back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
             exit;
         }
 
         $result = DB::table('password_resets')->wherepwToken($pw_token)->delete();
 
-        return redirect()->route('login.index')->with('alert_messages', $Messages::$pwreset['pwreset_ok']['message']['pwreset_ok']);
+        return redirect()->route('login.index')->with('alert_messages', $Messages::$pwreset['pwreset_ok']['pwreset_ok']);
     }
 
 }

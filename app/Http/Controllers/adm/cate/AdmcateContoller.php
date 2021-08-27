@@ -63,7 +63,7 @@ class AdmcateContoller extends Controller
             "cate_infos"        => $cate_infos,
             'pageNum'           => $page_control['pageNum'],
             'pageList'          => $pageList,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     public function catecreate(Request $request)
@@ -106,7 +106,7 @@ class AdmcateContoller extends Controller
 
         return view('adm.category.catecreate',[
             'mk_ca_id'          => $subid,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     public function catecreatesave(Request $request)
@@ -124,7 +124,7 @@ class AdmcateContoller extends Controller
 
         if($mk_ca_id == "")    //1차 카테고리
         {
-            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -145,9 +145,8 @@ class AdmcateContoller extends Controller
         ])->exists();
 
         if($create_result = 1) return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$category['insert']['in_ok']);
-        else return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+        else return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
-
 
     public function cate_add(Request $request)
     {
@@ -164,7 +163,7 @@ class AdmcateContoller extends Controller
         $ca_id        = $request->input('ca_id');
 
         if($ca_id == ""){
-            return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+            return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
             exit;
         }
 
@@ -218,7 +217,7 @@ class AdmcateContoller extends Controller
 
         if($mk_ca_id == "")
         {
-            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -240,7 +239,7 @@ class AdmcateContoller extends Controller
         ])->exists();
 
         if($create_result = 1) return redirect()->route('adm.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['insert']['in_ok']);
-        else return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+        else return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
     public function cate_modi(Request $request)
@@ -259,7 +258,7 @@ class AdmcateContoller extends Controller
 
         if($ca_id == "")
         {
-            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -292,7 +291,7 @@ class AdmcateContoller extends Controller
 
         if($id == "" || $ca_id == "")
         {
-            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -311,7 +310,7 @@ class AdmcateContoller extends Controller
         $update_result = DB::table('categorys')->where([['id', $id],['ca_id',$ca_id]])->limit(1)->update($data);
 
         if($update_result = 1) return redirect()->route('adm.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['update']['up_ok']);
-        else return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function cate_delete(Request $request)
@@ -339,7 +338,7 @@ class AdmcateContoller extends Controller
                 //return redirect()->route('adm.cate.index','page='.$page)->with('alert_messages', $Messages::$category['del']['del_ok']);
                 return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$category['cate_del']['cate_del_ok']);
             }else{
-                return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
             }
         }else{
             return redirect()->route('adm.cate.index','page='.$page)->with('alert_messages', $Messages::$category['del']['del_chk']);

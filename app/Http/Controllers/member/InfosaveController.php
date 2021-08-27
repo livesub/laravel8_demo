@@ -67,14 +67,14 @@ class InfosaveController extends Controller
                 //예외처리
                 Validator::validate($request->all(), [
                     'user_imagepath.*'  => ['max:10240', 'mimes:jpeg,jpg,gif']
-                ], $Messages::$file_chk['file_chk']['message']);
+                ], $Messages::$file_chk['file_chk']);
 
                 $path = 'data/member';     //이미지 저장 경로
                 $attachment_result = CustomUtils::attachment_save($file,$path);
 
                 if(!$attachment_result[0])
                 {
-                    return redirect()->route('main.index')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                    return redirect()->route('main.index')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
                     exit;
                 }else{
                     //서버에 올라간 파일을 썸네일 만든다.
@@ -105,7 +105,7 @@ class InfosaveController extends Controller
 
                 if(!$result_up)
                 {
-                    return redirect()->route('mypage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                    return redirect()->route('mypage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
                     exit;
                 }else{
 
@@ -118,7 +118,7 @@ class InfosaveController extends Controller
                         //이미지가 지워졌울때 계속 에러 표현 됨 일단 맏자!!!
                         if(!$deleted)
                         {
-                            return redirect()->route('mypage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                            return redirect()->route('mypage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
                             exit;
                         }
         */
@@ -131,7 +131,7 @@ class InfosaveController extends Controller
                         $deleted = File::delete (public_path ('/data/member/'.Auth::user()->user_thumb_name));
                     }
 
-                    return redirect()->route('mypage.index')->with('alert_messages', $Messages::$mypage['mypage']['message']['my_change']);
+                    return redirect()->route('mypage.index')->with('alert_messages', $Messages::$mypage['mypage']['my_change']);
                     exit;
                 }
             }
@@ -153,10 +153,10 @@ class InfosaveController extends Controller
 
             if(!$result_up)
             {
-                return redirect()->route('mypage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                return redirect()->route('mypage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
                 exit;
             }else{
-                return redirect()->route('mypage.index')->with('alert_messages', $Messages::$mypage['mypage']['message']['my_change']);
+                return redirect()->route('mypage.index')->with('alert_messages', $Messages::$mypage['mypage']['my_change']);
                 exit;
             }
         }

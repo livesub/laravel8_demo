@@ -271,7 +271,7 @@ class AdmitemContoller extends Controller
 
             if(!$attachment_result[0])
             {
-                return redirect()->route('adm.item.create')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                return redirect()->route('adm.item.create')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
                 exit;
             }else{
                 for($k = 0; $k < 3; $k++){
@@ -295,7 +295,7 @@ class AdmitemContoller extends Controller
         $create_result->save();
 
         if($create_result = 1) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
-        else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function choice_del(Request $request)
@@ -354,7 +354,7 @@ class AdmitemContoller extends Controller
         $ca_id = $request->input('ca_id');
 
         if($id == "" && $ca_id == ""){
-            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
             exit;
         }
 
@@ -445,7 +445,7 @@ class AdmitemContoller extends Controller
         $item_content       = $request->input('item_content');
 
         if($id == "" && $ca_id == "" && $last_choice_ca_id == ""){
-            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
             exit;
         }
 
@@ -495,7 +495,7 @@ class AdmitemContoller extends Controller
                 $attachment_result = CustomUtils::attachment_save($item_img,$path); //위의 패스로 이미지 저장됨
                 if(!$attachment_result[0])
                 {
-                    return redirect()->route('adm.item.index')->with('alert_messages', $Messages::$file_chk['file_chk']['message']['file_false']);
+                    return redirect()->route('adm.item.index')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
                     exit;
                 }else{
                     for($k = 0; $k < 3; $k++){
@@ -532,7 +532,7 @@ class AdmitemContoller extends Controller
         $update_result = DB::table('items')->where('id', $id)->limit(1)->update($data);
 
         if($update_result = 1) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['update']['up_ok']);
-        else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
 }

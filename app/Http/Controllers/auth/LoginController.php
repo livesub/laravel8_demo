@@ -40,7 +40,7 @@ class LoginController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        return view('auth.login',$Messages::$blade_ment['login']['message']);
+        return view('auth.login',$Messages::$blade_ment['login']);
     }
 
     /**
@@ -64,7 +64,7 @@ class LoginController extends Controller
         Validator::validate($request->all(), [
             'user_id'  => ['required', 'regex:/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/', 'max:200'],
             'user_pw'  => ['required', 'string', 'min:6', 'max:16'],
-        ], $Messages::$login_Validator['login_Validator']['message']);
+        ], $Messages::$login_Validator['login_Validator']);
 
         $credentials = [
             'user_id' => trim($user_id),
@@ -74,7 +74,7 @@ class LoginController extends Controller
 
         if (!Auth::attempt($credentials, $remember))
         {
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['login_chk']);
+            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_chk']);
             exit;
         }
 
@@ -82,11 +82,11 @@ class LoginController extends Controller
         if(!auth()->user()->user_activated)
         {
             auth()->logout();
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['email_chk']);
+            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['email_chk']);
             exit;
         }
 
-        return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['message']['login_ok']);
+        return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
     }
 
     /**
@@ -99,7 +99,7 @@ class LoginController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
         auth()->logout();
-        return redirect()->route('main.index')->with('alert_messages', $Messages::$logout_chk['logout']['message']['logout']);
+        return redirect()->route('main.index')->with('alert_messages', $Messages::$logout_chk['logout']['logout']);
         exit;
     }
 }

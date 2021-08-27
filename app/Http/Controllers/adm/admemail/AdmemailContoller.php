@@ -64,7 +64,7 @@ class AdmemailContoller extends Controller
             "email_lists"       => $email_lists,
             'pageNum'           => $page_control['pageNum'],
             'pageList'          => $pageList,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     /**
@@ -95,7 +95,7 @@ class AdmemailContoller extends Controller
         }
 
         return view('adm.email.emailcreate',[
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     /**
@@ -158,7 +158,7 @@ class AdmemailContoller extends Controller
         $create_result->save();
 
         if($create_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_save']);
-        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function choice_del(Request $request)
@@ -223,7 +223,7 @@ class AdmemailContoller extends Controller
         return view('adm.email.emailmemberchk',[
             'user_lists'    => $user_lists,
             'email_id'      => $id,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     public function send_ok(Request $request)
@@ -292,7 +292,7 @@ class AdmemailContoller extends Controller
         }
 
         if($create_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['email_send']);
-        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function modify(Request $request)
@@ -321,7 +321,7 @@ class AdmemailContoller extends Controller
 
         return view('adm.email.emailmodify',[
             "email_info"       => $email_info,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     public function downloadfile(Request $request)
@@ -431,7 +431,7 @@ class AdmemailContoller extends Controller
         }
 
         if($update_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_modisave']);
-        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function sendlist(Request $request)
@@ -461,6 +461,6 @@ class AdmemailContoller extends Controller
             'email_send_lists'      => $email_send_lists,
             'pageNum'               => $page_control['pageNum'],
             'pageList'              => $pageList,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 }

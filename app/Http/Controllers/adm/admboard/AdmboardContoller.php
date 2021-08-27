@@ -132,7 +132,7 @@ class AdmboardContoller extends Controller
             'cate'                      => $cate,
             'keymethod'                 => $keymethod,
             'keyword'                   => $keyword,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     /**
@@ -182,7 +182,7 @@ class AdmboardContoller extends Controller
             'user_level'                => $user_level,
             'user_id'                   => $user_id,
             'select_disp'               => $select_disp,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     /**
@@ -329,7 +329,7 @@ class AdmboardContoller extends Controller
         $create_result->save();
 
         if($create_result = 1) return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     /**
@@ -501,7 +501,7 @@ class AdmboardContoller extends Controller
             'cate'                      => $cate,
             'b_id'                      => $request->input('id'),
             'comment_infos'             => $comment_infos,
-        ],$Messages::$mypage['mypage']['message']);
+        ],$Messages::$mypage['mypage']);
     }
 
     /**
@@ -988,7 +988,7 @@ class AdmboardContoller extends Controller
         }
 
         if($create_result = 1) return redirect('adm/admboard/list/'.$tb_name.$bdt_category_url)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function modify($tb_name, $ori_num, Request $request)
@@ -1221,7 +1221,7 @@ class AdmboardContoller extends Controller
         $update_result = DB::table('board_datas_tables')->where('id', $request->input('b_id'))->limit(1)->update($data);
 
         if($update_result = 1) return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function commentsave($tb_name, Request $request)
@@ -1281,7 +1281,7 @@ class AdmboardContoller extends Controller
         $create_result->save();
 
         if($create_result = 1) return redirect('adm/admboard/view/'.$tb_name.'?id='.$b_id.'&page='.$page.'&cate='.$cate)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
 
@@ -1350,7 +1350,7 @@ class AdmboardContoller extends Controller
         }
 
         if($create_result = 1) return redirect('adm/admboard/view/'.$tb_name.$id_link.$page_link.$cate_url)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function commemtmodifysave($tb_name, Request $request)
@@ -1383,7 +1383,7 @@ class AdmboardContoller extends Controller
         }
 
         if($result_up = 1) return redirect('adm/admboard/view/'.$tb_name.$id_link.$page_link.$cate_url)->with('alert_messages', $Messages::$board['b_ment']['b_modi']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function commemtdelete($tb_name, Request $request)
@@ -1430,7 +1430,7 @@ class AdmboardContoller extends Controller
         }
 
         if($result_del = 1) return redirect('adm/admboard/view/'.$tb_name.$id_link.$page_link.$cate_url)->with('alert_messages', $Messages::$board['b_ment']['b_del']);
-        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
 
     }
 }

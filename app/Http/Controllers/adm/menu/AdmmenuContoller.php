@@ -144,7 +144,7 @@ class AdmmenuContoller extends Controller
         if($menu_rank == "") $menu_rank = 0;
 
         if($menu_id == ""){
-            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -171,7 +171,7 @@ class AdmmenuContoller extends Controller
         ])->exists();
 
         if($create_result = 1) return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$menu['insert']['in_ok']);
-        else return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+        else return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
     public function menu_add(Request $request)
@@ -189,7 +189,7 @@ class AdmmenuContoller extends Controller
         $menu_id    = $request->input('menu_id');
 
         if($menu_id == ""){
-            return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+            return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
             exit;
         }
 
@@ -260,7 +260,7 @@ class AdmmenuContoller extends Controller
 
         if($menu_id == "")
         {
-            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -288,7 +288,7 @@ class AdmmenuContoller extends Controller
         ])->exists();
 
         if($create_result = 1) return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$menu['insert']['in_ok']);
-        else return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+        else return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
     public function menu_modi(Request $request)
@@ -307,7 +307,7 @@ class AdmmenuContoller extends Controller
 
         if($menu_id == "")
         {
-            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -347,7 +347,7 @@ class AdmmenuContoller extends Controller
 
         if($id == "" || $menu_id == "")
         {
-            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -375,7 +375,7 @@ class AdmmenuContoller extends Controller
         $update_result = DB::table('menuses')->where([['id', $id],['menu_id',$menu_id]])->limit(1)->update($data);
 
         if($update_result = 1) return redirect()->route('adm.menu.index','&page='.$page)->with('alert_messages', $Messages::$menu['update']['up_ok']);
-        else return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+        else return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
     public function delete_save(Request $request)
@@ -394,7 +394,7 @@ class AdmmenuContoller extends Controller
         $page          = $request->input('page');
 
         if($id == "" || $menu_id == ""){
-            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시
+            return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
@@ -412,7 +412,7 @@ class AdmmenuContoller extends Controller
             if($menu_del){
                 return redirect()->route('adm.menu.index','page='.$page)->with('alert_messages', $Messages::$menu['del']['del_ok']);
             }else{
-                return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);
+                return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
             }
         }else{
             return redirect()->route('adm.menu.index','page='.$page)->with('alert_messages', $Messages::$menu['del']['del_chk']);

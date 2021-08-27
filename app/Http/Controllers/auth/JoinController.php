@@ -41,7 +41,7 @@ class JoinController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        return view('auth.join',$Messages::$blade_ment['join']['message']);
+        return view('auth.join',$Messages::$blade_ment['join']);
     }
 
     /**
@@ -74,7 +74,7 @@ class JoinController extends Controller
             'user_pw'  => ['required', 'string', 'min:6', 'max:16', 'confirmed'],
             'user_pw_confirmation'  => ['required', 'string', 'min:6', 'max:16', 'same:user_pw'],
             'user_phone'  => ['required', 'max:20']
-        ], $Messages::$validate['join']['message']);
+        ], $Messages::$validate['join']);
 
 /******************************************************* */
 /* model 형식으로 DB 처리 프로그램 할때 사용               */
@@ -104,11 +104,11 @@ class JoinController extends Controller
         $data = array(
             'user_name' => $user_name,
             'user_confirm_code' => $user_confirm_code,
-            'name_welcome' => $Messages::$email_certificate['email_certificate']['message']['name_welcome'],
-            'join_open' => $Messages::$email_certificate['email_certificate']['message']['join_open'],
+            'name_welcome' => $Messages::$email_certificate['email_certificate']['name_welcome'],
+            'join_open' => $Messages::$email_certificate['email_certificate']['join_open'],
         );
 
-        $subject = sprintf('[%s] '.$Messages::$join_confirm_ment['confirm']['message']['join_confirm'], $user_name);
+        $subject = sprintf('[%s] '.$Messages::$join_confirm_ment['confirm']['join_confirm'], $user_name);
 
 
         //이메일 함수 이용 발송
@@ -119,8 +119,8 @@ class JoinController extends Controller
             //이메일 발송 실패 시에 뭘 할건지 나중에 생각해야함
         }
 
-        if($create_result = 1) return redirect()->route('main.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['message']['join_success']);
-        else return redirect()->route('main.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['message']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
+        if($create_result = 1) return redirect()->route('main.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['join_success']);
+        else return redirect()->route('main.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
 
 
         /******************************************************* */
@@ -178,7 +178,7 @@ class JoinController extends Controller
         $user = User::whereUserConfirmCode($code)->first();
 
         if (!$user) {
-            return redirect()->route('join.create')->with('alert_messages', $Messages::$email_certificate['email_certificate']['message']['email_confirm_fail']);
+            return redirect()->route('join.create')->with('alert_messages', $Messages::$email_certificate['email_certificate']['email_confirm_fail']);
             exit;
         }
 
@@ -186,7 +186,7 @@ class JoinController extends Controller
         $user->user_confirm_code = null;
         $user->save();
 
-        return redirect()->route('join.create')->with('alert_messages', $Messages::$email_certificate['email_certificate']['message']['email_confirm_success']);
+        return redirect()->route('join.create')->with('alert_messages', $Messages::$email_certificate['email_certificate']['email_confirm_success']);
         exit;
     }
 }
