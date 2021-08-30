@@ -4,7 +4,8 @@ header('Cache-Control: no-store, private, no-cache, must-revalidate');
 header('Cache-Control: pre-check=0, post-check=0, max-age=0, max-stale = 0', false);
 header('Pragma: public');
 
-use App\Http\Controllers\adm\admstatistics\StatisticsContoller;
+//방문 통계 호출
+use App\Http\Controllers\statistics\StatisticsContoller;
 $statistics = new StatisticsContoller();
 $statistics->statistics();
 @endphp

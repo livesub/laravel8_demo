@@ -70,6 +70,10 @@ header('Pragma: public');
                     @endforeach
 
                     <tr>
+                        <td><a href="{{ route('adm.visit.index') }}"><br>방문자 통계 관리</a></td>
+                    </tr>
+
+                    <tr>
                         <td><a href="{{ route('adm.editor.delete') }}">에디터 불필요 파일 삭제</a></td>
                     </tr>
                 </table>

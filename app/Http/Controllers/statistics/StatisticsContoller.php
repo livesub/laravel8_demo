@@ -1,6 +1,16 @@
 <?php
+#############################################################################
+#
+#		파일이름		:		StatisticsContoller.php
+#		파일설명		:		방문자 통계 insert
+#		저작권			:		저작권은 제작자에 있지만 누구나 사용합니다.
+#		제작자			:		김영섭
+#		최초제작일	    :		2021년 08월 27일
+#		최종수정일		:		2021년 08월 27일
+#
+###########################################################################-->
 
-namespace App\Http\Controllers\adm\admstatistics;
+namespace App\Http\Controllers\statistics;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -13,16 +23,6 @@ use App\Models\visits;    //통계 모델 정의
 
 class StatisticsContoller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function statistics()
     {
         $customutils = new CustomUtils();

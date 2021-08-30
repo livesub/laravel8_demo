@@ -476,6 +476,12 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'adm.admemail.sendlist',
         'uses' => 'App\Http\Controllers\adm\admemail\AdmemailContoller@sendlist',
     ]);
+
+/*** 관리자 통계 관리 */
+    Route::get('adm/visitslist/', [  //방문자 통계 리스트
+        'as' => 'adm.visit.index',
+        'uses' => 'App\Http\Controllers\adm\visits\VisitsContoller@index',
+    ]);
 });
 
 /* 이메일 확인 리턴(외부에서 접속 해야 하기에 밖으로 뺌) */
