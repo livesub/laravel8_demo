@@ -20,6 +20,7 @@ use App\Models\User;    //모델 정의
 use App\Helpers\Custom\CustomUtils; //사용자 공동 함수
 //use App\Helpers\Custom\Messages_kr;    //error 메세지 모음
 use Illuminate\Support\Facades\Auth;    //인증
+use App\Http\Controllers\statistics\StatisticsContoller;        //통계 호출
 
 class LoginController extends Controller
 {
@@ -85,6 +86,11 @@ class LoginController extends Controller
             return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['email_chk']);
             exit;
         }
+
+        //회원 로그인 통계처리
+        $statistics = new StatisticsContoller();
+        $statistics->mem_statistics($user_id);
+
 
         return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
     }

@@ -20,6 +20,7 @@ use App\Helpers\Custom\UserAgent; //통계 관련 함수
 use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 use App\Models\visits;    //통계 모델 정의
+use App\Models\membervisits;    //회원 로그인 통계 모델 정의
 
 class StatisticsContoller extends Controller
 {
@@ -69,16 +70,6 @@ class StatisticsContoller extends Controller
             //저장 처리
             $create_result = visits::create($data);
             $create_result->save();
-
-
-
-
-
-
-
-
-
-
 /*
             //추가 디테일 하게 꾸밀시 사용 (라라벨로 변환)
             if($in_result){
@@ -135,7 +126,52 @@ class StatisticsContoller extends Controller
 
             }
 */
+        }
+    }
 
+    public function mem_statistics($user_id)
+    {
+        if(Auth::user()){   //로그인이 됐을 때만 실행
+            $customutils = new CustomUtils();
+            $Messages = $customutils->language_pack(session()->get('multi_lang'));
+
+            $details = $customutils->ip_details($_SERVER['REMOTE_ADDR']);
+
+            //접속 브라우져 등 정보
+            $ua = new UserAgent();
+            $agent_info = $ua->detect($_SERVER['HTTP_USER_AGENT']);
+
+            $mv_id = membervisits::max('mv_id') + 1;
+
+            // $_SERVER 배열변수 값의 변조를 이용한 SQL Injection 공격을 막는 코드입니다. 110810
+            $remote_addr = $_SERVER['REMOTE_ADDR'];
+
+            $referer = "";
+            if (isset($_SERVER['HTTP_REFERER']))
+                $referer = strip_tags($_SERVER['HTTP_REFERER']);
+            $user_agent  = strip_tags($_SERVER['HTTP_USER_AGENT']);
+
+            $mv_browser = $agent_info['browser']['name'];
+            $mv_os = $agent_info['platform']['name'];
+            $mv_device = $agent_info['system']['name'];
+
+            //DB 저장 배열 만들기
+            $data = array(
+                'mv_id'         => $mv_id,
+                'user_id'       => $user_id,
+                'mv_ip'         => $remote_addr,
+                'mv_referer'    => $referer,
+                'mv_agent'      => $user_agent,
+                'mv_browser'    => $mv_browser,
+                'mv_os'         => $mv_os,
+                'mv_device'     => $mv_device,
+                'mv_city'       => $details['city'],
+                'mv_country'    => $details['country'],
+            );
+
+            //저장 처리
+            $create_result = membervisits::create($data);
+            $create_result->save();
         }
     }
 }

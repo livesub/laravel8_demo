@@ -27,6 +27,7 @@
         <td>Device</td>
         <td>Referer</td>
         <td>Agent</td>
+        <td>방문시간</td>
     </tr>
 
     @foreach($visits as $visit)
@@ -40,6 +41,7 @@
         <td>{{ $visit->vi_device }}</td>
         <td>{{ $visit->vi_referer }}</td>
         <td>{{ $visit->vi_agent }}</td>
+        <td>{{ $visit->created_at }}</td>
     </tr>
     @endforeach
 </table>

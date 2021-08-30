@@ -482,6 +482,11 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'adm.visit.index',
         'uses' => 'App\Http\Controllers\adm\visits\VisitsContoller@index',
     ]);
+
+    Route::get('adm/membervisitslist/', [  //회원 로그인 통계 리스트
+        'as' => 'adm.visit.memberindex',
+        'uses' => 'App\Http\Controllers\adm\visits\VisitsContoller@memberindex',
+    ]);
 });
 
 /* 이메일 확인 리턴(외부에서 접속 해야 하기에 밖으로 뺌) */

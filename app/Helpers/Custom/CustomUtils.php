@@ -131,7 +131,7 @@ return $validator;
         $search_sql = "";
         $search_cate = "";
 
-        if($type == 'member' || $type == 'cate' || $type == 'menu' || $type == 'email' || $type == 'visits'){
+        if($type == 'member' || $type == 'cate' || $type == 'menu' || $type == 'email' || $type == 'visits' || $type == 'membervisits'){
             $total_cnt = DB::table($table_name)->count();
         }else if($type == 'items'){
             if($cate != "") $search_sql = " AND a.ca_id = b.ca_id AND a.ca_id LIKE '{$cate}%' AND a.{$keymethod} LIKE '%{$keyword}%' ";
