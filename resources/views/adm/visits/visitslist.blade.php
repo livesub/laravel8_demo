@@ -8,6 +8,13 @@
         <td><h4>방문자 통계 리스트</h4></td>
     </tr>
 </table>
+<table border=1>
+    <tr>
+        <td>전체 : {{ $totalCount }}</td>
+        <td>오늘 : {{ $today }}</td>
+        <td>어제 : {{ $yesterday }}</td>
+    </tr>
+</table>
 
 <table border=1>
     <tr>

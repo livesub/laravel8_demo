@@ -46,78 +46,21 @@ class VisitsContoller extends Controller
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
 
+        //오늘 통계 구하기
+        $today = DB::table($type)->where('created_at', 'like' ,date('Y-m-d',time()).'%')->count();
+
+        //어제 통계 구하기
+        $yesterday = DB::table($type)->whereRaw("date(created_at) = date(subdate(now(),INTERVAL 1 DAY))")->count();
+
         return view('adm.visits.visitslist', [
-            'virtual_num'=>$page_control['virtual_num'],
-            'totalCount'=>$page_control['totalCount'],
-            'visits'=>$visits,
-            'pageNum'=>$page_control['pageNum'],
-            'pageList'=>$pageList
+            'virtual_num'   => $page_control['virtual_num'],
+            'totalCount'    => $page_control['totalCount'],
+            'today'         => $today,
+            'yesterday'     => $yesterday,
+            'visits'        => $visits,
+            'pageNum'       => $page_control['pageNum'],
+            'pageList'      => $pageList
         ]); // 요청된 정보 처리 후 결과 되돌려줌
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
