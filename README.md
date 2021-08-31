@@ -110,3 +110,11 @@ flush privileges;
     - 이메일 발송중, 로딩이미지 표현
 
 14. 방문자 간단 통계 (cookie 로 하루 한번 방문 하면 insert 되지 않음)
+
+15. 회원 로그인 통계
+
+16. route 관리자 분리
+ - app/Providers/RouteServiceProvider.php
+ - app/Http/Kernel.php
+ - routes/web.php
+     - Route::prefix('adm')->group(base_path('routes/adm.php'));

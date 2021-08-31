@@ -46,6 +46,12 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
+
+            //web.php route에서 관리자 분리
+            Route::prefix('adm')
+                ->middleware('adm')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/adm.php'));
         });
     }
 

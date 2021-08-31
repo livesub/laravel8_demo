@@ -29,9 +29,9 @@ class AdmController extends Controller
 
     public function __construct()
     {
+
         $this->middleware(function () {
             $this->user = Auth::user();
-            //dd($this->user->user_id);
 
             if(!$this->user){
                 //로그인이 되지 않았다면
