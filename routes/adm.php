@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 
+/*
+Route::get('/', function () {
+    dd(Auth::user());
+});
+*/
+
 Route::get('/', [
     'as' => 'adm.index',
     'uses' => 'App\Http\Controllers\adm\AdmController@index',
