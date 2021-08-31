@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 use App\Models\categorys;    //카테고리 모델 정의
 
-
 class AdmcateController extends Controller
 {
     /**
@@ -200,7 +199,6 @@ class AdmcateController extends Controller
             'ca_name_kr'        => $categorys_name->ca_name_kr,
         ]);
     }
-
 
     public function cate_add_save(Request $request)
     {
