@@ -141,87 +141,87 @@ Route::get('email/{token}', [
 /*** 프론트 게시판 관리 */
 Route::get('board/list/{tb_name}', [  //게시판 리스트
     'as' => 'board.index',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@index',
+    'uses' => 'App\Http\Controllers\board\BoardController@index',
 ]);
 
 Route::post('board/list/choice_del', [  //게시판 리스트 에서 관리자 선택 삭제
     'as' => 'board.choice_del',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@choice_del',
+    'uses' => 'App\Http\Controllers\board\BoardController@choice_del',
 ]);
 
 Route::get('board/write/{tb_name}', [  //게시판 글쓰기
     'as' => 'board.create',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@create',
+    'uses' => 'App\Http\Controllers\board\BoardController@create',
 ]);
 
 Route::post('board/write/', [  //게시판 글쓰기 저장
     'as' => 'board.store',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@store',
+    'uses' => 'App\Http\Controllers\board\BoardController@store',
 ]);
 
 Route::get('board/view/{tb_name}', [  //게시판 view
     'as' => 'board.show',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@show',
+    'uses' => 'App\Http\Controllers\board\BoardController@show',
 ]);
 
 Route::get('board/secret/{tb_name}', [  //게시판 비밀글 처리
     'as' => 'board.secret',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@secret',
+    'uses' => 'App\Http\Controllers\board\BoardController@secret',
 ]);
 
 Route::post('board/secretpw/', [  //게시판 비밀글 처리
     'as' => 'board.secretpw',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@secretpw',
+    'uses' => 'App\Http\Controllers\board\BoardController@secretpw',
 ]);
 
 Route::post('board/downloadfile/', [  //게시판 첨부파일 다운로드 처리
     'as' => 'board.downloadfile',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@downloadfile',
+    'uses' => 'App\Http\Controllers\board\BoardController@downloadfile',
 ]);
 
 Route::get('board/reply/{tb_name}/{ori_num}', [  //게시판 답글 쓰기
     'as' => 'board.reply',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@reply',
+    'uses' => 'App\Http\Controllers\board\BoardController@reply',
 ]);
 
 Route::post('board/replysave/{tb_name}', [  //게시판 답글 저장
     'as' => 'board.replysave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@replysave',
+    'uses' => 'App\Http\Controllers\board\BoardController@replysave',
 ]);
 
 Route::get('board/modify/{tb_name}/{ori_num}', [  //게시판 수정
     'as' => 'board.modify',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@modify',
+    'uses' => 'App\Http\Controllers\board\BoardController@modify',
 ]);
 
 Route::post('board/modifysave/{tb_name}', [  //게시판 수정 저장
     'as' => 'board.modifysave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@modifysave',
+    'uses' => 'App\Http\Controllers\board\BoardController@modifysave',
 ]);
 
 Route::post('board/delete/{tb_name}', [  //게시판 삭제 처리
     'as' => 'board.deletesave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@deletesave',
+    'uses' => 'App\Http\Controllers\board\BoardController@deletesave',
 ]);
 
 Route::post('board/commemt/{tb_name}', [  //게시판 댓글 처리
     'as' => 'board.commentsave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@commentsave',
+    'uses' => 'App\Http\Controllers\board\BoardController@commentsave',
 ]);
 
 Route::post('board/commemtreply/{tb_name}', [  //게시판 댓글에 답글 처리
     'as' => 'board.commemtreplysave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@commemtreplysave',
+    'uses' => 'App\Http\Controllers\board\BoardController@commemtreplysave',
 ]);
 
 Route::post('board/commemtmodify/{tb_name}', [  //게시판 댓글 수정 처리
     'as' => 'board.commemtmodifysave',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@commemtmodifysave',
+    'uses' => 'App\Http\Controllers\board\BoardController@commemtmodifysave',
 ]);
 
 Route::post('board/commemtdelete/{tb_name}', [  //게시판 댓글 삭제 처리
     'as' => 'board.commemtdelete',
-    'uses' => 'App\Http\Controllers\board\BoardContoller@commemtdelete',
+    'uses' => 'App\Http\Controllers\board\BoardController@commemtdelete',
 ]);
 
 
@@ -243,9 +243,11 @@ Route::get('/item/item_page', [
 
 
 
-
 /*** 관리자 페이지 접근 ***/
 //route에서 관리자 분리
 //app/Providers/RouteServiceProvider.php    //설정
 //app/Http/Kernel.php   //설정
 Route::prefix('adm')->group(base_path('routes/adm.php'));
+
+/*** 관리자 페이지 쇼핑몰 접근 ***/
+Route::prefix('adm/shop')->group(base_path('routes/shop.php'));

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;  //체크
 use App\Models\menus;    //카테고리 모델 정의
 
-class AdmmenuContoller extends Controller
+class AdmmenuController extends Controller
 {
     /**
      * Display a listing of the resource.

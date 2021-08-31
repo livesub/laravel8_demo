@@ -24,7 +24,7 @@ use App\Models\board_datas_comment_table;    //게시판 모델 정의
 use App\Models\items;    //상품 모델 정의
 use App\Models\emails;    //이메일 모델 정의
 
-class AdmeditorContoller extends Controller
+class AdmeditorController extends Controller
 {
     public function __construct()
     {

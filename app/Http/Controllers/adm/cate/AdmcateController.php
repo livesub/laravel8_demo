@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\categorys;    //카테고리 모델 정의
 
 
-class AdmcateContoller extends Controller
+class AdmcateController extends Controller
 {
     /**
      * Display a listing of the resource.

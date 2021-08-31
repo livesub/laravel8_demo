@@ -1,7 +1,7 @@
 <?php
 #############################################################################
 #
-#		파일이름		:		StatisticsContoller.php
+#		파일이름		:		StatisticsController.php
 #		파일설명		:		방문자 통계 insert
 #		저작권			:		저작권은 제작자에 있지만 누구나 사용합니다.
 #		제작자			:		김영섭
@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\visits;    //통계 모델 정의
 use App\Models\membervisits;    //회원 로그인 통계 모델 정의
 
-class StatisticsContoller extends Controller
+class StatisticsController extends Controller
 {
     public function statistics()
     {

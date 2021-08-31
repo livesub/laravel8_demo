@@ -23,7 +23,7 @@ use App\Models\emails;    //이메일 내용 모델 정의
 use App\Models\email_sends;    //이메일 발송 정보
 use Illuminate\Support\Str;
 
-class AdmemailContoller extends Controller
+class AdmemailController extends Controller
 {
     /**
      * Display a listing of the resource.

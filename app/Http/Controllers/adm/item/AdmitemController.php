@@ -22,7 +22,7 @@ use App\Models\items;    //상품 모델 정의
 use Validator;  //체크
 use App\Models\categorys;    //카테고리 모델 정의
 
-class AdmitemContoller extends Controller
+class AdmitemController extends Controller
 {
     /**
      * Display a listing of the resource.

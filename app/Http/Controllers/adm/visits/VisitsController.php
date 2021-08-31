@@ -21,7 +21,7 @@ use App\Models\Membervisits;    //모델 정의
 use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 
-class VisitsContoller extends Controller
+class VisitsController extends Controller
 {
     /**
      * Display a listing of the resource.
