@@ -1196,7 +1196,6 @@ class BoardContoller extends Controller
         $b_up->bdt_comment_cnt = $b_up->bdt_comment_cnt + 1;
         $result_up = $b_up->save();
 
-
         if($create_result = 1) return redirect('board/view/'.$tb_name.'?id='.$b_id.'&page='.$page.'&cate='.$cate)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
         else return redirect('board/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }

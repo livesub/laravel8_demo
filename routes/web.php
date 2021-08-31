@@ -241,6 +241,9 @@ Route::get('/item/item_page', [
 ]);
 
 
+
+
+
 /*** 관리자 페이지 접근 ***/
 //route에서 관리자 분리
 //app/Providers/RouteServiceProvider.php    //설정

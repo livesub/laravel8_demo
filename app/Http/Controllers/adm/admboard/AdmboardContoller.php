@@ -1280,6 +1280,11 @@ class AdmboardContoller extends Controller
         $create_result['bdct_grp'] = $create_result->id; //저장된 결과 값에 auto increment 값을 찾을때 사용
         $create_result->save();
 
+        //원본글에 댓글 갯수 업뎃
+        $b_up = board_datas_table::whereid($b_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+        $b_up->bdt_comment_cnt = $b_up->bdt_comment_cnt + 1;
+        $result_up = $b_up->save();
+
         if($create_result = 1) return redirect('adm/admboard/view/'.$tb_name.'?id='.$b_id.'&page='.$page.'&cate='.$cate)->with('alert_messages', $Messages::$board['b_ment']['b_save']);
         else return redirect('adm/admboard/list/'.$tb_name)->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
