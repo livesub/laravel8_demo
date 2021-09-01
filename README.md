@@ -118,3 +118,5 @@ flush privileges;
  - app/Http/Kernel.php
  - routes/web.php
      - Route::prefix('adm')->group(base_path('routes/adm.php'));
+
+17. social 로그인 구현중

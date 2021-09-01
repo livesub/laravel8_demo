@@ -37,7 +37,8 @@ class User extends Authenticatable
         'user_confirm_code',
         'user_activated',
         'user_level',
-        'user_type'
+        'user_type',
+        'user_platform_type'
     ];
 
     /**
@@ -51,7 +52,8 @@ class User extends Authenticatable
         'user_confirm_code',
         'user_level',
         'user_phone',
-        'user_type'
+        'user_type',
+        'user_platform_type'
     ];
 
     /**

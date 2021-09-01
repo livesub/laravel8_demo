@@ -14,6 +14,8 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;    //모델 정의
 use App\Helpers\Custom\CustomUtils; //사용자 공동 함수
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash; //비밀번호 함수
+use Illuminate\Support\Facades\Auth;    //인증
 
 class socialLoginController extends BaseController
 {
@@ -32,18 +34,28 @@ class socialLoginController extends BaseController
 
         $social_info = Socialite::driver('google')->user();
 
-        $user_info = DB::table('users')->where('user_id', $social_info->email)->count();
+        $user_info = User::whereUser_id($social_info->email)->first();
 
-        if($user_info != 1){
+        $user_pw = pack('V*', rand(), rand(), rand(), rand()); //비밀번호 강제 생성
+
+        if(empty($user_info)){
             $create_result = User::create([
-                'user_id'           => trim($social_info->email),
-                'user_name'         => $social_info->name,
-                'user_activated'    => 1,
-                'user_level'        => 10,
-                'user_type'         => 'N',
-            ])->exists(); //저장,실패 결과 값만 받아 오기 위해  exists() 를 씀
+                'user_id'               => $social_info->email,
+                'user_name'             => $social_info->name,
+                'user_activated'        => 1,
+                'user_level'            => 10,
+                'user_type'             => 'N',
+                'user_platform_type'    => 'google',
+                'password'              => Hash::make($user_pw),
+            ]);
+
+            Auth::login($create_result, $remember = true);
+
+            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
         }else{
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$social['join_fail']);
+            Auth::login($user_info, $remember = true);
+
+            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
         }
     }
 }

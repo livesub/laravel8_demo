@@ -91,7 +91,6 @@ class LoginController extends Controller
         $statistics = new StatisticsController();
         $statistics->mem_statistics($user_id);
 
-
         return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
     }
 
