@@ -176,6 +176,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //소셜 로그인 추가(210901)
+        \SocialiteProviders\Manager\ServiceProvider::class,
     ],
 
     /*

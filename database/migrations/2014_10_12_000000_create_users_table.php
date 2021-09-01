@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->boolean('user_activated')->default(0)->comment('가입 확인');
             $table->integer('user_level')->length(3)->default(10)->comment('사용자 레벨');
             $table->enum('user_type', ['N', 'Y'])->nullable()->length(2)->default('N')->comment('탈퇴여부:Y=>탈퇴');
+            $table->string('user_platform_type')->nullable()->comment('소셜 로그인 방식');
             $table->timestamp('user_email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

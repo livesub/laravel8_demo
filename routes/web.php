@@ -241,6 +241,21 @@ Route::get('/item/item_page', [
 ]);
 
 
+/*** 소셜 로그인 관련 ***/
+//구글 관련
+Route::get('login/google', [
+    'as' => 'login.google',
+    'uses' => 'App\Http\Controllers\auth\socialLoginController@redirect',
+]);
+
+Route::get('callback', [
+//    'as' => 'login.google.callback',
+    'uses' => 'App\Http\Controllers\auth\socialLoginController@callback',
+]);
+
+
+
+
 
 
 /*** 관리자 페이지 접근 ***/
@@ -251,3 +266,7 @@ Route::prefix('adm')->group(base_path('routes/adm.php'));
 
 /*** 관리자 페이지 쇼핑몰 접근 ***/
 Route::prefix('adm/shop')->group(base_path('routes/shop.php'));
+
+
+
+

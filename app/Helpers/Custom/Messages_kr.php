@@ -396,6 +396,11 @@ class Messages_kr extends Controller
         ]
     ];
 
+    //소셜 로그인 관련
+    static $social = [
+        'join_fail' => '이미 사용하고 있는 아이디 입니다.',
+    ];
+
 }
 
 

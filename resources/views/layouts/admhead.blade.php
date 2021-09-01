@@ -83,6 +83,14 @@ header('Pragma: public');
                     <tr>
                         <td><br><a href="{{ route('adm.editor.delete') }}">에디터 불필요 파일 삭제</a></td>
                     </tr>
+
+
+                    <tr>
+                        <td><br><br>쇼핑몰</td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ route('shop.cate.index') }}">분류 관리</a></td>
+                    </tr>
                 </table>
             </td>
 

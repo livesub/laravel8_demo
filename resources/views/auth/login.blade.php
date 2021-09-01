@@ -63,5 +63,12 @@
     </div>
   </form>
 
+    <div>
+      <p class='text-center'>
+        <button type="button" onclick="location.href='{{ route('login.google') }}'">구글 로그인</button>
+      </p>
+
+
+    </div>
 
 @endsection
