@@ -243,8 +243,8 @@ Route::get('/item/item_page', [
 
 /*** 소셜 로그인 관련 ***/
 //구글 관련
-Route::get('social/{provider}', [
-    'as' => 'social.login',
+Route::get('social/google', [
+    'as' => 'google.login',
     'uses' => 'App\Http\Controllers\auth\socialLoginController@redirect',
 ]);
 
