@@ -27,6 +27,7 @@ return array(
     'App\\Http\\Controllers\\adm\\member\\MemberlistController' => $baseDir . '/app/Http/Controllers/adm/member/MemberlistController.php',
     'App\\Http\\Controllers\\adm\\menu\\AdmmenuController' => $baseDir . '/app/Http/Controllers/adm/menu/AdmmenuController.php',
     'App\\Http\\Controllers\\adm\\shop\\category\\AdmShopCategoryController' => $baseDir . '/app/Http/Controllers/adm/shop/category/AdmShopCategoryController.php',
+    'App\\Http\\Controllers\\adm\\shop\\cate\\AdmShopCateController' => $baseDir . '/app/Http/Controllers/adm/shop/cate/AdmShopCateController.php',
     'App\\Http\\Controllers\\adm\\visits\\VisitsController' => $baseDir . '/app/Http/Controllers/adm/visits/VisitsController.php',
     'App\\Http\\Controllers\\auth\\JoinController' => $baseDir . '/app/Http/Controllers/auth/JoinController.php',
     'App\\Http\\Controllers\\auth\\LoginController' => $baseDir . '/app/Http/Controllers/auth/LoginController.php',
