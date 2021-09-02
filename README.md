@@ -119,4 +119,8 @@ flush privileges;
  - routes/web.php
      - Route::prefix('adm')->group(base_path('routes/adm.php'));
 
-17. social 로그인 구현중
+17. social 로그인
+    - 구글 로그인
+    - 카카올 로그인
+    - 네이버 로그인
+    - 페이스북 로그인(ssl 적용이 후 테스트 가능)

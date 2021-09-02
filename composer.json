@@ -12,7 +12,10 @@
         "laravel/framework": "^8.40",
         "laravel/socialite": "^5.2",
         "laravel/tinker": "^2.5",
-        "socialiteproviders/google": "^4.1"
+        "socialiteproviders/facebook": "^4.1",
+        "socialiteproviders/google": "^4.1",
+        "socialiteproviders/kakao": "^4.2",
+        "socialiteproviders/naver": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

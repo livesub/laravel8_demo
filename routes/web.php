@@ -129,6 +129,13 @@ Route::group(['middleware' => ['auth']], function () {
         'as' => 'filedown',
         'uses' => 'App\Http\Controllers\FiledownController@store',
     ]);
+
+    //탈퇴 하기
+    Route::get('member/withdraw', [
+        'as' => 'mypage.withdraw',
+        'uses' => 'App\Http\Controllers\member\MypageController@withdraw',
+    ]);
+
  });
 
 /* 이메일 확인 리턴(외부에서 접속 해야 하기에 밖으로 뺌) */
@@ -242,20 +249,14 @@ Route::get('/item/item_page', [
 
 
 /*** 소셜 로그인 관련 ***/
-//구글 관련
-Route::get('social/google', [
-    'as' => 'google.login',
+Route::get('social/{provider}', [
+    'as' => 'social.login',
     'uses' => 'App\Http\Controllers\auth\socialLoginController@redirect',
 ]);
 
-Route::get('social/callback', [
-//    'as' => 'login.google.callback',
+Route::get('social/callback/{provider}', [
     'uses' => 'App\Http\Controllers\auth\socialLoginController@callback',
 ]);
-
-
-
-
 
 
 /*** 관리자 페이지 접근 ***/

@@ -4815,6 +4815,46 @@
         ]
     },
     {
+        "name": "socialiteproviders/facebook",
+        "version": "4.1.0",
+        "version_normalized": "4.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/SocialiteProviders/Facebook.git",
+            "reference": "9b94a9334b5d0f61de8f5a20928d63d4d8f4e00d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/SocialiteProviders/Facebook/zipball/9b94a9334b5d0f61de8f5a20928d63d4d8f4e00d",
+            "reference": "9b94a9334b5d0f61de8f5a20928d63d4d8f4e00d",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "php": "^7.2 || ^8.0",
+            "socialiteproviders/manager": "~4.0"
+        },
+        "time": "2020-12-01T23:10:59+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "SocialiteProviders\\Facebook\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Oleksandr Prypkhan (Alex Wells)",
+                "email": "autaut03@googlemail.com"
+            }
+        ],
+        "description": "Facebook (facebook.com) OAuth2 Provider for Laravel Socialite"
+    },
+    {
         "name": "socialiteproviders/google",
         "version": "4.1.0",
         "version_normalized": "4.1.0.0",
@@ -4853,6 +4893,46 @@
             }
         ],
         "description": "Google OAuth2 Provider for Laravel Socialite"
+    },
+    {
+        "name": "socialiteproviders/kakao",
+        "version": "4.2.2",
+        "version_normalized": "4.2.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/SocialiteProviders/Kakao.git",
+            "reference": "0f1210fc3b82fe4f489388cb5d730351797281ac"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/SocialiteProviders/Kakao/zipball/0f1210fc3b82fe4f489388cb5d730351797281ac",
+            "reference": "0f1210fc3b82fe4f489388cb5d730351797281ac",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "php": "^7.2 || ^8.0",
+            "socialiteproviders/manager": "~4.0"
+        },
+        "time": "2021-02-24T22:47:43+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "SocialiteProviders\\Kakao\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Doojin So",
+                "email": "sodoojin@gmail.com"
+            }
+        ],
+        "description": "Kakao OAuth2 Provider for Laravel Socialite"
     },
     {
         "name": "socialiteproviders/manager",
@@ -4918,6 +4998,48 @@
         ],
         "description": "Easily add new or override built-in providers in Laravel Socialite.",
         "homepage": "https://socialiteproviders.com/"
+    },
+    {
+        "name": "socialiteproviders/naver",
+        "version": "4.1.0",
+        "version_normalized": "4.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/SocialiteProviders/Naver.git",
+            "reference": "8aea1dc415c2c353eba836e5d3aa91edf884c019"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/SocialiteProviders/Naver/zipball/8aea1dc415c2c353eba836e5d3aa91edf884c019",
+            "reference": "8aea1dc415c2c353eba836e5d3aa91edf884c019",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "ext-libxml": "*",
+            "ext-simplexml": "*",
+            "php": "^7.2 || ^8.0",
+            "socialiteproviders/manager": "~4.0"
+        },
+        "time": "2020-12-01T23:10:59+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "SocialiteProviders\\Naver\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Doojin So",
+                "email": "sodoojin@gmail.com"
+            }
+        ],
+        "description": "Naver OAuth2 Provider for Laravel Socialite"
     },
     {
         "name": "swiftmailer/swiftmailer",

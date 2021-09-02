@@ -65,10 +65,20 @@
 
     <div>
       <p class='text-center'>
-        <button type="button" onclick="location.href='{{ route('google.login') }}'">구글 로그인</button>
+        <button type="button" onclick="location.href='{{ route('social.login','google') }}'">구글 로그인</button>
       </p>
 
+      <p class='text-center'>
+        <button type="button" onclick="location.href='{{ route('social.login','kakao') }}'">카카오 로그인</button>
+      </p>
 
+      <p class='text-center'>
+        <button type="button" onclick="location.href='{{ route('social.login','naver') }}'">네이버 로그인</button>
+      </p>
+
+      <p class='text-center'>
+        <button type="button" onclick="location.href='{{ route('social.login','facebook') }}'">페이스북 로그인</button>
+      </p>
     </div>
 
 @endsection

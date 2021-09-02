@@ -214,6 +214,7 @@ class Messages_kr extends Controller
             'alert_pw_confirmation' => '비밀번호 확인을 입력 하세요.',
 
             'my_change' => '정상적으로 변경 되었습니다',
+            'withdraw_ok' => '정상적으로 탈퇴 되었습니다',
         ],
 
         'validate' => [
@@ -400,6 +401,7 @@ class Messages_kr extends Controller
     static $social = [
         'join_fail' => '이미 사용하고 있는 아이디 입니다.',
         'join_cencel' => '인증을 취소 하셨습니다.',
+        'withdraw_chk' => '탈퇴된 회원입니다.',
     ];
 
 }

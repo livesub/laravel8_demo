@@ -158,10 +158,21 @@
       <button class='btn btn-primary btn-lg btn-block' type='submit'>
         {{ $submit_join }}
       </button>
+      <button type="button" onclick="withdraw();">탈퇴 하기</button>
     </div>
+
+
   </form>
 
-
+<script>
+  function withdraw(){
+    if (confirm("정말 탈퇴 하시겠습니까?") == true){    //확인
+        location.href='{{ route('mypage.withdraw') }}';
+    }else{   //취소
+        return false;
+    }
+  }
+</script>
 
 
 {{--
