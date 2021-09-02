@@ -37,7 +37,7 @@ return [
         //'token_uri' => env('GOOGLE_TOKEN_URL'),
         'auth_provider_x509_cert_url'=>"https://www.googleapis.com/oauth2/v1/certs",
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'redirect'=>"http://localhost:8000/callback",
+        'redirect'=>"http://localhost:8000/social/callback",
         'javascript_origins' => "http://localhost:8000"
     ],
 ];

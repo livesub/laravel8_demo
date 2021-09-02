@@ -248,7 +248,7 @@ Route::get('social/google', [
     'uses' => 'App\Http\Controllers\auth\socialLoginController@redirect',
 ]);
 
-Route::get('callback', [
+Route::get('social/callback', [
 //    'as' => 'login.google.callback',
     'uses' => 'App\Http\Controllers\auth\socialLoginController@callback',
 ]);

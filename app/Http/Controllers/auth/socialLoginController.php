@@ -32,30 +32,35 @@ class socialLoginController extends BaseController
     public function callback(Request $request) {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        $social_info = Socialite::driver('google')->user();
+        if($request->get('error') != "access_denied"){
+            $social_info = Socialite::driver('google')->user();
 
-        $user_info = User::whereUser_id($social_info->email)->first();
+            $user_info = User::whereUser_id($social_info->email)->first();
 
-        $user_pw = pack('V*', rand(), rand(), rand(), rand()); //비밀번호 강제 생성
+            $user_pw = pack('V*', rand(), rand(), rand(), rand()); //비밀번호 강제 생성
 
-        if(empty($user_info)){
-            $create_result = User::create([
-                'user_id'               => $social_info->email,
-                'user_name'             => $social_info->name,
-                'user_activated'        => 1,
-                'user_level'            => 10,
-                'user_type'             => 'N',
-                'user_platform_type'    => 'google',
-                'password'              => Hash::make($user_pw),
-            ]);
+            if(empty($user_info)){
+                $create_result = User::create([
+                    'user_id'               => $social_info->email,
+                    'user_name'             => $social_info->name,
+                    'user_activated'        => 1,
+                    'user_level'            => 10,
+                    'user_type'             => 'N',
+                    'user_platform_type'    => 'google',
+                    'password'              => Hash::make($user_pw),
+                ]);
 
-            Auth::login($create_result, $remember = true);
+                Auth::login($create_result, $remember = true);
 
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+                return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+            }else{
+                Auth::login($user_info, $remember = true);
+
+                return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+            }
         }else{
-            Auth::login($user_info, $remember = true);
-
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+            //인증 취소시
+            return redirect()->route('main.index')->with('alert_messages', $Messages::$social['join_cencel']);
         }
     }
 }
