@@ -363,4 +363,10 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'adm.visit.memberindex',
         'uses' => 'App\Http\Controllers\adm\visits\VisitsController@memberindex',
     ]);
+
+/*** 관리자 팝업 관리 */
+    Route::get('popuplist/', [  //팝업 리스트
+        'as' => 'adm.popup.index',
+        'uses' => 'App\Http\Controllers\adm\popup\PopupController@index',
+    ]);
 });

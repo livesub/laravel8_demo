@@ -42,6 +42,9 @@ header('Pragma: public');
                         <td><a href="{{ route('adm.admemail.index') }}">회원 이메일 발송 관리</a></td>
                     </tr>
                     <tr>
+                        <td><a href="{{ route('adm.popup.index') }}">팝업 관리</a></td>
+                    </tr>
+                    <tr>
                         <td><a href="{{ route('adm.boardmanage.index') }}">게시판 관리</a></td>
                     </tr>
                     <tr>
