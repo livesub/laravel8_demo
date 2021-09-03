@@ -1,13 +1,13 @@
 @php
-header ('Pragma: no-cache');
-header('Cache-Control: no-store, private, no-cache, must-revalidate');
-header('Cache-Control: pre-check=0, post-check=0, max-age=0, max-stale = 0', false);
-header('Pragma: public');
+    header ('Pragma: no-cache');
+    header('Cache-Control: no-store, private, no-cache, must-revalidate');
+    header('Cache-Control: pre-check=0, post-check=0, max-age=0, max-stale = 0', false);
+    header('Pragma: public');
 
-//방문 통계 호출
-use App\Http\Controllers\statistics\StatisticsController;
-$statistics = new StatisticsController();
-$statistics->statistics();
+    //방문 통계 호출
+    use App\Http\Controllers\statistics\StatisticsController;
+    $statistics = new StatisticsController();
+    $statistics->statistics();
 @endphp
 
 <!DOCTYPE html>
@@ -27,6 +27,18 @@ $statistics->statistics();
         location.href = '{{ url('multilingual') }}/'+multilingual;
     }
 </script>
+
+@php
+    //팝업 관련
+    use App\Http\Controllers\popup\PopupController;
+    $pop = new PopupController();
+    echo $pop->popup_for();
+@endphp
+
+
+
+
+
 
     <div class='form-group'>
         <select name='multi_lang' id='multi_lang' onchange='multi_lang();'>
@@ -65,49 +77,14 @@ $statistics->statistics();
     </table>
 
 <!-- 메뉴 불러 오기 -->
-    @include('head_menu')
+@php
+    use App\Http\Controllers\menu\MenuController;
+    $menu = new MenuController();
+    echo $menu->menu_list();
+@endphp
 <!-- 메뉴 불러 오기 -->
-<!--
-    <table>
 
-        <tr>
-            <td>
-                <table border=1>
-                    <tr>
-                    @php
-                        $b_lists = DB::table('boardmanagers')->select('id', 'bm_tb_name', 'bm_tb_subject')->orderBy('id', 'desc')->get();
-                    @endphp
 
-                    @foreach($b_lists as $b_list)
-                        <td><a href="/board/list/{{ $b_list->bm_tb_name }}"> {{ $b_list->bm_tb_subject }}</a></td>
-                    @endforeach
-                    </tr>
-
-                </table>
-            </td>
-        </tr>
-
-        <tr>
-            <td>제품 소개</td>
-        </tr>
-        <tr>
-            <td>
-                <table border=1>
-                    <tr>
-                    @php
-                        $cate_lists = DB::table('categorys')->select('id', 'ca_id', 'ca_name_kr')->where('ca_display','Y')->whereRaw("length(ca_id) = '2'")->orderBy('ca_rank', 'desc')->get();
-                    @endphp
-
-                    @foreach($cate_lists as $cate_list)
-                        <td>{{ $cate_list->ca_name_kr }}</td>
-                    @endforeach
-                    </tr>
-                </table>
-            </td>
-        </tr>
-
-    </table>
--->
 
 
     {{-- 각 내용 뿌리기 --}}

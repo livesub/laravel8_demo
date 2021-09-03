@@ -1,15 +1,9 @@
-@php
-    use App\Helpers\Custom\CustomUtils; //사용자 공동 함수
-
-    $one_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw('length(menu_id) = 2')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
-@endphp
-
-    @if(count($one_step_infos) != "0")
-        @php
-            //url 주소의 / 를 잘라내어 마지막 배열값(페이지명)을 가져 온다
-            $path_cut = explode("/",Request::path());
-            $path_chk = array_pop($path_cut);
-        @endphp
+@if(count($one_step_infos) != "0")
+    @php
+        //url 주소의 / 를 잘라내어 마지막 배열값(페이지명)을 가져 온다
+        $path_cut = explode("/",Request::path());
+        $path_chk = array_pop($path_cut);
+    @endphp
 <style>
 /*가로메뉴형*/
 #menu {
@@ -91,7 +85,7 @@
                             @php
                                 $one_page_link = "";
                                 $two_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw("menu_id like '{$one_step_info->menu_id}%'")->whereRaw('length(menu_id) = 4')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
-                                $one_page_link = CustomUtils::menu_page_link2($one_step_info);
+                                $one_page_link = $customutils->menu_page_link2($one_step_info);
                             @endphp
 
                         <li>
@@ -132,7 +126,7 @@
                                     @php
                                         $two_page_link = "";
                                         $three_step_infos = DB::table('menuses')->where('menu_display','Y')->whereRaw("menu_id like '{$two_step_info->menu_id}%'")->whereRaw('length(menu_id) = 6')->orderby('menu_rank', 'DESC')->get();   //정보 읽기
-                                        $two_page_link = CustomUtils::menu_page_link2($two_step_info);
+                                        $two_page_link = $customutils->menu_page_link2($two_step_info);
 
                                         //타이틀 bold 처리 하기 위해
                                         if($path_chk == $two_step_info->menu_name_en){
@@ -168,7 +162,7 @@
 
                                         @foreach($three_step_infos as $three_step_info)
                                             @php
-                                                $three_page_link = CustomUtils::menu_page_link2($three_step_info);
+                                                $three_page_link = $customutils->menu_page_link2($three_step_info);
 
                                                 //타이틀 bold 처리 하기 위해
                                                 if($path_chk == $three_step_info->menu_name_en){
