@@ -1,6 +1,7 @@
+@if(count($pop_lists) != "0")
 <!-- 팝업레이어 시작 { -->
 <div id="hd_pop">
-@foreach($pop_lists as $pop_list)
+    @foreach($pop_lists as $pop_list)
     @php
         if(isset($_COOKIE["hd_pops_{$pop_list->id}"]) && $_COOKIE["hd_pops_{$pop_list->id}"]) continue;
     @endphp
@@ -14,7 +15,7 @@
             <button class="hd_pops_close hd_pops_{{ $pop_list->id }}">닫기 <i class="fa fa-times" aria-hidden="true"></i></button>
         </div>
     </div>
-@endforeach
+    @endforeach
 
 
 
@@ -62,3 +63,4 @@ function set_cookie(name, value, expirehours, domain)
 }
 </script>
 <!-- } 팝업레이어 끝 -->
+@endif
