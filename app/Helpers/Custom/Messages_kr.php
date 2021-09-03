@@ -404,6 +404,12 @@ class Messages_kr extends Controller
         'withdraw_chk' => '탈퇴된 회원입니다.',
     ];
 
+    //팝업 관련
+    static $popup = [
+        'in_ok' => '저장 되었습니다.',
+        'up_ok' => '수정 되었습니다.',
+        'del_ok' => '삭제 되었습니다.',
+    ];
 }
 
 

@@ -23,6 +23,7 @@ use App\Models\board_datas_table;    //게시판 모델 정의
 use App\Models\board_datas_comment_table;    //게시판 모델 정의
 use App\Models\items;    //상품 모델 정의
 use App\Models\emails;    //이메일 모델 정의
+use App\Models\popups;    //팝업 모델 정의
 
 class AdmeditorController extends Controller
 {
@@ -148,6 +149,32 @@ class AdmeditorController extends Controller
 
                     if (file_exists($editor_del_file_path_email)) {
                         @unlink($editor_del_file_path_email); //이미지 삭제
+                    }
+                }
+            }
+        }
+
+
+        //팝업 관리 일때
+        $k_pop = 0;
+        $path_pop = "data/popup/editor/";
+        $editor_no_regi_img_pop = array();
+
+        if(is_dir($path_pop)) {
+            $files_pop = array_values(array_diff(scandir($path_pop), array(".", "..", "tmp")));
+            for($j_pop = 0; $j_pop < count($files_pop); $j_pop++){
+                $pop_like = DB::table('popups')->where('pop_content', 'LIKE', "%{$files_pop[$j_pop]}%")->count();
+
+                if($pop_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
+                    $editor_no_regi_img_pop[$k] = $files_pop[$j_pop];
+                    $k_pop++;
+                }
+
+                for($p_pop = 0; $p_pop < count($editor_no_regi_img_pop); $p_pop++){ //저장 되지 않은 이미지들 돌리며 삭제
+                    $editor_del_file_path_pop = $path_pop.$editor_no_regi_img_pop[$p_pop];
+
+                    if (file_exists($editor_del_file_path_pop)) {
+                        @unlink($editor_del_file_path_pop); //이미지 삭제
                     }
                 }
             }

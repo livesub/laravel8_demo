@@ -369,4 +369,29 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'adm.popup.index',
         'uses' => 'App\Http\Controllers\adm\popup\PopupController@index',
     ]);
+
+    Route::get('popupcreate', [  //팝업 등록 폼
+        'as' => 'adm.pop.create',
+        'uses' => 'App\Http\Controllers\adm\popup\PopupController@create',
+    ]);
+
+    Route::post('popupcreate', [  //팝업 저장
+        'as' => 'adm.pop.createsave',
+        'uses' => 'App\Http\Controllers\adm\popup\PopupController@createsave',
+    ]);
+
+    Route::post('popupmodify', [  //팝업 수정 폼
+        'as' => 'adm.pop.modify',
+        'uses' => 'App\Http\Controllers\adm\popup\PopupController@modify',
+    ]);
+
+    Route::post('popupmodifysave', [  //팝업 수정 처리
+        'as' => 'adm.pop.modifysave',
+        'uses' => 'App\Http\Controllers\adm\popup\PopupController@modifysave',
+    ]);
+
+    Route::post('popupdestroy', [  //팝업 삭제 처리
+        'as' => 'adm.pop.destroy',
+        'uses' => 'App\Http\Controllers\adm\popup\PopupController@destroy',
+    ]);
 });
