@@ -76,7 +76,7 @@ header('Pragma: public');
                         <td><br><br><br>통계</td>
                     </tr>
                     <tr>
-                        <td><a href="{{ route('adm.visit.memberindex') }}">회원 로그인 통계</a></td>
+                        <td><a href="{{ route('adm.membervisit.index') }}">회원 로그인 통계</a></td>
                     </tr>
 
                     <tr>

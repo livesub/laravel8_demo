@@ -354,14 +354,24 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
     ]);
 
 /*** 관리자 통계 관리 */
-    Route::get('visitslist/', [  //방문자 통계 리스트
+    Route::get('visitslist', [  //방문자 통계 리스트
         'as' => 'adm.visit.index',
         'uses' => 'App\Http\Controllers\adm\visits\VisitsController@index',
     ]);
 
-    Route::get('membervisitslist/', [  //회원 로그인 통계 리스트
-        'as' => 'adm.visit.memberindex',
+    Route::get('membervisitslist', [  //회원 로그인 통계 리스트
+        'as' => 'adm.membervisit.index',
         'uses' => 'App\Http\Controllers\adm\visits\VisitsController@memberindex',
+    ]);
+
+    Route::post('membervisitslist_del', [  //회원 로그인 통계 삭제
+        'as' => 'adm.membervisit_del',
+        'uses' => 'App\Http\Controllers\adm\visits\VisitsController@membervisits_del',
+    ]);
+
+    Route::post('visitslist_del', [  //방문자 통계 삭제
+        'as' => 'adm.visit_del',
+        'uses' => 'App\Http\Controllers\adm\visits\VisitsController@visits_del',
     ]);
 
 /*** 관리자 팝업 관리 */

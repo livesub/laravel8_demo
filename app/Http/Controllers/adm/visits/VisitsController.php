@@ -53,6 +53,14 @@ class VisitsController extends Controller
         //어제 통계 구하기
         $yesterday = DB::table($type)->whereRaw("date(created_at) = date(subdate(now(),INTERVAL 1 DAY))")->count();
 
+        //삭제 관련(2021.09.07)
+        $min_date = DB::table($type)->min('created_at');
+
+        if(is_null($min_date)) $min_date = date("Y",time());
+
+        $min_year = (int)substr($min_date, 0, 4);
+        $now_year = (int)substr(date("Y-m-d H:i:s",time()), 0, 4);
+
         return view('adm.visits.visitslist', [
             'virtual_num'   => $page_control['virtual_num'],
             'totalCount'    => $page_control['totalCount'],
@@ -60,7 +68,9 @@ class VisitsController extends Controller
             'yesterday'     => $yesterday,
             'visits'        => $visits,
             'pageNum'       => $page_control['pageNum'],
-            'pageList'      => $pageList
+            'pageList'      => $pageList,
+            'min_year'      => $min_year,
+            'now_year'      => $now_year,
         ]); // 요청된 정보 처리 후 결과 되돌려줌
     }
 
@@ -84,6 +94,14 @@ class VisitsController extends Controller
         //어제 통계 구하기
         $yesterday = DB::table($type)->whereRaw("date(created_at) = date(subdate(now(),INTERVAL 1 DAY))")->count();
 
+        //삭제 관련(2021.09.07)
+        $min_date = DB::table($type)->min('created_at');
+
+        if(is_null($min_date)) $min_date = date("Y",time());
+
+        $min_year = (int)substr($min_date, 0, 4);
+        $now_year = (int)substr(date("Y-m-d H:i:s",time()), 0, 4);
+
         return view('adm.visits.membervisitslist', [
             'virtual_num'   => $page_control['virtual_num'],
             'totalCount'    => $page_control['totalCount'],
@@ -91,8 +109,70 @@ class VisitsController extends Controller
             'yesterday'     => $yesterday,
             'membervisits'  => $membervisits,
             'pageNum'       => $page_control['pageNum'],
-            'pageList'      => $pageList
+            'pageList'      => $pageList,
+            'min_year'      => $min_year,
+            'now_year'      => $now_year,
         ]); // 요청된 정보 처리 후 결과 되돌려줌
+    }
+
+    public function membervisits_del(Request $request)
+    {
+        //회원 통계 삭제
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $year       = $request->input('year');
+        $month      = $request->input('month');
+        $method     = $request->input('method');
+
+        $year = preg_replace('/[^0-9]/', '', $year);
+        $month = preg_replace('/[^0-9]/', '', $month);
+
+        $del_date = $year.'-'.str_pad($month, 2, '0', STR_PAD_LEFT);
+
+        switch($method) {
+            case 'before':
+                $sql_common = " where substring(created_at, 1, 7) < '$del_date' ";
+                break;
+            case 'specific':
+                $sql_common = " where substring(created_at, 1, 7) = '$del_date' ";
+                break;
+        }
+
+        //통계 삭제
+        $del_sql = DB::select("delete from membervisits {$sql_common}");
+
+        return redirect()->route('adm.membervisit.index')->with('alert_messages', $Messages::$board_editor['editor']['del_ok']);
+        exit;
+    }
+
+    public function visits_del(Request $request)
+    {
+        //방문자 통계 삭제
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $year       = $request->input('year');
+        $month      = $request->input('month');
+        $method     = $request->input('method');
+
+        $year = preg_replace('/[^0-9]/', '', $year);
+        $month = preg_replace('/[^0-9]/', '', $month);
+
+        $del_date = $year.'-'.str_pad($month, 2, '0', STR_PAD_LEFT);
+
+        switch($method) {
+            case 'before':
+                $sql_common = " where substring(created_at, 1, 7) < '$del_date' ";
+                break;
+            case 'specific':
+                $sql_common = " where substring(created_at, 1, 7) = '$del_date' ";
+                break;
+        }
+
+        //통계 삭제
+        $del_sql = DB::select("delete from visits {$sql_common}");
+
+        return redirect()->route('adm.visit.index')->with('alert_messages', $Messages::$board_editor['editor']['del_ok']);
+        exit;
     }
 
 }

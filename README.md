@@ -110,8 +110,10 @@ flush privileges;
     - 이메일 발송중, 로딩이미지 표현
 
 14. 방문자 간단 통계 (cookie 로 하루 한번 방문 하면 insert 되지 않음)
+    - 통계 날자 선택 삭제
 
 15. 회원 로그인 통계
+    - 통계 날자 선택 삭제
 
 16. route 관리자 분리
  - app/Providers/RouteServiceProvider.php
