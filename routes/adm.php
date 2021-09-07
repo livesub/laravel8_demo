@@ -400,7 +400,7 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'uses' => 'App\Http\Controllers\adm\session_del\SessionDelController@destroy',
     ]);
 
-    Route::get('clear-cache', function() {  //캐시 파일 일괄 삭제
+    Route::get('clearcache', function() {  //캐시 파일 일괄 삭제
         $exitCode = Artisan::call('cache:clear');
         return redirect()->route('adm.member.index')->with('alert_messages', '삭제 되었습니다.');
     });

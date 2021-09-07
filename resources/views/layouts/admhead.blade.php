@@ -90,7 +90,7 @@ header('Pragma: public');
                         <td><a href="{{ route('adm.session_del.destroy') }}">세션 파일 일괄 삭제</a></td>
                     </tr>
                     <tr>
-                        <td><a href="{{ url('adm/clear-cache') }}">캐시 파일 일괄 삭제</a></td>
+                        <td><a href="{{ url('adm/clearcache') }}">캐시 파일 일괄 삭제</a></td>
                     </tr>
                     <tr>
                         <td><br><br>쇼핑몰</td>
