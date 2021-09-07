@@ -86,8 +86,12 @@ header('Pragma: public');
                     <tr>
                         <td><br><a href="{{ route('adm.editor.delete') }}">에디터 불필요 파일 삭제</a></td>
                     </tr>
-
-
+                    <tr>
+                        <td><a href="{{ route('adm.session_del.destroy') }}">세션 파일 일괄 삭제</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="{{ url('adm/clear-cache') }}">캐시 파일 일괄 삭제</a></td>
+                    </tr>
                     <tr>
                         <td><br><br>쇼핑몰</td>
                     </tr>

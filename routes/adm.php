@@ -394,4 +394,14 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'adm.pop.destroy',
         'uses' => 'App\Http\Controllers\adm\popup\PopupController@destroy',
     ]);
+
+    Route::get('session_del', [  //세션 파일 일괄 삭제 처리
+        'as' => 'adm.session_del.destroy',
+        'uses' => 'App\Http\Controllers\adm\session_del\SessionDelController@destroy',
+    ]);
+
+    Route::get('clear-cache', function() {  //캐시 파일 일괄 삭제
+        $exitCode = Artisan::call('cache:clear');
+        return redirect()->route('adm.member.index')->with('alert_messages', '삭제 되었습니다.');
+    });
 });
