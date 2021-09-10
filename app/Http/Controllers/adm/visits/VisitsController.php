@@ -139,7 +139,7 @@ class VisitsController extends Controller
         }
 
         //통계 삭제
-        $del_sql = DB::select("delete from membervisits {$sql_common}");
+        $del_sql = DB::delete("delete from membervisits {$sql_common}");
 
         return redirect()->route('adm.membervisit.index')->with('alert_messages', $Messages::$board_editor['editor']['del_ok']);
         exit;
@@ -169,7 +169,7 @@ class VisitsController extends Controller
         }
 
         //통계 삭제
-        $del_sql = DB::select("delete from visits {$sql_common}");
+        $del_sql = DB::delete("delete from visits {$sql_common}");
 
         return redirect()->route('adm.visit.index')->with('alert_messages', $Messages::$board_editor['editor']['del_ok']);
         exit;
