@@ -46,4 +46,25 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'shop.cate.cate_delete',
         'uses' => 'App\Http\Controllers\adm\shop\category\AdmShopCategoryController@cate_delete',
     ]);
+
+/*** 상품 관리 */
+    Route::get('item_list', [    //상품 관리 리스트
+        'as' => 'shop.item.index',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@index',
+    ]);
+
+    Route::get('itemcreate', [      //상품 등록 페이지
+        'as' => 'shop.item.create',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@create',
+    ]);
+
+    Route::post('itemselect', [     //상품 카테고리 ajax
+        'as' => 'shop.cate.ajax_select',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_select',
+    ]);
+
+    Route::post('itemcreate', [     //상품 선택 등록
+        'as' => 'shop.item.createsave',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@createsave',
+    ]);
 });

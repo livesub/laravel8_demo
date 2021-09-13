@@ -98,6 +98,10 @@ header('Pragma: public');
                     <tr>
                         <td><a href="{{ route('shop.cate.index') }}">분류 관리</a></td>
                     </tr>
+
+                    <tr>
+                        <td><a href="{{ route('shop.item.index') }}">상품 관리</a></td>
+                    </tr>
                 </table>
             </td>
 

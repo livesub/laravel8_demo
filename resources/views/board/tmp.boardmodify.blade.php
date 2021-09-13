@@ -98,7 +98,7 @@
         @endphp
     <tr>
         <td>비밀글</td>
-        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" onclick="secret_chk();" {{ $secret_chk_box }}></td>
+        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" {{ $secret_chk_box }}></td>
     </tr>
     @endif
 
