@@ -67,4 +67,14 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'as' => 'shop.item.createsave',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@createsave',
     ]);
+
+    Route::post('itemoption', [     //상품 옵션 선택
+        'as' => 'shop.item.ajax_itemoption',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_itemoption',
+    ]);
+
+    Route::post('itemsupply', [     //상품 추가 옵션 선택
+        'as' => 'shop.item.ajax_itemsupply',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_itemsupply',
+    ]);
 });

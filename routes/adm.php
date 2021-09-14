@@ -202,7 +202,7 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
 
     Route::post('cate_add_save', [      //카테고리 추가
         'as' => 'adm.cate.cate_add_save',
-        'uses' => 'App\Http\Controllers\adm\cate\AdmcateConrtoller@cate_add_save',
+        'uses' => 'App\Http\Controllers\adm\cate\AdmcateController@cate_add_save',
     ]);
 
     Route::post('cate_modi', [      //카테고리 수정

@@ -31,14 +31,14 @@
         <td>
             <select name="item_search" id="item_search">
                 @php
-                    if($item_search == "sitem_name" || $item_search == "") $item_name_selected = "selected";
+                    if($item_search == "item_name" || $item_search == "") $item_name_selected = "selected";
                     else $item_name_selected = "";
 
-                    if($item_search == "sitem_code") $item_code_selected = "selected";
+                    if($item_search == "item_code") $item_code_selected = "selected";
                     else $item_code_selected = "";
                 @endphp
-                <option value="sitem_name" {{ $item_name_selected }}>상품명</option>
-                <option value="sitem_code" {{ $item_code_selected }}>상품코드</option>
+                <option value="item_name" {{ $item_name_selected }}>상품명</option>
+                <option value="item_code" {{ $item_code_selected }}>상품코드</option>
             </select>
         </td>
         <td>
@@ -91,10 +91,10 @@
             }
 
             //이미지 처리
-            if($item_info->sitem_img == "") {
+            if($item_info->item_img == "") {
                 $item_img_disp = asset("img/no_img.jpg");
             }else{
-                $item_img_cut = explode("@@",$item_info->sitem_img);
+                $item_img_cut = explode("@@",$item_info->item_img);
                 $item_img_disp = "/data/shopitem/".$item_img_cut[3];
             }
         @endphp
@@ -103,9 +103,9 @@
         <td>{{ $virtual_num-- }}</td>
         <td><img src="{{ $item_img_disp }}" style="width:100px;height:100px;"></td>
         <td>{{ $ca_name_hap }}</td>
-        <td>{{ $item_info->sitem_code }}</td>
-        <td>{{ stripslashes($item_info->sitem_name) }}</td>
-        <td>{{ $item_info->sitem_rank }}</td>
+        <td>{{ $item_info->item_code }}</td>
+        <td>{{ stripslashes($item_info->item_name) }}</td>
+        <td>{{ $item_info->item_rank }}</td>
         <td>
             <button type="button" onclick="item_modi('{{ $item_info->id }}','{{ $item_info->sca_id }}');">수정</button>
         </td>

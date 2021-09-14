@@ -164,6 +164,10 @@
         <td><input type="text" name="item_name" id="item_name" value="{{ old('item_name') }}"></td>
     </tr>
     <tr>
+        <td>기본설명</td>
+        <td><input type="text" name="item_description" id="item_description" value="{{ old('item_description') }}"></td>
+    </tr>
+    <tr>
         <td>출력여부</td>
         <td>
             <input type="radio" name="item_display" id="item_display_yes" value="Y" checked>출력
@@ -175,9 +179,230 @@
         <td><input type="text" name="item_rank" id="item_rank" maxlength="3" size="3" value="{{ old('item_rank') }}" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"><br>※ 숫자만 입력 하세요. 숫자가 높을 수록 먼저 출력 됩니다.</td>
     </tr>
     <tr>
+        <td>상품 유형</td>
+        <td>
+            <span class="frm_info">메인화면에 유형별로 출력할때 사용합니다.<br>이곳에 체크하게되면 상품리스트에서 유형별로 정렬할때 체크된 상품이 가장 먼저 출력됩니다.</span><br>
+            <input type="checkbox" name="sitem_type1" value="1"  id="sitem_type1">
+            <label for="sitem_type1">히트 </label>
+            <input type="checkbox" name="sitem_type2" value="1"  id="sitem_type2">
+            <label for="sitem_type2">신상품 </label>
+            <input type="checkbox" name="sitem_type3" value="1"  id="sitem_type3">
+            <label for="sitem_type3">인기 </label>
+            <input type="checkbox" name="sitem_type4" value="1"  id="sitem_type4">
+            <label for="sitem_type4">할인 </label>
+        </td>
+    </tr>
+
+    <tr>
+        <td>제조사</td>
+        <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다. <br>
+            <input type="text" name="sitem_manufacture" id="sitem_manufacture" value="{{ old('sitem_manufacture') }}">
+        </td>
+    </tr>
+
+    <tr>
+        <td>원산지</td>
+        <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다. <br>
+            <input type="text" name="sitem_origin" id="sitem_origin" value="{{ old('sitem_origin') }}">
+        </td>
+    </tr>
+
+    <tr>
+        <td>전화문의</td>
+        <td>상품 금액 대신 전화문의로 표시됩니다. <br>
+            <input type="checkbox" name="sitem_tel_inq" value="1" id="sitem_tel_inq" > 예
+        </td>
+    </tr>
+
+    <tr>
+        <td>판매가능</td>
+        <td>잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다. <br>
+            <input type="checkbox" name="sitem_use" value="1" id="sitem_use" > 예
+        </td>
+    </tr>
+
+    <tr>
+        <td>쿠폰적용안함</td>
+        <td>설정에 체크하시면 쿠폰 생성 때 상품 검색 결과에 노출되지 않습니다.. <br>
+            <input type="checkbox" name="sitem_nocoupon" value="1" id="sitem_nocoupon" > 예
+        </td>
+    </tr>
+
+    <tr>
         <td>상품내용</td>
         <td>
             <textarea type="text" name="item_content" id="item_content" style="width:100%">{{ old('item_content') }}</textarea>
+        </td>
+    </tr>
+
+    <tr>
+        <td>판매가격</td>
+        <td><input type="text" name="item_price" id="item_price" value="{{ old('item_price') }}">원</td>
+    </tr>
+
+    <tr>
+        <td>시중가격</td>
+        <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다.<br>
+            <input type="text" name="item_cust_price" id="item_cust_price" value="{{ old('item_cust_price') }}">원
+        </td>
+    </tr>
+
+    <tr>
+        <td>포인트 유형</td>
+        <td>포인트 유형을 설정할 수 있습니다. 비율로 설정했을 경우 설정 기준금액의 %비율로 포인트가 지급됩니다.<br>
+            <select name="item_point_type" id="item_point_type">
+                    <option value="0" selected="selected">설정금액</option>
+                    <option value="1">판매가기준 설정비율</option>
+                    <option value="2">구매가기준 설정비율</option>
+                </select>
+                <script>
+                $(function() {
+                    $("#item_point_type").change(function() {
+                        if(parseInt($(this).val()) > 0)
+                            $("#item_point_unit").text("%");
+                        else
+                            $("#item_point_unit").text("점");
+                    });
+                });
+                </script>
+        </td>
+    </tr>
+
+    <tr>
+        <td>포인트</td>
+        <td>주문완료후 환경설정에서 설정한 주문완료 설정일 후 회원에게 부여하는 포인트입니다.<br>또, 포인트부여를 '아니오'로 설정한 경우 신용카드, 계좌이체로 주문하는 회원께는 부여하지 않습니다.<br>
+            <input type="text" name="item_point" value="0" id="item_point" size="8"> <span id="item_point_unit">점</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td>상품품절</td>
+        <td>잠시 판매를 중단하거나 재고가 없을 경우에 체크해 놓으면 품절상품으로 표시됩니다.<br>
+            <input type="checkbox" name="item_soldout" value="1" id="item_soldout" > 예
+        </td>
+    </tr>
+
+    <tr>
+        <td>재고수량</td>
+        <td>주문관리에서 상품별 상태 변경에 따라 자동으로 재고를 가감합니다.</b> 재고는 규격/색상별이 아닌, 상품별로만 관리됩니다.<br>재고수량을 0으로 설정하시면 품절상품으로 표시됩니다.<br>
+            <input type="text" name="item_stock_qty" value="99999" id="item_stock_qty" size="8"> 개
+        </td>
+    </tr>
+
+    <tr>
+        <td>상품선택옵션</td>
+        <td>옵션항목은 콤마(,) 로 구분하여 여러개를 입력할 수 있습니다.<br> 옷을 예로 들어 [옵션1 : 사이즈 , 옵션1 항목 : XXL,XL,L,M,S] , [옵션2 : 색상 , 옵션2 항목 : 빨,파,노]<br><strong>옵션명과 옵션항목에 따옴표(', ")는 입력할 수 없습니다.</strong><br>
+            <table border=1>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>옵션1
+                                    <input type="text" name="opt1_subject" value="" id="opt1_subject" size="15">
+                                </td>
+                                <td>옵션1 항목
+                                    <input type="text" name="opt1" value="" id="opt1" size="50">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>옵션2
+                                    <input type="text" name="opt2_subject" value="" id="opt2_subject" size="15">
+                                </td>
+                                <td>옵션2 항목
+                                    <input type="text" name="opt2" value="" id="opt2" size="50">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>옵션3
+                                    <input type="text" name="opt3_subject" value="" id="opt3_subject" size="15">
+                                </td>
+                                <td>옵션1 항목
+                                    <input type="text" name="opt3" value="" id="opt3" size="50">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><button type="button" id="option_table_create">옵션목록생성</button></td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+
+                <tr id="sit_option_frm">
+                    <!-- 옵션 조합 리스트 나오는 곳 -->
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+
+
+
+
+
+    <tr>
+        <td>상품추가옵션</td>
+        <td>옵션항목은 콤마(,) 로 구분하여 여러개를 입력할 수 있습니다. 스마트폰을 예로 들어 [추가1 : 추가구성상품 , 추가1 항목 : 액정보호필름,케이스,충전기]<br>
+        <strong>옵션명과 옵션항목에 따옴표(', ")는 입력할 수 없습니다.</strong><br>
+            <table border=1>
+                <tr id="sit_supply_frm">
+                    <td>
+                        <table>
+                            <tr>
+                                <td>추가1
+                                    <input type="text" name="spl_subject[]" id="spl_subject_" value="" size="15">
+                                </td>
+                                <td>추가1 항목
+                                    <input type="text" name="spl[]" id="spl_item_" value="" size="40">
+                                </td>
+                                <td>
+                                    <button type="button" id="del_supply_row">삭제</button>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button type="button" id="add_supply_row">옵션추가</button></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><button type="button" id="supply_table_create">옵션목록생성</button></td>
+                </tr>
+
+                <tr id="sit_option_addfrm">
+                    <!-- 추가 옵션 조합 리스트 나오는 곳 -->
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+
+
+
+
+
+
+    @for($i = 1; $i <=10; $i++)
+    <tr>
+        <td>상품 이미지{{ $i }}</td>
+        <td>
+            <input type="file" name="item_img{{ $i }}" id="item_img{{ $i }}">
+            @error('item_img{{ $i }}')
+                <strong>{{ $message }}</strong>
+            @enderror
+        </td>
+    </tr>
+    @endfor
+
+
+    <tr colspan="2">
+        <td><button type="button" onclick="submitContents();">저장</button></td>
+    </tr>
+
+</table>
+<form>
+
 <script type="text/javascript">
     var oEditors = [];
     nhn.husky.EZCreator.createInIFrame({
@@ -188,24 +413,6 @@
         htParams : {fOnBeforeUnload : function(){}} // 이페이지 나오기 alert 삭제
     });
 </script>
-        </td>
-    </tr>
-    <tr>
-        <td>상품 이미지</td>
-        <td>
-            <input type="file" name="item_img" id="item_img">
-            @error('item_img')
-                <strong>{{ $message }}</strong>
-            @enderror
-        </td>
-    </tr>
-    <tr colspan="2">
-        <td><button type="button" onclick="submitContents();">저장</button></td>
-    </tr>
-
-</table>
-<form>
-
 
 <script>
 	$(document).ready(function() {
@@ -361,6 +568,281 @@
 </script>
 
 
+<script>
+    $(function() {  //상품 옵션 관련
+        $("#option_table_create").click(function() {
+            var it_id = $.trim($("input[name=it_id]").val());
+            var opt1_subject = $.trim($("#opt1_subject").val());
+            var opt2_subject = $.trim($("#opt2_subject").val());
+            var opt3_subject = $.trim($("#opt3_subject").val());
+            var opt1 = $.trim($("#opt1").val());
+            var opt2 = $.trim($("#opt2").val());
+            var opt3 = $.trim($("#opt3").val());
+            var $option_table = $("#sit_option_frm");
+
+            if(!opt1_subject || !opt1) {
+                alert("옵션명과 옵션항목을 입력해 주십시오.");
+                return false;
+            }
+
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                url: '{{ route('shop.item.ajax_itemoption') }}',
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    it_id           : it_id,
+                    opt1_subject    : opt1_subject,
+                    opt2_subject    : opt2_subject,
+                    opt3_subject    : opt3_subject,
+                    opt1            : opt1,
+                    opt2            : opt2,
+                    opt3            : opt3,
+                },
+                success: function(data) {
+                    if($.trim(data) == 'No'){
+                        alert('옵션1과 옵션1 항목을 입력해 주십시오.');
+                        return false;
+                    }else{
+                        $option_table.empty().html(data);
+                    }
+                },error: function(data) {
+                        console.log(data);
+                }
+            });
+
+            // 모두선택('현재 DIV 속성 때문에 작동이 잘 안됨 차후 퍼블 작업시 상태 봄')
+            $(document).on("click", "input[name=opt_chk_all]", function() {
+                if($(this).is(":checked")) {
+                    $("input[name='opt_chk[]']").attr("checked", true);
+                } else {
+                    $("input[name='opt_chk[]']").attr("checked", false);
+                }
+            });
+
+            // 선택삭제
+            $(document).on("click", "#sel_option_delete", function() {
+                var $el = $("input[name='opt_chk[]']:checked");
+                if($el.length < 1) {
+                    alert("삭제하려는 옵션을 하나 이상 선택해 주십시오.");
+                    return false;
+                }
+
+                $el.closest("tr").remove();
+            });
+
+            // 일괄적용
+            $(document).on("click", "#opt_value_apply", function() {
+                if($(".opt_com_chk:checked").length < 1) {
+                    alert("일괄 수정할 항목을 하나이상 체크해 주십시오.");
+                    return false;
+                }
+
+                var opt_price = $.trim($("#opt_com_price").val());
+                var opt_stock = $.trim($("#opt_com_stock").val());
+                var opt_noti = $.trim($("#opt_com_noti").val());
+                var opt_use = $("#opt_com_use").val();
+                var $el = $("input[name='opt_chk[]']:checked");
+
+                // 체크된 옵션이 있으면 체크된 것만 적용
+                if($el.length > 0) {
+                    var $tr;
+                    $el.each(function() {
+                        $tr = $(this).closest("tr");
+
+                        if($("#opt_com_price_chk").is(":checked"))
+                            $tr.find("input[name='opt_price[]']").val(opt_price);
+
+                        if($("#opt_com_stock_chk").is(":checked"))
+                            $tr.find("input[name='opt_stock_qty[]']").val(opt_stock);
+
+                        if($("#opt_com_noti_chk").is(":checked"))
+                            $tr.find("input[name='opt_noti_qty[]']").val(opt_noti);
+
+                        if($("#opt_com_use_chk").is(":checked"))
+                            $tr.find("select[name='opt_use[]']").val(opt_use);
+                    });
+                } else {
+                    if($("#opt_com_price_chk").is(":checked"))
+                        $("input[name='opt_price[]']").val(opt_price);
+
+                    if($("#opt_com_stock_chk").is(":checked"))
+                        $("input[name='opt_stock_qty[]']").val(opt_stock);
+
+                    if($("#opt_com_noti_chk").is(":checked"))
+                        $("input[name='opt_noti_qty[]']").val(opt_noti);
+
+                    if($("#opt_com_use_chk").is(":checked"))
+                        $("select[name='opt_use[]']").val(opt_use);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(function() {  //추가 옵션 관련
+        //추가 옵션 입력필드추가
+        $("#add_supply_row").click(function() {
+            var $el = $("#sit_supply_frm tr:last");
+            var fld = "<tr>\n";
+            fld += "<th scope=\"row\">\n";
+            fld += "<label for=\"\">추가</label>\n";
+            fld += "<input type=\"text\" name=\"spl_subject[]\" value=\"\" class=\"frm_input\" size=\"15\">\n";
+            fld += "</th>\n";
+            fld += "<td>\n";
+            fld += "<label for=\"\"><b>추가 항목</b></label>\n";
+            fld += "<input type=\"text\" name=\"spl[]\" value=\"\" class=\"frm_input\" size=\"40\">\n";
+            fld += "<button type=\"button\" id=\"del_supply_row\" class=\"btn_frmline\">삭제</button>\n";
+            fld += "</td>\n";
+            fld += "</tr>";
+
+            $el.after(fld);
+
+            supply_sequence();
+        });
+
+        function supply_sequence()
+        {
+            var $tr = $("#sit_supply_frm tr");
+            var seq;
+            var th_label, td_label;
+
+            $tr.each(function(index) {
+                seq = index + 1;
+                $(this).find("th label").attr("for", "spl_subject_"+seq).text("추가"+seq);
+                $(this).find("th input").attr("id", "spl_subject_"+seq);
+                $(this).find("td label").attr("for", "spl_item_"+seq);
+                $(this).find("td label b").text("추가"+seq+" 항목");
+                $(this).find("td input").attr("id", "spl_item_"+seq);
+            });
+        }
+
+        // 입력필드삭제
+        $(document).on("click", "#del_supply_row", function() {
+            $(this).closest("tr").remove();
+
+            supply_sequence();
+        });
+
+        // 옵션목록생성
+        $("#supply_table_create").click(function() {
+            var it_id = $.trim($("input[name=it_id]").val());
+            var subject = new Array();
+            var supply = new Array();
+            var subj, spl;
+            var count = 0;
+            var $el_subj = $("input[name='spl_subject[]']");
+            var $el_spl = $("input[name='spl[]']");
+            var $supply_table = $("#sit_option_addfrm");
+
+            $el_subj.each(function(index) {
+                subj = $.trim($(this).val());
+                spl = $.trim($el_spl.eq(index).val());
+
+                if(subj && spl) {
+                    subject.push(subj);
+                    supply.push(spl);
+                    count++;
+                }
+            });
+
+            if(!count) {
+                alert("추가옵션명과 추가옵션항목을 입력해 주십시오.");
+                return false;
+            }
+
+            $.ajax({
+                headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+                url: '{{ route('shop.item.ajax_itemsupply') }}',
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    'it_id'         : it_id,
+                    'subject[]'     : subject,
+                    'supply[]'      : supply,
+                },
+
+                success: function(data) {
+                    if($.trim(data) == 'No'){
+                        alert('추가옵션명과 추가옵션항목을 입력해 주십시오.');
+                        return false;
+                    }else{
+                        $supply_table.empty().html(data);
+                    }
+                },error: function(data) {
+                        console.log(data);
+                }
+            });
+        });
+
+        // 모두선택
+        $(document).on("click", "input[name=spl_chk_all]", function() {
+            if($(this).is(":checked")) {
+                $("input[name='spl_chk[]']").attr("checked", true);
+            } else {
+                $("input[name='spl_chk[]']").attr("checked", false);
+            }
+        });
+
+        // 선택삭제
+        $(document).on("click", "#sel_supply_delete", function() {
+            var $el = $("input[name='spl_chk[]']:checked");
+            if($el.length < 1) {
+                alert("삭제하려는 옵션을 하나 이상 선택해 주십시오.");
+                return false;
+            }
+
+            $el.closest("tr").remove();
+        });
+
+        // 일괄적용
+        $(document).on("click", "#spl_value_apply", function() {
+            if($(".spl_com_chk:checked").length < 1) {
+                alert("일괄 수정할 항목을 하나이상 체크해 주십시오.");
+                return false;
+            }
+
+            var spl_price = $.trim($("#spl_com_price").val());
+            var spl_stock = $.trim($("#spl_com_stock").val());
+            var spl_noti = $.trim($("#spl_com_noti").val());
+            var spl_use = $("#spl_com_use").val();
+            var $el = $("input[name='spl_chk[]']:checked");
+
+            // 체크된 옵션이 있으면 체크된 것만 적용
+            if($el.length > 0) {
+                var $tr;
+                $el.each(function() {
+                    $tr = $(this).closest("tr");
+
+                    if($("#spl_com_price_chk").is(":checked"))
+                        $tr.find("input[name='spl_price[]']").val(spl_price);
+
+                    if($("#spl_com_stock_chk").is(":checked"))
+                        $tr.find("input[name='spl_stock_qty[]']").val(spl_stock);
+
+                    if($("#spl_com_noti_chk").is(":checked"))
+                        $tr.find("input[name='spl_noti_qty[]']").val(spl_noti);
+
+                    if($("#spl_com_use_chk").is(":checked"))
+                        $tr.find("select[name='spl_use[]']").val(spl_use);
+                });
+            } else {
+                if($("#spl_com_price_chk").is(":checked"))
+                    $("input[name='spl_price[]']").val(spl_price);
+
+                if($("#spl_com_stock_chk").is(":checked"))
+                    $("input[name='spl_stock_qty[]']").val(spl_stock);
+
+                if($("#spl_com_noti_chk").is(":checked"))
+                    $("input[name='spl_noti_qty[]']").val(spl_noti);
+
+                if($("#spl_com_use_chk").is(":checked"))
+                    $("select[name='spl_use[]']").val(spl_use);
+            }
+        });
+    });
+</script>
 
 
 

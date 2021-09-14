@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 use App\Models\shopcategorys;    //카테고리 모델 정의
 use App\Models\shopitems;    //상품 모델 정의
+use Validator;  //체크
 
 class AdmShopItemController extends Controller
 {
@@ -54,7 +55,7 @@ class AdmShopItemController extends Controller
         $item_search    = $request->input('item_search');
         $keyword        = $request->input('keyword');
 
-        if($item_search == "") $item_search = "sitem_name";
+        if($item_search == "") $item_search = "item_name";
         $search_sql = "";
 
         if($cate_search != ""){
@@ -65,7 +66,7 @@ class AdmShopItemController extends Controller
 
         $page_control = CustomUtils::page_function('shopitems',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate_search,$item_search,$keyword);
 
-        $item_infos = DB::select("select a.*, b.sca_id from shopitems a, shopcategorys b where 1 {$search_sql} order by a.id DESC, a.sitem_rank ASC limit {$page_control['startNum']}, {$writeList} ");
+        $item_infos = DB::select("select a.*, b.sca_id from shopitems a, shopcategorys b where 1 {$search_sql} order by a.id DESC, a.item_rank ASC limit {$page_control['startNum']}, {$writeList} ");
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
 
@@ -120,7 +121,7 @@ class AdmShopItemController extends Controller
         }
 
         return view('adm.shop.item.itemcreate',[
-            'item_code'         => "item_".time(),
+            'item_code'         => "sitem_".time(),
             'ca_id'             => $ca_id,
             'one_step_infos'    => $one_step_infos,
             'two_step_infos'    => $two_step_infos,
@@ -215,11 +216,11 @@ class AdmShopItemController extends Controller
         //DB 저장 배열 만들기
         $data = array(
             'sca_id'         => $last_choice_ca_id,
-            'sitem_code'     => $item_code,
-            'sitem_name'     => $item_name,
-            'sitem_display'  => $item_display,
-            'sitem_rank'     => $item_rank,
-            'sitem_content'  => $item_content,
+            'item_code'     => $item_code,
+            'item_name'     => $item_name,
+            'item_display'  => $item_display,
+            'item_rank'     => $item_rank,
+            'item_content'  => $item_content,
         );
 
         if($request->hasFile('item_img'))
@@ -269,6 +270,252 @@ class AdmShopItemController extends Controller
         if($create_result = 1) return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
         else return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
+
+    public function ajax_itemoption(Request $request)
+    {
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $opt1_subject   = $request->input('opt1_subject');
+        $opt2_subject   = $request->input('opt2_subject');
+        $opt3_subject   = $request->input('opt3_subject');
+
+        $opt1_val       = $request->input('opt1');
+        $opt2_val       = $request->input('opt2');
+        $opt3_val       = $request->input('opt3');
+
+        if(!$opt1_subject || !$opt1_val) {
+            echo 'No';
+            exit;
+        }
+
+        $opt1_count = $opt2_count = $opt3_count = 0;
+
+        if($opt1_val) {
+            $opt1 = explode(',', $opt1_val);
+            $opt1_count = count($opt1);
+        }
+
+        if($opt2_val) {
+            $opt2 = explode(',', $opt2_val);
+            $opt2_count = count($opt2);
+        }
+
+        if($opt3_val) {
+            $opt3 = explode(',', $opt3_val);
+            $opt3_count = count($opt3);
+        }
+
+        $display = '
+            <td>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" name="opt_chk_all" value="1" id="opt_chk_all"></td>
+                        <td>옵션명</td>
+                        <td>추가금액</td>
+                        <td>재고수량</td>
+                        <td>통보수량</td>
+                        <td>사용여부</td>
+                    </tr>
+        ';
+
+        for($i=0; $i<$opt1_count; $i++) {
+            $j = 0;
+            do {
+                $k = 0;
+                do {
+                    $opt_1 = isset($opt1[$i]) ? strip_tags(trim($opt1[$i])) : '';
+                    $opt_2 = isset($opt2[$j]) ? strip_tags(trim($opt2[$j])) : '';
+                    $opt_3 = isset($opt3[$k]) ? strip_tags(trim($opt3[$k])) : '';
+
+                    $opt_2_len = strlen($opt_2);
+                    $opt_3_len = strlen($opt_3);
+
+                    $opt_id = $opt_1;
+                    if($opt_2_len)
+                        $opt_id .= chr(30).$opt_2;
+                    if($opt_3_len)
+                        $opt_id .= chr(30).$opt_3;
+                    $opt_price = 0;
+                    $opt_stock_qty = 9999;
+                    $opt_noti_qty = 100;
+                    $opt_use = 1;
+
+                    $opt_2_exp = "";
+                    $opt_3_exp = "";
+                    if ($opt_2_len) $opt_2_exp = ' <small>&gt;</small> '.$opt_2;
+                    if ($opt_3_len) $opt_3_exp = ' <small>&gt;</small> '.$opt_3;
+
+                    $display .= '
+                        <tr>
+                            <td class="td_chk">
+                                <input type="hidden" name="opt_id[]" value="'.$opt_id.'">
+                                <input type="checkbox" name="opt_chk[]" id="opt_chk_'.$i.'" value="1">
+                            </td>
+                            <td class="opt1-cell">'.$opt_1.$opt_2_exp.$opt_3_exp.'</td>
+                            <td class="td_numsmall">
+                                <label for="opt_price_'.$i.'" class="sound_only"></label>
+                                <input type="text" name="opt_price[]" value="'.$opt_price.'" id="opt_price_'.$i.'" size="9">
+                            </td>
+                            <td class="td_num">
+                                <label for="opt_stock_qty_'.$i.'" class="sound_only"></label>
+                                <input type="text" name="opt_stock_qty[]" value="'.$opt_stock_qty.'" id="opt_stock_qty_'.$i.'" size="5">
+                            </td>
+                            <td class="td_num">
+                                <label for="opt_noti_qty_'.$i.'" class="sound_only"></label>
+                                <input type="text" name="opt_noti_qty[]" value="'.$opt_noti_qty.'" id="opt_noti_qty_'.$i.'" size="5">
+                            </td>
+                            <td class="td_mng">
+                                <label for="opt_use_'.$i.'" class="sound_only"></label>
+                                <select name="opt_use[]" id="opt_use_'.$i.'">
+                                    <option value="1">사용함</option>
+                                    <option value="0">사용안함</option>
+                                </select>
+                            </td>
+                        </tr>
+                    ';
+
+                    $k++;
+                } while($k < $opt3_count);
+
+                $j++;
+            } while($j < $opt2_count);
+        } // for
+
+        $display .= '
+                            <tr>
+                                <td><input type="button" value="선택삭제" id="sel_option_delete"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    전체 옵션의 추가금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다. <br>단, 체크된 수정항목만 일괄 적용됩니다.<br>
+                                    추가금액 <input type="checkbox" name="opt_com_price_chk" value="1" id="opt_com_price_chk" class="opt_com_chk">
+                                    <input type="text" name="opt_com_price" value="0" id="opt_com_price" class="frm_input" size="5">
+
+                                    재고수량 <input type="checkbox" name="opt_com_stock_chk" value="1" id="opt_com_stock_chk" class="opt_com_chk">
+                                    <input type="text" name="opt_com_stock" value="0" id="opt_com_stock" class="frm_input" size="5">
+
+                                    통보수량 <input type="checkbox" name="opt_com_noti_chk" value="1" id="opt_com_noti_chk" class="opt_com_chk">
+                                    <input type="text" name="opt_com_noti" value="0" id="opt_com_noti" class="frm_input" size="5">
+
+                                    사용여부 <input type="checkbox" name="opt_com_use_chk" value="1" id="opt_com_use_chk" class="opt_com_chk">
+                                    <select name="opt_com_use" id="opt_com_use">
+                                        <option value="1">사용함</option>
+                                        <option value="0">사용안함</option>
+                                    </select>
+                                    <button type="button" id="opt_value_apply" class="btn_frmline">일괄적용</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+        ';
+
+        echo $display;
+    }
+
+    public function ajax_itemsupply(Request $request)
+    {
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $subject   = $request->input('subject');
+        $supply   = $request->input('supply');
+
+        $subject_count = (isset($subject) && is_array($subject)) ? count($subject) : 0;
+        $supply_count = (isset($supply) && is_array($supply)) ? count($supply) : 0;
+
+        if(!$subject_count || !$supply_count) {
+            echo 'No';
+            exit;
+        }
+
+        $display = '
+            <td>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" name="spl_chk_all" value="1"></td>
+                        <td>옵션명</td>
+                        <td>옵션항목</td>
+                        <td>상품금액</td>
+                        <td>재고수량</td>
+                        <td>통보수량</td>
+                        <td>사용여부</td>
+                    </tr>
+        ';
+
+        for($i=0; $i<$subject_count; $i++) {
+            $spl_subject = trim(stripslashes($subject[$i]));
+            $spl_val = explode(',', trim(stripslashes($supply[$i])));
+            $spl_count = count($spl_val);
+
+            for($j=0; $j<$spl_count; $j++) {
+                $spl = isset($spl_val[$j]) ? strip_tags(trim($spl_val[$j])) : '';
+
+                if($spl_subject && strlen($spl)) {
+                    $spl_id = $spl_subject.chr(30).$spl;
+                    $spl_price = 0;
+                    $spl_stock_qty = 9999;
+                    $spl_noti_qty = 100;
+                    $spl_use = 1;
+
+                    $display .= '
+                        <tr>
+                            <td class="td_chk">
+                                <input type="hidden" name="spl_id[]" value="'.$spl_id.'">
+                                <input type="checkbox" name="spl_chk[]" id="spl_chk_'.$i.'" value="1">
+                            </td>
+                            <td class="spl-subject-cell">'.$spl_subject.'</td>
+                            <td class="spl-cell">'.$spl.'</td>
+                            <td class="td_numsmall">
+                                <input type="text" name="spl_price[]" value="'.$spl_price.'" id="spl_price_'.$i.'" size="9">
+                            </td>
+                            <td class="td_num">
+                                <input type="text" name="spl_stock_qty[]" value="'.$spl_stock_qty.'" id="spl_stock_qty_'.$i.'" size="5">
+                            </td>
+                            <td class="td_num">
+                                <input type="text" name="spl_noti_qty[]" value="'.$spl_noti_qty.'" id="spl_noti_qty_'.$i.'" size="5">
+                            </td>
+                            <td class="td_mng">
+                                <select name="spl_use[]" id="spl_use_'.$i.'">
+                                    <option value="1" >사용함</option>
+                                    <option value="0" >사용안함</option>
+                                </select>
+                            </td>
+                        </tr>
+                    ';
+                }
+            }
+        }
+
+        $display .= '
+                        <tr>
+                            <td><button type="button" id="sel_supply_delete">선택삭제</button></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                            전체 추가 옵션의 상품금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다.  <br>단, 체크된 수정항목만 일괄 적용됩니다.<br>
+                                상품금액 <input type="checkbox" name="spl_com_price_chk" value="1" id="spl_com_price_chk" class="spl_com_chk">
+                                <input type="text" name="spl_com_price" value="0" id="spl_com_price" class="frm_input" size="9">
+
+                                재고수량 <input type="checkbox" name="spl_com_stock_chk" value="1" id="spl_com_stock_chk" class="spl_com_chk">
+                                <input type="text" name="spl_com_stock" value="0" id="spl_com_stock" class="frm_input" size="5">
+
+                                통보수량 <input type="checkbox" name="spl_com_noti_chk" value="1" id="spl_com_noti_chk" class="spl_com_chk">
+                                <input type="text" name="spl_com_noti" value="0" id="spl_com_noti" class="frm_input" size="5">
+
+                                사용여부 <input type="checkbox" name="spl_com_use_chk" value="1" id="spl_com_use_chk" class="spl_com_chk">
+                                <select name="spl_com_use" id="spl_com_use">
+                                    <option value="1">사용함</option>
+                                    <option value="0">사용안함</option>
+                                </select>
+                                <button type="button" id="spl_value_apply" class="btn_frmline">일괄적용</button>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+        ';
+
+        echo $display;
+    }
+
 
     /**
      * Store a newly created resource in storage.

@@ -12,22 +12,22 @@ class shopitems extends Model
 
     protected $fillable = [
         'sca_id',
-        'sitem_code',
-        'sitem_name',
-        'sitem_display',
-        'sitem_rank',
-        'sitem_content',
-        'sitem_img',
-        'sitem_ori_img',
+        'item_code',
+        'item_name',
+        'item_display',
+        'item_rank',
+        'item_content',
+        'item_img',
+        'item_ori_img',
     ];
 
     protected $hidden = [
-        'sitem_img',
-        'sitem_ori_img',
+        'item_img',
+        'item_ori_img',
     ];
 
     protected $casts = [
-        'sitem_img',
-        'sitem_ori_img',
+        'item_img',
+        'item_ori_img',
     ];
 }

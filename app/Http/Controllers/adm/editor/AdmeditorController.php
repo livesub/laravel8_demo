@@ -154,7 +154,6 @@ class AdmeditorController extends Controller
             }
         }
 
-
         //팝업 관리 일때
         $k_pop = 0;
         $path_pop = "data/popup/editor/";
@@ -175,6 +174,31 @@ class AdmeditorController extends Controller
 
                     if (file_exists($editor_del_file_path_pop)) {
                         @unlink($editor_del_file_path_pop); //이미지 삭제
+                    }
+                }
+            }
+        }
+
+        //쇼핑몰 상품 관리 일때
+        $k_sitem = 0;
+        $path_sitem = "data/shopitem/editor/";
+        $editor_no_regi_img_sitem = array();
+
+        if(is_dir($path_sitem)) {
+            $files_sitem = array_values(array_diff(scandir($path_sitem), array(".", "..", "tmp")));
+            for($j_sitem = 0; $j_sitem < count($files_sitem); $j_sitem++){
+                $sitem_like = DB::table('shopitems')->where('sitem_content', 'LIKE', "%{$files_sitem[$j_sitem]}%")->count();
+
+                if($sitem_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
+                    $editor_no_regi_img_sitem[$k] = $files_sitem[$j_sitem];
+                    $k_sitem++;
+                }
+
+                for($p_sitem = 0; $p_sitem < count($editor_no_regi_img_sitem); $p_sitem++){ //저장 되지 않은 이미지들 돌리며 삭제
+                    $editor_del_file_path_sitem = $path_sitem.$editor_no_regi_img_sitem[$p_sitem];
+
+                    if (file_exists($editor_del_file_path_sitem)) {
+                        @unlink($editor_del_file_path_sitem); //이미지 삭제
                     }
                 }
             }
