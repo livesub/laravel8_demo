@@ -812,7 +812,7 @@ class AdmboardController extends Controller
         }
 
         //원본글 내용 구함
-        $board_ori_info = DB::table('board_datas_tables')->select('bdt_grp','bdt_sort','bdt_depth','bdt_category','bdt_subject','bdt_content')->where([['id', $ori_num], ['bm_tb_name',$tb_name]])->first();    //게시물 정보 추출
+        $board_ori_info = DB::table('board_datas_tables')->select('bdt_grp','bdt_sort','bdt_depth','bdt_category','bdt_subject','bdt_content','bdt_chk_secret')->where([['id', $ori_num], ['bm_tb_name',$tb_name]])->first();    //게시물 정보 추출
 
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
         $tb_name_directory = "data/board/{$tb_name}/editor";

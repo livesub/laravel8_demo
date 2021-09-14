@@ -78,9 +78,13 @@
     @endif
 
     @if($board_set_info->bm_secret_type == 1)
+        @php
+            if($board_ori_info->bdt_chk_secret == 1) $bdt_chk_secret_chk = "checked";
+            else $bdt_chk_secret_chk = "";
+        @endphp
     <tr>
         <td>비밀글</td>
-        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1"></td>
+        <td><input type="checkbox" name="bdt_chk_secret" id="bdt_chk_secret" value="1" {{ $bdt_chk_secret_chk }}></td>
     </tr>
     @endif
 
