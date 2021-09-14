@@ -788,9 +788,10 @@ class BoardController extends Controller
 
         //관리자 답글시 비번은 원본글 비번으로
         $ori_num = $request->input('ori_num');  //원본글 번호
+        //원본글 작성자 비번 찾기
+        $board_ori_info = DB::table('board_datas_tables')->select("bdt_upw","bdt_chk_secret")->where([['id', $ori_num], ['bm_tb_name',$tb_name], ['bdt_depth',0]])->first();
+
         if(Auth::user() != "" && $user_level <= config('app.ADMIN_LEVEL')){     //관리자일때
-            //원본글 작성자 찾기
-            $board_ori_info = DB::table('board_datas_tables')->select("bdt_upw")->where([['id', $ori_num], ['bm_tb_name',$tb_name], ['bdt_depth',0]])->first();
             $bdt_uid = Auth::user()->user_id;
             $bdt_uname = Auth::user()->user_name;
 
@@ -808,7 +809,10 @@ class BoardController extends Controller
 
             //비밀번호 처리
             if(Auth::user() == '') $bdt_upw = md5(trim($request->input('bdt_upw')));
-            else $bdt_upw = "";
+            else{   //일반 회원이 비빌 글에 답변 달때 원본 글의 비번 넣는다
+                if($board_ori_info->bdt_chk_secret == 1) $bdt_upw = $board_ori_info->bdt_upw;
+                else $bdt_upw = "";
+            }
         }
 
         $bdt_subject = addslashes($request->input('bdt_subject'));
