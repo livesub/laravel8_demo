@@ -14,7 +14,7 @@
     </tr>
 </table>
 
-<form name="item_form" id="item_form" method="post" action="{{ route('shop.item.createsave') }}" enctype='multipart/form-data' autocomplete="off">
+<form name="item_form" id="item_form" method="post" action="{{ route('shop.item.createsave') }}" enctype='multipart/form-data'>
 {!! csrf_field() !!}
 <input type="hidden" name="sca_id" id="sca_id">
 <input type="hidden" name="sca_name_kr" id="sca_name_kr">
@@ -364,7 +364,6 @@
         </td>
     </tr>
 
-
     <tr>
         <td>배송비 유형</td>
         <td>
@@ -419,7 +418,7 @@
         <td>상품 이미지{{ $i }}</td>
         <td>
             <input type="file" name="item_img{{ $i }}" id="item_img{{ $i }}">
-            @error('item_img{{ $i }}')
+            @error('item_img'.$i)
                 <strong>{{ $message }}</strong>
             @enderror
         </td>

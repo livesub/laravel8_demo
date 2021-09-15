@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;    //인증
 use Illuminate\Support\Facades\DB;
 use App\Models\shopcategorys;    //카테고리 모델 정의
 use App\Models\shopitems;    //상품 모델 정의
+use App\Models\shopitemoptions;    //상품 옵션 모델 정의
 use Validator;  //체크
 
 class AdmShopItemController extends Controller
@@ -198,118 +199,196 @@ class AdmShopItemController extends Controller
             exit;
         }
 
-        $ca_id              = $request->input('ca_id');
-        $item_code          = $request->input('item_code');
-        $item_name          = addslashes($request->input('item_name'));
-
+        $ca_id                  = $request->input('ca_id');
+        $item_code              = $request->input('item_code');
+        $item_name              = addslashes($request->input('item_name'));
+        $item_basic             = $request->input('item_basic');
+        $item_manufacture       = $request->input('item_manufacture');
+        $item_origin            = $request->input('item_origin');
+        $item_brand             = $request->input('item_brand');
+        $item_model             = $request->input('item_model');
+        $item_option_subject    = $request->input('item_option_subject');
+        $item_supply_subject    = $request->input('item_supply_subject');
+        $item_type1             = (int)$request->input('item_type1');
+        $item_type2             = (int)$request->input('item_type2');
+        $item_type3             = (int)$request->input('item_type3');
+        $item_type4             = (int)$request->input('item_type4');
+        $item_content           = $request->input('item_content');
+        $item_cust_price        = (int)$request->input('item_cust_price');
+        $item_price             = (int)$request->input('item_price');
+        $item_point_type        = (int)$request->input('item_point_type');
+        $item_point             = (int)$request->input('item_point');
+        $it_supply_point        = (int)$request->input('it_supply_point');
+        $item_use               = (int)$request->input('item_use');
+        $item_nocoupon          = (int)$request->input('item_nocoupon');
+        $item_soldout           = (int)$request->input('item_soldout');
+        $item_stock_qty         = $request->input('item_stock_qty');
+        $item_sc_type           = $request->input('item_sc_type');
+        $item_sc_method         = $request->input('item_sc_method');
+        $item_sc_price          = $request->input('item_sc_price');
+        $item_sc_minimum        = $request->input('item_sc_minimum');
+        $item_sc_qty            = $request->input('item_sc_qty');
+        $item_tel_inq           = (int)$request->input('item_tel_inq');
+        $item_display           = $request->input('item_display');
+        $item_rank              = (int)$request->input('item_rank');
+        $length                 = (int)$request->input('length');
+        $last_choice_ca_id      = $request->input('last_choice_ca_id');
+dd($request);
         if(is_null($ca_id) || is_null($item_code) || is_null($item_name)){
             return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
         }
 
-        $length             = $request->input('length');
-        $last_choice_ca_id  = $request->input('last_choice_ca_id');
-
-
-
-
-
-
-
-$opt_id  = $request->input('opt_id');
-$option_count = (isset($opt_id) && is_array($opt_id)) ? count($opt_id) : array();
-
-dd($option_count);
-//옵션 상품 처리
-// 선택옵션등록
-
-if($option_count) {
-    $comma = '';
-    $sql = " INSERT INTO {$g5['g5_shop_item_option_table']}
-                    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use` )
-                VALUES ";
-    for($i=0; $i<$option_count; $i++) {
-        $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}' )";
-        $comma = ' , ';
-    }
-
-    sql_query($sql);
-}
-
-
-
-
-
-dd("stop");
-
-
-
-
-
-
-        $item_display       = $request->input('item_display');
-        $item_rank          = $request->input('item_rank');
-        $item_content       = $request->input('item_content');
-
-        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
-        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
-
-        $thumb_name = "";
+        /***** 본체 상품 처리  ***/
         if($item_rank == "") $item_rank = 0;
 
         //DB 저장 배열 만들기
         $data = array(
-            'sca_id'         => $last_choice_ca_id,
-            'item_code'     => $item_code,
-            'item_name'     => $item_name,
-            'item_display'  => $item_display,
-            'item_rank'     => $item_rank,
-            'item_content'  => $item_content,
+            'sca_id'                => $last_choice_ca_id,
+            'item_code'             => $item_code,
+            'item_name'             => $item_name,
+            'item_basic'            => $item_basic,
+            'item_manufacture'      => $item_manufacture,
+            'item_origin'           => $item_origin,
+            'item_brand'            => $item_brand,
+            'item_model'            => $item_model,
+            'item_option_subject'   => $item_option_subject,
+            'item_supply_subject'   => $item_supply_subject,
+            'item_type1'            => $item_type1,
+            'item_type2'            => $item_type2,
+            'item_type3'            => $item_type3,
+            'item_type4'            => $item_type4,
+            'item_content'          => $item_content,
+            'item_cust_price'       => $item_cust_price,
+            'item_price'            => $item_price,
+            'item_point_type'       => $item_point_type,
+            'item_point'            => $item_point,
+            'it_supply_point'       => $it_supply_point,
+            'item_use'              => $item_use,
+            'item_nocoupon'         => $item_nocoupon,
+            'item_soldout'          => $item_soldout,
+            'item_stock_qty'        => $item_stock_qty,
+            'item_sc_type'          => $item_sc_type,
+            'item_sc_method'        => $item_sc_method,
+            'item_sc_price'         => $item_sc_price,
+            'item_sc_minimum'       => $item_sc_minimum,
+            'item_sc_qty'           => $item_sc_qty,
+            'item_tel_inq'          => $item_tel_inq,
+            'item_display'          => $item_display,
+            'item_rank'             => $item_rank,
         );
 
-        if($request->hasFile('item_img'))
-        {
-            $fileExtension = 'jpeg,jpg,png,gif,bmp,GIF,PNG,JPG,JPEG,BMP';  //이미지 일때 확장자 파악(이미지일 경우 썸네일 하기 위해)
+        //이미지 10개 처리
+        $fileExtension = 'jpeg,jpg,png,gif,bmp,GIF,PNG,JPG,JPEG,BMP';  //이미지 일때 확장자 파악(이미지일 경우 썸네일 하기 위해)
+        $upload_max_filesize = ini_get('upload_max_filesize');  //서버 설정 파일 용량 제한
+        $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
-            $item_img = $request->file('item_img');
-            $file_type = $item_img->getClientOriginalExtension();    //이미지 확장자 구함
-            $file_size = $item_img->getSize();  //첨부 파일 사이즈 구함
+        $path = 'data/shopitem';     //첨부물 저장 경로
+        $thumb_name = "";
 
-            //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
-            $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
-
-            //첨부 파일 용량 예외처리
-            Validator::validate($request->all(), [
-                'item_img'  => ['max:'.$max_size_mb, 'mimes:'.$fileExtension]
-            ], ['max' => $upload_max_filesize."MB 까지만 저장 가능 합니다.", 'mimes' => $fileExtension.' 파일만 등록됩니다.']);
-
-            $path = 'data/shopitem';     //첨부물 저장 경로
-            $attachment_result = CustomUtils::attachment_save($item_img,$path); //위의 패스로 이미지 저장됨
-
-            if(!$attachment_result[0])
+        for($i = 1; $i <= 10; $i++){
+            if($request->hasFile('item_img'.$i))
             {
-                return redirect()->route('shop.item.create')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
-                exit;
-            }else{
-                for($k = 0; $k < 3; $k++){
-                    $resize_width_file_tmp = explode("%%","500%%300%%100");
-                    $resize_height_file_tmp = explode("%%","500%%300%%100");
+                $item_img[$i] = $request->file('item_img'.$i);
+                $file_type = $item_img[$i]->getClientOriginalExtension();    //이미지 확장자 구함
+                $file_size = $item_img[$i]->getSize();  //첨부 파일 사이즈 구함
 
-                    $thumb_width = $resize_width_file_tmp[$k];
-                    $thumb_height = $resize_height_file_tmp[$k];
+                //서버 php.ini 설정에 따른 첨부 용량 확인(php.ini에서 바꾸기)
+                $max_size_mb = $upload_max_filesize * 1024;   //라라벨은 kb 단위라 함
 
-                    $is_create = false;
-                    $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
+                //첨부 파일 용량 예외처리
+                Validator::validate($request->all(), [
+                    'item_img'.$i  => ['max:'.$max_size_mb, 'mimes:'.$fileExtension]
+                ], ['max' => $upload_max_filesize."MB 까지만 저장 가능 합니다.", 'mimes' => $fileExtension.' 파일만 등록됩니다.']);
+
+                $attachment_result = CustomUtils::attachment_save($item_img[$i],$path); //위의 패스로 이미지 저장됨
+
+                if(!$attachment_result[0])
+                {
+                    return redirect()->route('shop.item.create')->with('alert_messages', $Messages::$file_chk['file_chk']['file_false']);
+                    exit;
+                }else{
+                    //썸네일 만들기
+                    for($k = 0; $k < 3; $k++){
+                        $resize_width_file_tmp = explode("%%","500%%300%%100");
+                        $resize_height_file_tmp = explode("%%","500%%300%%100");
+
+                        $thumb_width = $resize_width_file_tmp[$k];
+                        $thumb_height = $resize_height_file_tmp[$k];
+
+                        $is_create = false;
+                        $thumb_name .= "@@".CustomUtils::thumbnail($attachment_result[1], $path, $path, $thumb_width, $thumb_height, $is_create, $is_crop=false, $crop_mode='center', $is_sharpen=false, $um_value='80/0.5/3');
+                    }
+
+                    $data['item_ori_img'.$i] = $attachment_result[2];  //배열에 추가 함
+                    $data['item_img'.$i] = $attachment_result[1].$thumb_name;  //배열에 추가 함
                 }
-
-                $data['sitem_ori_img'] = $attachment_result[2];  //배열에 추가 함
-                $data['sitem_img'] = $attachment_result[1].$thumb_name;  //배열에 추가 함
             }
         }
 
         //저장 처리
         $create_result = shopitems::create($data);
         $create_result->save();
+
+
+        /***** 옵션 처리  ***/
+        //옵션 상품 처리
+        $opt_id         = $request->input('opt_id');
+        $opt_price      = $request->input('opt_price');
+        $opt_stock_qty  = $request->input('opt_stock_qty');
+        $opt_noti_qty   = $request->input('opt_noti_qty');
+        $opt_use        = $request->input('opt_use');
+
+        $option_count = (isset($opt_id) && is_array($opt_id)) ? count($opt_id) : array();
+
+        //선택옵션등록
+        if($option_count) {
+            for($i=0; $i<$option_count; $i++) {
+                //DB 저장 배열 만들기
+                $optdata = array(
+                    'sio_id'        => $opt_id[$i],
+                    'sio_type'      => 0,
+                    'item_code'     => $item_code,
+                    'sio_price'     => $opt_price[$i],
+                    'sio_stock_qty' => $opt_stock_qty[$i],
+                    'sio_noti_qty'  => $opt_noti_qty[$i],
+                    'sio_use'       => $opt_use[$i],
+                );
+
+                //저장 처리
+                $optcreate_result = shopitemoptions::create($optdata);
+                $optcreate_result->save();
+            }
+        }
+
+        // 추가옵션 처리
+        $spl_id         = $request->input('spl_id');
+        $spl_price      = $request->input('spl_price');
+        $spl_stock_qty  = $request->input('spl_stock_qty');
+        $spl_noti_qty   = $request->input('spl_noti_qty');
+        $spl_use        = $request->input('spl_use');
+
+        $supply_count = (isset($spl_id) && is_array($spl_id)) ? count($spl_id) : array();
+
+        //추가옵션등록
+        if($supply_count) {
+            for($i=0; $i<$supply_count; $i++) {
+                //DB 저장 배열 만들기
+                $supdata = array(
+                    'sio_id'        => $spl_id[$i],
+                    'sio_type'      => 1,
+                    'item_code'     => $item_code,
+                    'sio_price'     => $spl_price[$i],
+                    'sio_stock_qty' => $spl_stock_qty[$i],
+                    'sio_noti_qty'  => $spl_noti_qty[$i],
+                    'sio_use'       => $spl_use[$i],
+                );
+
+                //저장 처리
+                $supcreate_result = shopitemoptions::create($supdata);
+                $supcreate_result->save();
+            }
+        }
 
         if($create_result = 1) return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
         else return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
