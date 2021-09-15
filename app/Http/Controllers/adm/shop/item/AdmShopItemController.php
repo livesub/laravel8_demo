@@ -199,10 +199,54 @@ class AdmShopItemController extends Controller
         }
 
         $ca_id              = $request->input('ca_id');
-        $length             = $request->input('length');
-        $last_choice_ca_id  = $request->input('last_choice_ca_id');
         $item_code          = $request->input('item_code');
         $item_name          = addslashes($request->input('item_name'));
+
+        if(is_null($ca_id) || is_null($item_code) || is_null($item_name)){
+            return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
+            exit;
+        }
+
+        $length             = $request->input('length');
+        $last_choice_ca_id  = $request->input('last_choice_ca_id');
+
+
+
+
+
+
+
+$opt_id  = $request->input('opt_id');
+$option_count = (isset($opt_id) && is_array($opt_id)) ? count($opt_id) : array();
+
+dd($option_count);
+//옵션 상품 처리
+// 선택옵션등록
+
+if($option_count) {
+    $comma = '';
+    $sql = " INSERT INTO {$g5['g5_shop_item_option_table']}
+                    ( `io_id`, `io_type`, `it_id`, `io_price`, `io_stock_qty`, `io_noti_qty`, `io_use` )
+                VALUES ";
+    for($i=0; $i<$option_count; $i++) {
+        $sql .= $comma . " ( '{$_POST['opt_id'][$i]}', '0', '$it_id', '{$_POST['opt_price'][$i]}', '{$_POST['opt_stock_qty'][$i]}', '{$_POST['opt_noti_qty'][$i]}', '{$_POST['opt_use'][$i]}' )";
+        $comma = ' , ';
+    }
+
+    sql_query($sql);
+}
+
+
+
+
+
+dd("stop");
+
+
+
+
+
+
         $item_display       = $request->input('item_display');
         $item_rank          = $request->input('item_rank');
         $item_content       = $request->input('item_content');

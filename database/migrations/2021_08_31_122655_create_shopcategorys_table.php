@@ -23,6 +23,8 @@ class CreateShopcategorysTable extends Migration
             $table->timestamps();
             $table->index(['sca_id']);
         });
+
+        DB::statement("ALTER TABLE shopcategorys comment 'shop 카테고리'");
     }
 
     /**

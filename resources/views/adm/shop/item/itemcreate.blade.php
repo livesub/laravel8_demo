@@ -5,37 +5,7 @@
 
 <!-- smarteditor2 사용 -->
 <script type="text/javascript" src="/smarteditor2/js/HuskyEZCreator.js" charset="utf-8"></script>
-<script>
-    function submitContents(elClickedObj) {
-        oEditors.getById["item_content"].exec("UPDATE_CONTENTS_FIELD", []);	// 에디터의 내용이 textarea에 적용됩니다.
-        // 에디터의 내용에 대한 값 검증은 이곳에서 document.getElementById("item_content").value를 이용해서 처리하면 됩니다.
-        var item_content = $("#item_content").val();
-
-        if($("#last_choice_ca_id").val() == ""){
-            alert("단계를 선택 하세요.");
-            $("#caa_id").focus();
-            return;
-        }
-
-        if($.trim($("#item_name").val()) == ""){
-            alert("상품명을 입력하세요.");
-            $("#item_name").focus();
-            return;
-        }
-
-        if( item_content == ""  || item_content == null || item_content == '&nbsp;' || item_content == '<p>&nbsp;</p>')  {
-             alert("내용을 입력하세요.");
-             oEditors.getById["item_content"].exec("FOCUS"); //포커싱
-             return;
-        }try {
-            elClickedObj.form.submit();
-        } catch(e) {}
-
-        $("#item_form").submit();
-    }
-</script>
 <!-- smarteditor2 사용 -->
-
 
 
 <table>
@@ -44,7 +14,7 @@
     </tr>
 </table>
 
-<form name="item_form" id="item_form" method="post" action="{{ route('shop.item.createsave') }}" enctype='multipart/form-data'>
+<form name="item_form" id="item_form" method="post" action="{{ route('shop.item.createsave') }}" enctype='multipart/form-data' autocomplete="off">
 {!! csrf_field() !!}
 <input type="hidden" name="sca_id" id="sca_id">
 <input type="hidden" name="sca_name_kr" id="sca_name_kr">
@@ -149,7 +119,6 @@
             </table>
         </td>
     </tr>
-
 </table>
 
 
@@ -165,7 +134,7 @@
     </tr>
     <tr>
         <td>기본설명</td>
-        <td><input type="text" name="item_description" id="item_description" value="{{ old('item_description') }}"></td>
+        <td><input type="text" name="item_basic" id="item_basic" value="{{ old('item_basic') }}"></td>
     </tr>
     <tr>
         <td>출력여부</td>
@@ -182,49 +151,63 @@
         <td>상품 유형</td>
         <td>
             <span class="frm_info">메인화면에 유형별로 출력할때 사용합니다.<br>이곳에 체크하게되면 상품리스트에서 유형별로 정렬할때 체크된 상품이 가장 먼저 출력됩니다.</span><br>
-            <input type="checkbox" name="sitem_type1" value="1"  id="sitem_type1">
-            <label for="sitem_type1">히트 </label>
-            <input type="checkbox" name="sitem_type2" value="1"  id="sitem_type2">
-            <label for="sitem_type2">신상품 </label>
-            <input type="checkbox" name="sitem_type3" value="1"  id="sitem_type3">
-            <label for="sitem_type3">인기 </label>
-            <input type="checkbox" name="sitem_type4" value="1"  id="sitem_type4">
-            <label for="sitem_type4">할인 </label>
+            <input type="checkbox" name="item_type1" value="1"  id="item_type1">
+            <label for="item_type1">히트 </label>
+            <input type="checkbox" name="item_type2" value="1"  id="item_type2">
+            <label for="item_type2">신상품 </label>
+            <input type="checkbox" name="item_type3" value="1"  id="item_type3">
+            <label for="item_type3">인기 </label>
+            <input type="checkbox" name="item_type4" value="1"  id="item_type4">
+            <label for="item_type4">할인 </label>
         </td>
     </tr>
 
     <tr>
         <td>제조사</td>
         <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다. <br>
-            <input type="text" name="sitem_manufacture" id="sitem_manufacture" value="{{ old('sitem_manufacture') }}">
+            <input type="text" name="item_manufacture" id="item_manufacture" value="{{ old('item_manufacture') }}">
         </td>
     </tr>
 
     <tr>
         <td>원산지</td>
         <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다. <br>
-            <input type="text" name="sitem_origin" id="sitem_origin" value="{{ old('sitem_origin') }}">
+            <input type="text" name="item_origin" id="item_origin" value="{{ old('item_origin') }}">
+        </td>
+    </tr>
+
+    <tr>
+        <td>브랜드</td>
+        <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다. <br>
+            <input type="text" name="item_brand" id="item_brand" value="{{ old('item_brand') }}">
+        </td>
+    </tr>
+
+    <tr>
+        <td>모델</td>
+        <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다. <br>
+            <input type="text" name="item_model" id="item_model" value="{{ old('item_model') }}">
         </td>
     </tr>
 
     <tr>
         <td>전화문의</td>
         <td>상품 금액 대신 전화문의로 표시됩니다. <br>
-            <input type="checkbox" name="sitem_tel_inq" value="1" id="sitem_tel_inq" > 예
+            <input type="checkbox" name="item_tel_inq" value="1" id="item_tel_inq" > 예
         </td>
     </tr>
 
     <tr>
         <td>판매가능</td>
         <td>잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다. <br>
-            <input type="checkbox" name="sitem_use" value="1" id="sitem_use" > 예
+            <input type="checkbox" name="item_use" value="1" id="item_use" > 예
         </td>
     </tr>
 
     <tr>
         <td>쿠폰적용안함</td>
         <td>설정에 체크하시면 쿠폰 생성 때 상품 검색 결과에 노출되지 않습니다.. <br>
-            <input type="checkbox" name="sitem_nocoupon" value="1" id="sitem_nocoupon" > 예
+            <input type="checkbox" name="item_nocoupon" value="1" id="item_nocoupon" > 예
         </td>
     </tr>
 
@@ -237,13 +220,13 @@
 
     <tr>
         <td>판매가격</td>
-        <td><input type="text" name="item_price" id="item_price" value="{{ old('item_price') }}">원</td>
+        <td><input type="text" name="item_price" id="item_price" value="{{ old('item_price') }}" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');">원</td>
     </tr>
 
     <tr>
         <td>시중가격</td>
         <td>입력하지 않으면 상품상세페이지에 출력하지 않습니다.<br>
-            <input type="text" name="item_cust_price" id="item_cust_price" value="{{ old('item_cust_price') }}">원
+            <input type="text" name="item_cust_price" id="item_cust_price" value="{{ old('item_cust_price') }}" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');">원
         </td>
     </tr>
 
@@ -271,7 +254,16 @@
     <tr>
         <td>포인트</td>
         <td>주문완료후 환경설정에서 설정한 주문완료 설정일 후 회원에게 부여하는 포인트입니다.<br>또, 포인트부여를 '아니오'로 설정한 경우 신용카드, 계좌이체로 주문하는 회원께는 부여하지 않습니다.<br>
-            <input type="text" name="item_point" value="0" id="item_point" size="8"> <span id="item_point_unit">점</span>
+            <input type="text" name="item_point" value="0" id="item_point" size="8" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"> <span id="item_point_unit">점</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td>추가옵션상품 포인트</td>
+        <td>상품의 추가옵션상품 구매에 일괄적으로 지급하는 포인트입니다. 0으로 설정하시면 구매포인트를 지급하지 않습니다.<br>
+        주문완료후 환경설정에서 설정한 주문완료 설정일 후 회원에게 부여하는 포인트입니다.<br>
+        또, 포인트부여를 '아니오'로 설정한 경우 신용카드, 계좌이체로 주문하는 회원께는 부여하지 않습니다.<br>
+            <input type="text" name="item_supply_point" value="0" id="it_supply_point" size="8" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"> 점
         </td>
     </tr>
 
@@ -285,7 +277,7 @@
     <tr>
         <td>재고수량</td>
         <td>주문관리에서 상품별 상태 변경에 따라 자동으로 재고를 가감합니다.</b> 재고는 규격/색상별이 아닌, 상품별로만 관리됩니다.<br>재고수량을 0으로 설정하시면 품절상품으로 표시됩니다.<br>
-            <input type="text" name="item_stock_qty" value="99999" id="item_stock_qty" size="8"> 개
+            <input type="text" name="item_stock_qty" value="99999" id="item_stock_qty" size="8" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"> 개
         </td>
     </tr>
 
@@ -374,13 +366,52 @@
 
 
     <tr>
-        <td>배송비</td>
-        <td>주문관리에서 상품별 상태 변경에 따라 자동으로 재고를 가감합니다.</b> 재고는 규격/색상별이 아닌, 상품별로만 관리됩니다.<br>재고수량을 0으로 설정하시면 품절상품으로 표시됩니다.<br>
-            <input type="text" name="item_stock_qty" value="99999" id="item_stock_qty" size="8"> 개
+        <td>배송비 유형</td>
+        <td>
+            <table>
+                <tr>
+                    <td colspan=3>쇼핑몰설정 > 배송비유형 설정보다 개별상품 배송비설정이 우선 적용됩니다.</b> 배송비 유형을 선택하면 자동으로 항목이 변환됩니다.<br>
+                        <select name="item_sc_type" id="item_sc_type">
+                            <option value="0">쇼핑몰 기본설정 사용</option>
+                            <option value="1">무료배송</option>
+                            <option value="2">조건부 무료배송</option>
+                            <option value="3">유료배송</option>
+                            <option value="4">수량별 부과</option>
+                        </select>
+                    </td>
+                </tr>
+
+                <tr id="sc_con_method">
+                    <th scope="row"><label for="item_sc_method">배송비 결제</label></th>
+                    <td>
+                        <select name="item_sc_method" id="item_sc_method">
+                            <option value="0">선불</option>
+                            <option value="1">착불</option>
+                            <option value="2">사용자선택</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="sc_con_basic">
+                    <th scope="row"><label for="item_sc_price">기본배송비</label></th>
+                    <td>무료배송 이외의 설정에 적용되는 배송비 금액입니다.<br>
+                        <input type="text" name="item_sc_price" value="0" id="item_sc_price" size="8" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"> 원
+                    </td>
+                </tr>
+                <tr id="sc_con_minimum">
+                    <th scope="row"><label for="item_sc_minimum">배송비 상세조건</label></th>
+                    <td>
+                        주문금액 <input type="text" name="item_sc_minimum" value="0" id="item_sc_minimum" size="8" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"> 이상 무료 배송
+                    </td>
+                </tr>
+                <tr id="sc_con_qty">
+                    <th scope="row"><label for="item_sc_qty">배송비 상세조건</label></th>
+                    <td>상품의 주문 수량에 따라 배송비가 부과됩니다. 예를 들어 기본배송비가 3,000원 수량을 3으로 설정했을 경우 상품의 주문수량이 5개이면 6,000원 배송비가 부과됩니다.<br>
+                        주문수량 <input type="text" name="item_sc_qty" value="0" id="item_sc_qty" size="8" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');"> 마다 배송비 부과
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
-
-
 
 
     @for($i = 1; $i <=10; $i++)
@@ -401,7 +432,7 @@
     </tr>
 
 </table>
-<form>
+</form>
 
 <script type="text/javascript">
     var oEditors = [];
@@ -844,9 +875,109 @@
     });
 </script>
 
+<script>
+    $("#sc_con_method").hide();
+    $("#sc_con_basic").hide();
+    $("#sc_con_minimum").hide();
+    $("#sc_con_qty").hide();
 
+    $("#item_sc_type").change(function() {
+        var type = $(this).val();
 
+        switch(type) {
+            case "1":
+                $("#sc_con_method").hide();
+                $("#sc_con_basic").hide();
+                $("#sc_con_minimum").hide();
+                $("#sc_con_qty").hide();
+                break;
+            case "2":
+                $("#sc_con_method").show();
+                $("#sc_con_basic").show();
+                $("#sc_con_minimum").show();
+                $("#sc_con_qty").hide();
+                break;
+            case "3":
+                $("#sc_con_method").show();
+                $("#sc_con_basic").show();
+                $("#sc_con_minimum").hide();
+                $("#sc_con_qty").hide();
+                break;
+            case "4":
+                $("#sc_con_method").show();
+                $("#sc_con_basic").show();
+                $("#sc_con_minimum").hide();
+                $("#sc_con_qty").show();
+                break;
+            default:
+                $("#sc_con_method").hide();
+                $("#sc_con_basic").hide();
+                $("#sc_con_minimum").hide();
+                $("#sc_con_qty").hide();
+                break;
+        }
+    });
+</script>
 
+<script>
+    function submitContents(elClickedObj) {
+        oEditors.getById["item_content"].exec("UPDATE_CONTENTS_FIELD", []);	// 에디터의 내용이 textarea에 적용됩니다.
+        // 에디터의 내용에 대한 값 검증은 이곳에서 document.getElementById("item_content").value를 이용해서 처리하면 됩니다.
+        var item_content = $("#item_content").val();
+
+        if($("#last_choice_ca_id").val() == ""){
+            alert("단계를 선택 하세요.");
+            $("#caa_id").focus();
+            return false;
+        }
+
+        if($.trim($("#item_name").val()) == ""){
+            alert("상품명을 입력하세요.");
+            $("#item_name").focus();
+            return false;
+        }
+
+        if($("#item_point_type").val() == "1" || $("#item_point_type").val() == "2"){
+            var point = parseInt($("#item_point").val());
+
+            if(point > 99) {
+                alert("포인트 비율을 0과 99 사이의 값으로 입력해 주십시오.");
+                $("#item_point").focus();
+                return false;
+            }
+        }
+
+        if(parseInt($("#item_sc_type").val()) > 1){
+            if(!$("#item_sc_price").val() || $("#item_sc_price").val() == "0"){
+                alert("기본배송비를 입력해 주십시오.");
+                $("#item_sc_price").focus();
+                return false;
+            }
+
+            if($("#item_sc_type").val() == "2" && (!$("#item_sc_minimum").val() || $("#item_sc_minimum").val() == "0")){
+                alert("배송비 상세조건의 주문금액을 입력해 주십시오.");
+                $("#item_sc_minimum").focus();
+                return false;
+            }
+
+            if($("#item_sc_type").val() == "4" && (!$("#item_sc_qty").val() || $("#item_sc_qty").val() == "0")){
+                alert("배송비 상세조건의 주문수량을 입력해 주십시오.");
+                $("#item_sc_qty").focus();
+                return false;
+            }
+        }
+
+        if( item_content == ""  || item_content == null || item_content == '&nbsp;' || item_content == '<p>&nbsp;</p>')  {
+             alert("내용을 입력하세요.");
+             oEditors.getById["item_content"].exec("FOCUS"); //포커싱
+             return;
+        }try {
+            elClickedObj.form.submit();
+        } catch(e) {}
+
+        $("#item_form").submit();
+    }
+</script>
 
 
 

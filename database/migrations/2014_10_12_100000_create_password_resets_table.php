@@ -18,6 +18,8 @@ class CreatePasswordResetsTable extends Migration
             $table->string('pw_token')->index();
             $table->timestamp('created_at')->nullable();
         });
+
+        DB::statement("ALTER TABLE password_resets comment '비밀번호 초기화'");
     }
 
     /**

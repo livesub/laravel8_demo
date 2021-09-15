@@ -44,6 +44,8 @@ class CreateBoardDatasTablesTable extends Migration
             $table->timestamps();
             $table->index(['bm_tb_name','bdt_grp', 'bdt_sort','bdt_depth']);
         });
+
+        DB::statement("ALTER TABLE board_datas_tables comment '각 게시판 게시물'");
     }
 
     /**

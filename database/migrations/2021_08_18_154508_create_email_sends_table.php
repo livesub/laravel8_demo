@@ -22,6 +22,8 @@ class CreateEmailSendsTable extends Migration
             $table->string('email_receive_token')->comment('이메일 확인 용도(이메일에 함께 보냄)');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE email_sends comment '이메일 발송 관리'");
     }
 
     /**

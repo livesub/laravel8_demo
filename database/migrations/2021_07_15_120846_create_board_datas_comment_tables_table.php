@@ -28,6 +28,8 @@ class CreateBoardDatasCommentTablesTable extends Migration
             $table->timestamps();
             $table->index(['bdct_grp', 'bdct_sort','bdct_depth']);
         });
+
+        DB::statement("ALTER TABLE board_datas_comment_tables comment '각 게시판 덧글'");
     }
 
     /**

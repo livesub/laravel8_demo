@@ -596,6 +596,7 @@ class ComposerStaticInit82b906a9f158bd2a4d40a5413f751764
         'App\\Models\\menus' => __DIR__ . '/../..' . '/app/Models/menus.php',
         'App\\Models\\popups' => __DIR__ . '/../..' . '/app/Models/popups.php',
         'App\\Models\\shopcategorys' => __DIR__ . '/../..' . '/app/Models/shopcategorys.php',
+        'App\\Models\\shopitemoptions' => __DIR__ . '/../..' . '/app/Models/shopitemoptions.php',
         'App\\Models\\shopitems' => __DIR__ . '/../..' . '/app/Models/shopitems.php',
         'App\\Models\\visits' => __DIR__ . '/../..' . '/app/Models/visits.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',

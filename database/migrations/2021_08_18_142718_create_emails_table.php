@@ -23,6 +23,8 @@ class CreateEmailsTable extends Migration
             $table->string('email_ori_file2')->nullable()->comment('첨부 원본 파일이름');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE emails comment '이메일 내용 관리'");
     }
 
     /**

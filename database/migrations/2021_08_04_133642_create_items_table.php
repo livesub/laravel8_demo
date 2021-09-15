@@ -26,6 +26,8 @@ class CreateItemsTable extends Migration
             $table->timestamps();
             $table->index(['ca_id','item_code']);
         });
+
+        DB::statement("ALTER TABLE items comment '상품관리'");
     }
 
     /**

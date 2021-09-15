@@ -25,6 +25,8 @@ class CreateMenusesTable extends Migration
             $table->timestamps();
             $table->index(['menu_id']);
         });
+
+        DB::statement("ALTER TABLE menuses comment '메뉴 관리'");
     }
 
     /**

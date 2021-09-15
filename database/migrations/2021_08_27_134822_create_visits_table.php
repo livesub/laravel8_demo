@@ -27,6 +27,8 @@ class CreateVisitsTable extends Migration
 
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE visits comment '접속 통계'");
     }
 
     /**

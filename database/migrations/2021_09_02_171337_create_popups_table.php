@@ -27,6 +27,8 @@ class CreatePopupsTable extends Migration
             $table->enum('pop_display', ['N', 'Y'])->length(2)->default('Y')->comment('출력 여부 : N=>미출력,Y=>출력');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE popups comment '팝업 관리'");
     }
 
     /**

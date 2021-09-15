@@ -23,6 +23,8 @@ class CreateCategorysTable extends Migration
             $table->timestamps();
             $table->index(['ca_id']);
         });
+
+        DB::statement("ALTER TABLE categorys comment '카테고리'");
     }
 
     /**

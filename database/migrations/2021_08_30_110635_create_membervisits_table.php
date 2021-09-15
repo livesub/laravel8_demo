@@ -27,6 +27,8 @@ class CreateMembervisitsTable extends Migration
             $table->string('mv_country')->comment('country');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE membervisits comment '회원 접속 통계'");
     }
 
     /**

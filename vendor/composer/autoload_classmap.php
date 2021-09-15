@@ -67,6 +67,7 @@ return array(
     'App\\Models\\menus' => $baseDir . '/app/Models/menus.php',
     'App\\Models\\popups' => $baseDir . '/app/Models/popups.php',
     'App\\Models\\shopcategorys' => $baseDir . '/app/Models/shopcategorys.php',
+    'App\\Models\\shopitemoptions' => $baseDir . '/app/Models/shopitemoptions.php',
     'App\\Models\\shopitems' => $baseDir . '/app/Models/shopitems.php',
     'App\\Models\\visits' => $baseDir . '/app/Models/visits.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',

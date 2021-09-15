@@ -38,6 +38,8 @@ class CreateBoardmanagersTable extends Migration
             $table->string('bm_resize_height_file')->nullable()->comment('리사이징될 높이 길이(리사이징 개수와 같아야함%%구분)');
             $table->timestamps();
         });
+
+        DB::statement("ALTER TABLE boardmanagers comment '게시판 환경 설정'");
     }
 
     /**
