@@ -49,7 +49,7 @@
 </table>
 
 <table border=1>
-<form name="itemlist" id="itemlist" method="post" action="">
+<form name="itemlist" id="itemlist" method="post" action="{{ route('shop.item.choice_del') }}">
 {!! csrf_field() !!}
     <tr>
         <td>선택<br><input type="checkbox" id="chkall" onclick="if (this.checked) all_checked(true); else all_checked(false);" class="selec_chk"></td>
@@ -91,10 +91,10 @@
             }
 
             //이미지 처리
-            if($item_info->item_img == "") {
+            if($item_info->item_img1 == "") {
                 $item_img_disp = asset("img/no_img.jpg");
             }else{
-                $item_img_cut = explode("@@",$item_info->item_img);
+                $item_img_cut = explode("@@",$item_info->item_img1);
                 $item_img_disp = "/data/shopitem/".$item_img_cut[3];
             }
         @endphp
@@ -170,7 +170,7 @@
 </script>
 
 <!-- validate 하기 위해선 get 방식으로 던져야 함 -->
-<form name="item_modi_form" id="item_modi_form" method="get" action="">
+<form name="item_modi_form" id="item_modi_form" method="get" action="{{ route('shop.item.modify') }}">
     <input type="hidden" name="id" id="id">
     <input type="hidden" name="sca_id" id="sca_id">
 </form>

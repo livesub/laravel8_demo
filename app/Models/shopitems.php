@@ -58,7 +58,7 @@ class shopitems extends Model
         'item_price',
         'item_point_type',
         'item_point',
-        'it_supply_point',
+        'item_supply_point',
         'item_use',
         'item_nocoupon',
         'item_soldout',

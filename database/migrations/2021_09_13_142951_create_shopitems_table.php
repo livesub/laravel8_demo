@@ -34,7 +34,7 @@ class CreateShopitemsTable extends Migration
             $table->integer('item_price')->default(0)->comment('판매가격');
             $table->tinyInteger('item_point_type')->length(1)->default(0)->comment('포인트 유형');
             $table->integer('item_point')->default(0)->comment('포인트');
-            $table->integer('it_supply_point')->default(0)->comment('추가옵션상품 포인트');
+            $table->integer('item_supply_point')->default(0)->comment('추가옵션상품 포인트');
             $table->tinyInteger('item_use')->length(1)->default(0)->comment('판매가능');
             $table->tinyInteger('item_nocoupon')->length(1)->default(0)->comment('쿠폰적용안함');
             $table->tinyInteger('item_soldout')->length(1)->default(0)->comment('상품품절');

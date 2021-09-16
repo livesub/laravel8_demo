@@ -73,8 +73,23 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_itemoption',
     ]);
 
-    Route::post('itemsupply', [     //상품 추가 옵션 선택
+    Route::post('itemsupply', [     //상품 추가 옵션 선택(ajax)
         'as' => 'shop.item.ajax_itemsupply',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_itemsupply',
+    ]);
+
+    Route::post('itemchoice_del', [  //상품 선택 삭제
+        'as' => 'shop.item.choice_del',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@choice_del',
+    ]);
+
+    Route::get('itemmodify', [  //상품 수정 페이지
+        'as' => 'shop.item.modify',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@modify',
+    ]);
+
+    Route::post('itemmodify', [  //상품 추가 옵션(ajax)
+        'as' => 'shop.item.ajax_modi_itemoption',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_modi_itemoption',
     ]);
 });

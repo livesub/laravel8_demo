@@ -187,7 +187,7 @@ class AdmeditorController extends Controller
         if(is_dir($path_sitem)) {
             $files_sitem = array_values(array_diff(scandir($path_sitem), array(".", "..", "tmp")));
             for($j_sitem = 0; $j_sitem < count($files_sitem); $j_sitem++){
-                $sitem_like = DB::table('shopitems')->where('sitem_content', 'LIKE', "%{$files_sitem[$j_sitem]}%")->count();
+                $sitem_like = DB::table('shopitems')->where('item_content', 'LIKE', "%{$files_sitem[$j_sitem]}%")->count();
 
                 if($sitem_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
                     $editor_no_regi_img_sitem[$k] = $files_sitem[$j_sitem];

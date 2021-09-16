@@ -218,7 +218,7 @@ class AdmShopItemController extends Controller
         $item_price             = (int)$request->input('item_price');
         $item_point_type        = (int)$request->input('item_point_type');
         $item_point             = (int)$request->input('item_point');
-        $it_supply_point        = (int)$request->input('it_supply_point');
+        $item_supply_point      = (int)$request->input('item_supply_point');
         $item_use               = (int)$request->input('item_use');
         $item_nocoupon          = (int)$request->input('item_nocoupon');
         $item_soldout           = (int)$request->input('item_soldout');
@@ -233,10 +233,109 @@ class AdmShopItemController extends Controller
         $item_rank              = (int)$request->input('item_rank');
         $length                 = (int)$request->input('length');
         $last_choice_ca_id      = $request->input('last_choice_ca_id');
-dd($request);
+
+        $item_option_subject = '';
+        $item_supply_subject = '';
+
         if(is_null($ca_id) || is_null($item_code) || is_null($item_name)){
             return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
             exit;
+        }
+
+        /***** 옵션 처리  ***/
+        //옵션 상품 처리
+        $opt_id         = $request->input('opt_id');
+        $opt_price      = $request->input('opt_price');
+        $opt_stock_qty  = $request->input('opt_stock_qty');
+        $opt_noti_qty   = $request->input('opt_noti_qty');
+        $opt_use        = $request->input('opt_use');
+        $opt1_subject   = $request->input('opt1_subject');
+        $opt2_subject   = $request->input('opt2_subject');
+        $opt3_subject   = $request->input('opt3_subject');
+
+        $option_count = (isset($opt_id) && is_array($opt_id)) ? count($opt_id) : array();
+
+        //선택옵션등록
+        if($option_count) {
+            // 옵션명
+            $opt1_cnt = $opt2_cnt = $opt3_cnt = 0;
+            for($i=0; $i<$option_count; $i++) {
+                $post_opt_id = strip_tags($opt_id[$i]);
+
+                $opt_val = explode(chr(30), $post_opt_id);
+                if(isset($opt_val[0]) && $opt_val[0])
+                    $opt1_cnt++;
+                if(isset($opt_val[1]) && $opt_val[1])
+                    $opt2_cnt++;
+                if(isset($opt_val[2]) && $opt_val[2])
+                    $opt3_cnt++;
+            }
+
+            if($opt1_subject && $opt1_cnt) {
+                $item_option_subject = $opt1_subject;
+                if($opt2_subject && $opt2_cnt)
+                    $item_option_subject .= ','.$opt2_subject;
+                if($opt3_subject && $opt3_cnt)
+                    $item_option_subject .= ','.$opt3_subject;
+            }
+
+            for($i=0; $i<$option_count; $i++) {
+                //DB 저장 배열 만들기
+                $optdata = array(
+                    'sio_id'        => $opt_id[$i],
+                    'sio_type'      => 0,
+                    'item_code'     => $item_code,
+                    'sio_price'     => $opt_price[$i],
+                    'sio_stock_qty' => $opt_stock_qty[$i],
+                    'sio_noti_qty'  => $opt_noti_qty[$i],
+                    'sio_use'       => $opt_use[$i],
+                );
+
+                //저장 처리
+                $optcreate_result = shopitemoptions::create($optdata);
+                $optcreate_result->save();
+            }
+        }
+
+        // 추가옵션 처리
+        $spl_id         = $request->input('spl_id');
+        $spl_price      = $request->input('spl_price');
+        $spl_stock_qty  = $request->input('spl_stock_qty');
+        $spl_noti_qty   = $request->input('spl_noti_qty');
+        $spl_use        = $request->input('spl_use');
+
+        $supply_count = (isset($spl_id) && is_array($spl_id)) ? count($spl_id) : array();
+
+        //추가옵션등록
+        if($supply_count) {
+            // 추가옵션명
+            $arr_spl = array();
+            for($i=0; $i<$supply_count; $i++) {
+                $post_spl_id = strip_tags($spl_id[$i]);
+
+                $spl_val = explode(chr(30), $post_spl_id);
+                if(!in_array($spl_val[0], $arr_spl))
+                    $arr_spl[] = $spl_val[0];
+            }
+
+            $item_supply_subject = implode(',', $arr_spl);
+
+            for($i=0; $i<$supply_count; $i++) {
+                //DB 저장 배열 만들기
+                $supdata = array(
+                    'sio_id'        => $spl_id[$i],
+                    'sio_type'      => 1,
+                    'item_code'     => $item_code,
+                    'sio_price'     => $spl_price[$i],
+                    'sio_stock_qty' => $spl_stock_qty[$i],
+                    'sio_noti_qty'  => $spl_noti_qty[$i],
+                    'sio_use'       => $spl_use[$i],
+                );
+
+                //저장 처리
+                $supcreate_result = shopitemoptions::create($supdata);
+                $supcreate_result->save();
+            }
         }
 
         /***** 본체 상품 처리  ***/
@@ -263,7 +362,7 @@ dd($request);
             'item_price'            => $item_price,
             'item_point_type'       => $item_point_type,
             'item_point'            => $item_point,
-            'it_supply_point'       => $it_supply_point,
+            'item_supply_point'     => $item_supply_point,
             'item_use'              => $item_use,
             'item_nocoupon'         => $item_nocoupon,
             'item_soldout'          => $item_soldout,
@@ -330,65 +429,6 @@ dd($request);
         $create_result = shopitems::create($data);
         $create_result->save();
 
-
-        /***** 옵션 처리  ***/
-        //옵션 상품 처리
-        $opt_id         = $request->input('opt_id');
-        $opt_price      = $request->input('opt_price');
-        $opt_stock_qty  = $request->input('opt_stock_qty');
-        $opt_noti_qty   = $request->input('opt_noti_qty');
-        $opt_use        = $request->input('opt_use');
-
-        $option_count = (isset($opt_id) && is_array($opt_id)) ? count($opt_id) : array();
-
-        //선택옵션등록
-        if($option_count) {
-            for($i=0; $i<$option_count; $i++) {
-                //DB 저장 배열 만들기
-                $optdata = array(
-                    'sio_id'        => $opt_id[$i],
-                    'sio_type'      => 0,
-                    'item_code'     => $item_code,
-                    'sio_price'     => $opt_price[$i],
-                    'sio_stock_qty' => $opt_stock_qty[$i],
-                    'sio_noti_qty'  => $opt_noti_qty[$i],
-                    'sio_use'       => $opt_use[$i],
-                );
-
-                //저장 처리
-                $optcreate_result = shopitemoptions::create($optdata);
-                $optcreate_result->save();
-            }
-        }
-
-        // 추가옵션 처리
-        $spl_id         = $request->input('spl_id');
-        $spl_price      = $request->input('spl_price');
-        $spl_stock_qty  = $request->input('spl_stock_qty');
-        $spl_noti_qty   = $request->input('spl_noti_qty');
-        $spl_use        = $request->input('spl_use');
-
-        $supply_count = (isset($spl_id) && is_array($spl_id)) ? count($spl_id) : array();
-
-        //추가옵션등록
-        if($supply_count) {
-            for($i=0; $i<$supply_count; $i++) {
-                //DB 저장 배열 만들기
-                $supdata = array(
-                    'sio_id'        => $spl_id[$i],
-                    'sio_type'      => 1,
-                    'item_code'     => $item_code,
-                    'sio_price'     => $spl_price[$i],
-                    'sio_stock_qty' => $spl_stock_qty[$i],
-                    'sio_noti_qty'  => $spl_noti_qty[$i],
-                    'sio_use'       => $spl_use[$i],
-                );
-
-                //저장 처리
-                $supcreate_result = shopitemoptions::create($supdata);
-                $supcreate_result->save();
-            }
-        }
 
         if($create_result = 1) return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
         else return redirect(route('shop.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
@@ -474,7 +514,7 @@ dd($request);
                                 <input type="hidden" name="opt_id[]" value="'.$opt_id.'">
                                 <input type="checkbox" name="opt_chk[]" id="opt_chk_'.$i.'" value="1">
                             </td>
-                            <td class="opt1-cell">'.$opt_1.$opt_2_exp.$opt_3_exp.'</td>
+                            <td class="opt1-cell" id="opt1-cell">'.$opt_1.$opt_2_exp.$opt_3_exp.'</td>
                             <td class="td_numsmall">
                                 <label for="opt_price_'.$i.'" class="sound_only"></label>
                                 <input type="text" name="opt_price[]" value="'.$opt_price.'" id="opt_price_'.$i.'" size="9">
@@ -639,60 +679,205 @@ dd($request);
         echo $display;
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function choice_del(Request $request)
     {
-        //
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $path = 'data/shopitem';     //첨부물 저장 경로
+        $editor_path = $path."/editor";     //스마트 에디터 첨부 저장 경로
+
+        for ($i = 0; $i < count($request->input('chk_id')); $i++) {
+            //먼저 상품을 검사하여 파일이 있는지 파악 하고 같이 삭제 함
+            $item_info = DB::table('shopitems')->where('id', $request->input('chk_id')[$i])->first();
+
+            //스마트 에디터 내용에 첨부된 이미지 색제
+            $editor_img_del = CustomUtils::editor_img_del($item_info->item_content, $editor_path);
+
+            for($m = 1; $m <= 10; $m++){
+                $item_img_file = 'item_img'.$m;
+                if($item_info->$item_img_file != ""){
+                    $file_cnt = explode('@@',$item_info->$item_img_file);
+
+                    for($j = 0; $j < count($file_cnt); $j++){
+                        $img_path = "";
+                        $img_path = $path.'/'.$file_cnt[$j];
+                        if (file_exists($img_path)) {
+                            @unlink($img_path); //이미지 삭제
+                        }
+                    }
+                }
+            }
+
+            DB::table('shopitemoptions')->where('item_code',$item_info->item_code)->delete();   //옵션 row 삭제
+            DB::table('shopitems')->where('id',$request->input('chk_id')[$i])->delete();   //row 삭제
+        }
+
+        return redirect()->route('shop.item.index')->with('alert_messages', $Messages::$item['del']['del_ok']);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function modify(Request $request)
     {
-        //
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $id     = $request->input('id');
+        $ca_id  = $request->input('sca_id');
+
+        if($id == "" && $ca_id == ""){
+            return redirect()->back()->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);
+            exit;
+        }
+
+        //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
+        $item_directory = "data/shopitem/editor";
+        setcookie('directory', $item_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
+
+        $item_info = DB::table('shopitems')->where([['id',$id],['sca_id',$ca_id]])->first();
+
+
+        //1단계 가져옴
+        $one_str_cut = substr($item_info->sca_id,0,2);
+        $one_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where('sca_display','Y')->whereRaw('length(sca_id) = 2')->orderby('sca_id', 'ASC')->get();
+
+
+        //2단계 가져옴
+        $two_str_cut = substr($item_info->sca_id,0,4);
+        $two_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where([['sca_display','Y'],['sca_id','like',$one_str_cut.'%']])->whereRaw('length(sca_id) = 4')->orderby('sca_id', 'ASC')->get();
+
+        //3단계 가져옴
+        $three_str_cut = substr($item_info->sca_id,0,6);
+        $three_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where([['sca_display','Y'],['sca_id','like',$two_str_cut.'%']])->whereRaw('length(sca_id) = 6')->orderby('sca_id', 'ASC')->get();
+
+        //4단계 가져옴
+        $four_str_cut = substr($item_info->sca_id,0,8);
+        $four_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where([['sca_display','Y'],['sca_id','like',$three_str_cut.'%']])->whereRaw('length(sca_id) = 8')->orderby('sca_id', 'ASC')->get();
+
+        //5단계 가져옴
+        $five_str_cut = substr($item_info->sca_id,0,10);
+        $five_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where([['sca_display','Y'],['sca_id','like',$four_str_cut.'%']])->whereRaw('length(sca_id) = 10')->orderby('sca_id', 'ASC')->get();
+
+        return view('adm.shop.item.itemmodify',[
+            'one_step_infos'    => $one_step_infos,
+            'two_step_infos'    => $two_step_infos,
+            'three_step_infos'  => $three_step_infos,
+            'four_step_infos'   => $four_step_infos,
+            'five_step_infos'   => $five_step_infos,
+            'item_info'         => $item_info,
+            'ca_id'             => $ca_id,
+            'one_str_cut'       => $one_str_cut,
+            'two_str_cut'       => $two_str_cut,
+            'three_str_cut'     => $three_str_cut,
+            'four_str_cut'      => $four_str_cut,
+            'five_str_cut'      => $five_str_cut,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function ajax_modi_itemoption(Request $request)
     {
-        //
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $item_code      = $request->input('item_code');
+        $opt1_subject   = $request->input('opt1_subject');
+        $opt2_subject   = $request->input('opt2_subject');
+        $opt3_subject   = $request->input('opt3_subject');
+
+        $itemoption_infos = DB::table('shopitemoptions')->where([['item_code', $item_code],['sio_type','0']])->orderby('id', 'asc')->get();
+
+        $display = '
+            <td>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" name="opt_chk_all" value="1" id="opt_chk_all"></td>
+                        <td>옵션명</td>
+                        <td>추가금액</td>
+                        <td>재고수량</td>
+                        <td>통보수량</td>
+                        <td>사용여부</td>
+                    </tr>
+        ';
+
+        $i = 0;
+        foreach($itemoption_infos as $itemoption_info){
+            $opt_id = $itemoption_info->sio_id;
+            $opt_val = explode(chr(30), $opt_id);
+            $opt_1 = $opt_val[0];
+            $opt_2 = isset($opt_val[1]) ? $opt_val[1] : '';
+            $opt_3 = isset($opt_val[2]) ? $opt_val[2] : '';
+            $opt_2_len = strlen($opt_2);
+            $opt_3_len = strlen($opt_3);
+            $opt_price = $itemoption_info->sio_price;
+            $opt_stock_qty = $itemoption_info->sio_stock_qty;
+            $opt_noti_qty = $itemoption_info->sio_noti_qty;
+
+            $opt_use = $itemoption_info->sio_use;
+            if($opt_use == 1) $opt_use1 = "selected";
+            else $opt_use0 = "";
+
+            $opt_2_exp = "";
+            $opt_3_exp = "";
+            if ($opt_2_len) $opt_2_exp = ' <small>&gt;</small> '.$opt_2;
+            if ($opt_3_len) $opt_3_exp = ' <small>&gt;</small> '.$opt_3;
+
+            $display .= '
+                <tr>
+                    <td class="td_chk">
+                        <input type="hidden" name="opt_id[]" value="'.$opt_id.'">
+                        <input type="checkbox" name="opt_chk[]" id="opt_chk_'.$i.'" value="1">
+                    </td>
+                    <td class="opt-cell">'.$opt_1.$opt_2_exp.$opt_3_exp.'</td>
+                    <td class="td_numsmall">
+                        <label for="opt_price_'.$i.'" class="sound_only"></label>
+                        <input type="text" name="opt_price[]" value="'.$opt_price.'" id="opt_price_'.$i.'" size="9">
+                    </td>
+                    <td class="td_num">
+                        <label for="opt_stock_qty_'.$i.'" class="sound_only"></label>
+                        <input type="text" name="opt_stock_qty[]" value="'.$opt_stock_qty.'" id="opt_stock_qty_'.$i.'" size="5">
+                    </td>
+                    <td class="td_num">
+                        <label for="opt_noti_qty_'.$i.'" class="sound_only"></label>
+                        <input type="text" name="opt_noti_qty[]" value="'.$opt_noti_qty.'" id="opt_noti_qty_'.$i.'" size="5">
+                    </td>
+                    <td class="td_mng">
+                        <label for="opt_use_'.$i.'" class="sound_only"></label>
+                        <select name="opt_use[]" id="opt_use_'.$i.'">
+                            <option value="1">사용함</option>
+                            <option value="0">사용안함</option>
+                        </select>
+                    </td>
+                </tr>
+            ';
+
+            $i++;
+        }
+
+        $display .= '
+                <tr>
+                    <td><input type="button" value="선택삭제" id="sel_option_delete"></td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        전체 옵션의 추가금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다. <br>단, 체크된 수정항목만 일괄 적용됩니다.<br>
+                        추가금액 <input type="checkbox" name="opt_com_price_chk" value="1" id="opt_com_price_chk" class="opt_com_chk">
+                        <input type="text" name="opt_com_price" value="0" id="opt_com_price" class="frm_input" size="5">
+
+                        재고수량 <input type="checkbox" name="opt_com_stock_chk" value="1" id="opt_com_stock_chk" class="opt_com_chk">
+                        <input type="text" name="opt_com_stock" value="0" id="opt_com_stock" class="frm_input" size="5">
+
+                        통보수량 <input type="checkbox" name="opt_com_noti_chk" value="1" id="opt_com_noti_chk" class="opt_com_chk">
+                        <input type="text" name="opt_com_noti" value="0" id="opt_com_noti" class="frm_input" size="5">
+
+                        사용여부 <input type="checkbox" name="opt_com_use_chk" value="1" id="opt_com_use_chk" class="opt_com_chk">
+                        <select name="opt_com_use" id="opt_com_use">
+                            <option value="1">사용함</option>
+                            <option value="0">사용안함</option>
+                        </select>
+                        <button type="button" id="opt_value_apply" class="btn_frmline">일괄적용</button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        ';
+
+        echo $display;
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
