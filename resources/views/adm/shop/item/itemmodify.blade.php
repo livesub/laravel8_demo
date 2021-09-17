@@ -306,10 +306,10 @@
                 if($item_info->item_point_type == "2") $item_point_type2 = "selected";
             @endphp
             <select name="item_point_type" id="item_point_type">
-                    <option value="0" {{ $item_point_type0 }}>설정금액</option>
-                    <option value="1" {{ $item_point_type1 }}>판매가기준 설정비율</option>
-                    <option value="2" {{ $item_point_type2 }}>구매가기준 설정비율</option>
-                </select>
+                <option value="0" {{ $item_point_type0 }}>설정 금액</option>
+                <option value="1" {{ $item_point_type1 }}>판매가 기준 설정비율</option>
+                <option value="2" {{ $item_point_type2 }}>구매가 기준 설정비율</option>
+            </select>
         </td>
     </tr>
 

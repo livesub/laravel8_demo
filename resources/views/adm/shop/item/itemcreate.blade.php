@@ -234,10 +234,10 @@
         <td>포인트 유형</td>
         <td>포인트 유형을 설정할 수 있습니다. <br>비율로 설정했을 경우 설정 기준금액의 %비율로 포인트가 지급됩니다.<br>
             <select name="item_point_type" id="item_point_type">
-                    <option value="0" selected="selected">설정금액</option>
-                    <option value="1">판매가기준 설정비율</option>
-                    <option value="2">구매가기준 설정비율</option>
-                </select>
+                <option value="0" selected="selected">설정 금액</option>
+                <option value="1">판매가 기준 설정비율</option>
+                <option value="2">구매가 기준 설정비율</option>
+            </select>
         </td>
     </tr>
 
