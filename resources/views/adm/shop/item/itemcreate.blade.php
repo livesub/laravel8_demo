@@ -725,12 +725,12 @@
             var fld = "<tr>\n";
             fld += "<th scope=\"row\">\n";
             fld += "<label for=\"\">추가</label>\n";
-            fld += "<input type=\"text\" name=\"spl_subject[]\" value=\"\" class=\"frm_input\" size=\"15\">\n";
+            fld += "<input type=\"text\" name=\"spl_subject[]\" value=\"\" size=\"15\">\n";
             fld += "</th>\n";
             fld += "<td>\n";
             fld += "<label for=\"\"><b>추가 항목</b></label>\n";
-            fld += "<input type=\"text\" name=\"spl[]\" value=\"\" class=\"frm_input\" size=\"40\">\n";
-            fld += "<button type=\"button\" id=\"del_supply_row\" class=\"btn_frmline\">삭제</button>\n";
+            fld += "<input type=\"text\" name=\"spl[]\" value=\"\" size=\"40\">\n";
+            fld += "<button type=\"button\" id=\"del_supply_row\" >삭제</button>\n";
             fld += "</td>\n";
             fld += "</tr>";
 

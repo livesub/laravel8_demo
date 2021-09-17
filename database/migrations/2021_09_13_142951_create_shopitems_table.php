@@ -39,7 +39,7 @@ class CreateShopitemsTable extends Migration
             $table->tinyInteger('item_nocoupon')->length(1)->default(0)->comment('쿠폰적용안함');
             $table->tinyInteger('item_soldout')->length(1)->default(0)->comment('상품품절');
             $table->integer('item_stock_qty')->default(0)->comment('재고수량');
-            $table->tinyInteger('item_sc_type')->length(1)->default(0)->comment('상품유형');
+            $table->tinyInteger('item_sc_type')->length(1)->default(0)->comment('배송비 유형');
             $table->tinyInteger('item_sc_method')->length(1)->default(0)->comment('배송비결제 타입');
             $table->integer('item_sc_price')->default(0)->comment('기본배송비');
             $table->integer('item_sc_minimum')->default(0)->comment('배송비 상세조건:주문금액');

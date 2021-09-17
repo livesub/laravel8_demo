@@ -48,48 +48,63 @@ Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 �
     ]);
 
 /*** 상품 관리 */
-    Route::get('item_list', [    //상품 관리 리스트
+    Route::get('sitem_list', [    //상품 관리 리스트
         'as' => 'shop.item.index',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@index',
     ]);
 
-    Route::get('itemcreate', [      //상품 등록 페이지
+    Route::get('sitemcreate', [      //상품 등록 페이지
         'as' => 'shop.item.create',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@create',
     ]);
 
-    Route::post('itemselect', [     //상품 카테고리 ajax
+    Route::post('sitemselect', [     //상품 카테고리 ajax
         'as' => 'shop.cate.ajax_select',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_select',
     ]);
 
-    Route::post('itemcreate', [     //상품 선택 등록
+    Route::post('sitemcreate', [     //상품 선택 등록
         'as' => 'shop.item.createsave',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@createsave',
     ]);
 
-    Route::post('itemoption', [     //상품 옵션 선택
+    Route::post('sitemoption', [     //상품 옵션 선택
         'as' => 'shop.item.ajax_itemoption',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_itemoption',
     ]);
 
-    Route::post('itemsupply', [     //상품 추가 옵션 선택(ajax)
+    Route::post('sitemsupply', [     //상품 추가 옵션 선택(ajax)
         'as' => 'shop.item.ajax_itemsupply',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_itemsupply',
     ]);
 
-    Route::post('itemchoice_del', [  //상품 선택 삭제
+    Route::post('sitemchoice_del', [  //상품 선택 삭제
         'as' => 'shop.item.choice_del',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@choice_del',
     ]);
 
-    Route::get('itemmodify', [  //상품 수정 페이지
+    Route::get('sitemmodify', [  //상품 수정 페이지
         'as' => 'shop.item.modify',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@modify',
     ]);
 
-    Route::post('itemmodify', [  //상품 추가 옵션(ajax)
+    Route::post('sitemmodify_option', [  //기존 저장된 상품 옵션 가져 오기(ajax)
         'as' => 'shop.item.ajax_modi_itemoption',
         'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_modi_itemoption',
+    ]);
+
+    Route::post('sitemmodify_supply', [  //기존 저장된 추가 상품 옵션 가져 오기(ajax)
+        'as' => 'shop.item.ajax_modi_itemsupply',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@ajax_modi_itemsupply',
+    ]);
+
+    Route::post('sitemmodifysave', [  //상품 수정 등록
+        'as' => 'shop.item.modifysave',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@modifysave',
+    ]);
+
+    Route::post('sitemdownloadfile', [  //상품 이미지 다운로드
+        'as' => 'shop.item.downloadfile',
+        'uses' => 'App\Http\Controllers\adm\shop\item\AdmShopItemController@downloadfile',
     ]);
 });

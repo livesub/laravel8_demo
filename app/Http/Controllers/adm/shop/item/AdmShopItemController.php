@@ -880,4 +880,119 @@ class AdmShopItemController extends Controller
         echo $display;
     }
 
+    public function ajax_modi_itemsupply(Request $request)
+    {
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $item_code      = $request->input('item_code');
+
+        $itemoption_infos = DB::table('shopitemoptions')->where([['item_code', $item_code],['sio_type','1']])->orderby('id', 'asc')->get();
+
+        $display = '
+            <td>
+                <table>
+                    <tr>
+                        <td><input type="checkbox" name="spl_chk_all" value="1"></td>
+                        <td>옵션명</td>
+                        <td>옵션항목</td>
+                        <td>상품금액</td>
+                        <td>재고수량</td>
+                        <td>통보수량</td>
+                        <td>사용여부</td>
+                    </tr>
+        ';
+
+        $i = 0;
+        foreach($itemoption_infos as $itemoption_info){
+            $spl_id = $itemoption_info->sio_id;
+            $spl_val = explode(chr(30), $spl_id);
+            $spl_subject = $spl_val[0];
+            $spl = $spl_val[1];
+            $spl_price = $itemoption_info->sio_price;
+            $spl_stock_qty = $itemoption_info->sio_stock_qty;
+            $spl_noti_qty = $itemoption_info->sio_noti_qty;
+            $spl_use = $itemoption_info->sio_use;
+
+            $display .= '
+                    <tr>
+                        <td class="td_chk">
+                            <input type="hidden" name="spl_id[]" value="'.$spl_id.'">
+                            <input type="checkbox" name="spl_chk[]" id="spl_chk_'.$i.'" value="1">
+                        </td>
+                        <td class="spl-subject-cell">'.$spl_subject.'</td>
+                        <td class="spl-cell">'.$spl.'</td>
+                        <td class="td_numsmall">
+                            <input type="text" name="spl_price[]" value="'.$spl_price.'" id="spl_price_'.$i.'" size="9">
+                        </td>
+                        <td class="td_num">
+                            <input type="text" name="spl_stock_qty[]" value="'.$spl_stock_qty.'" id="spl_stock_qty_'.$i.'" size="5">
+                        </td>
+                        <td class="td_num">
+                            <input type="text" name="spl_noti_qty[]" value="'.$spl_noti_qty.'" id="spl_noti_qty_'.$i.'" size="5">
+                        </td>
+                        <td class="td_mng">
+                            <select name="spl_use[]" id="spl_use_'.$i.'">
+                                <option value="1" >사용함</option>
+                                <option value="0" >사용안함</option>
+                            </select>
+                        </td>
+                    </tr>
+            ';
+
+            $i++;
+        }
+
+        $display .= '
+                    <tr>
+                        <td><button type="button" id="sel_supply_delete">선택삭제</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                        전체 추가 옵션의 상품금액, 재고/통보수량 및 사용여부를 일괄 적용할 수 있습니다.  <br>단, 체크된 수정항목만 일괄 적용됩니다.<br>
+                            상품금액 <input type="checkbox" name="spl_com_price_chk" value="1" id="spl_com_price_chk" class="spl_com_chk">
+                            <input type="text" name="spl_com_price" value="0" id="spl_com_price" class="frm_input" size="9">
+
+                            재고수량 <input type="checkbox" name="spl_com_stock_chk" value="1" id="spl_com_stock_chk" class="spl_com_chk">
+                            <input type="text" name="spl_com_stock" value="0" id="spl_com_stock" class="frm_input" size="5">
+
+                            통보수량 <input type="checkbox" name="spl_com_noti_chk" value="1" id="spl_com_noti_chk" class="spl_com_chk">
+                            <input type="text" name="spl_com_noti" value="0" id="spl_com_noti" class="frm_input" size="5">
+
+                            사용여부 <input type="checkbox" name="spl_com_use_chk" value="1" id="spl_com_use_chk" class="spl_com_chk">
+                            <select name="spl_com_use" id="spl_com_use">
+                                <option value="1">사용함</option>
+                                <option value="0">사용안함</option>
+                            </select>
+                            <button type="button" id="spl_value_apply" class="btn_frmline">일괄적용</button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        ';
+
+        echo $display;
+    }
+
+    public function downloadfile(Request $request)
+    {
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $id         = $request->input('id');
+        $ca_id      = $request->input('ca_id');
+        $file_num   = $request->input('file_num');
+
+        $item_ori_file = "item_ori_img$file_num";
+        $item_img = "item_img$file_num";
+
+        $item_info = DB::table('shopitems')->select($item_ori_file, $item_img)->where([['id', $id], ['sca_id',$ca_id]])->first();    //게시물 정보 추출
+
+        $file_cut = explode("@@",$item_info->$item_img);
+        $path = 'data/shopitem';     //첨부물 저장 경로
+
+        $down_file = public_path($path.'/'.$file_cut[0]);
+
+        return response()->download($down_file, $item_info->$item_ori_file);
+    }
+
+
 }
