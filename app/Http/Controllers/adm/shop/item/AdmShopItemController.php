@@ -973,6 +973,11 @@ class AdmShopItemController extends Controller
         echo $display;
     }
 
+    public function modifysave(Request $request)
+    {
+        dd("KKKKKKKK");
+    }
+
     public function downloadfile(Request $request)
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
@@ -993,6 +998,4 @@ class AdmShopItemController extends Controller
 
         return response()->download($down_file, $item_info->$item_ori_file);
     }
-
-
 }
