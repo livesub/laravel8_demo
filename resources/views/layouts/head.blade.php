@@ -73,7 +73,7 @@
             </td>
                 @endif
             @endif
-            <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="{{ route('shop.index') }}">쇼핑몰</a></td>
+            <td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="{{ route('index') }}">쇼핑몰</a></td>
         </tr>
     </table>
 
