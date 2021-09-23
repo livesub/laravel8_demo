@@ -115,7 +115,7 @@ class AdmShopCategoryController extends Controller
             'sca_rank'    => $sca_rank,
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('shop.cate.index')->with('alert_messages', $Messages::$category['insert']['in_ok']);
+        if($create_result) return redirect()->route('shop.cate.index')->with('alert_messages', $Messages::$category['insert']['in_ok']);
         else return redirect()->route('shop.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -194,7 +194,7 @@ class AdmShopCategoryController extends Controller
             'sca_rank'    => $sca_rank,
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('shop.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['insert']['in_ok']);
+        if($create_result) return redirect()->route('shop.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['insert']['in_ok']);
         else return redirect()->route('shop.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -249,9 +249,10 @@ class AdmShopCategoryController extends Controller
         if($sca_rank == "") $data['sca_rank'] = 0;
         else $data['sca_rank'] = $sca_rank;
 
-        $update_result = DB::table('shopcategorys')->where([['id', $id],['sca_id',$sca_id]])->limit(1)->update($data);
+        //$update_result = DB::table('shopcategorys')->where([['id', $id],['sca_id',$sca_id]])->limit(1)->update($data);
+        $update_result = Shopcategorys::find($id)->update($data);
 
-        if($update_result = 1) return redirect()->route('shop.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['update']['up_ok']);
+        if($update_result) return redirect()->route('shop.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['update']['up_ok']);
         else return redirect('shop.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 

@@ -170,7 +170,7 @@ class AdmmenuController extends Controller
             'menu_content'      => $menu_content,
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$menu['insert']['in_ok']);
+        if($create_result) return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$menu['insert']['in_ok']);
         else return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -287,7 +287,7 @@ class AdmmenuController extends Controller
             'menu_content'      => $menu_content,
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$menu['insert']['in_ok']);
+        if($create_result) return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$menu['insert']['in_ok']);
         else return redirect()->route('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -372,9 +372,10 @@ class AdmmenuController extends Controller
             'menu_content'    => $menu_content,
         );
 
-        $update_result = DB::table('menuses')->where([['id', $id],['menu_id',$menu_id]])->limit(1)->update($data);
+        //$update_result = DB::table('menuses')->where([['id', $id],['menu_id',$menu_id]])->limit(1)->update($data);
+        $update_result = Menuses::find($id)->update($data);
 
-        if($update_result = 1) return redirect()->route('adm.menu.index','&page='.$page)->with('alert_messages', $Messages::$menu['update']['up_ok']);
+        if($update_result) return redirect()->route('adm.menu.index','&page='.$page)->with('alert_messages', $Messages::$menu['update']['up_ok']);
         else return redirect('adm.menu.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 

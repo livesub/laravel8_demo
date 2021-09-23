@@ -102,7 +102,7 @@ class PopupController extends Controller
             'pop_display'       => $request->input('pop_display'),
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('adm.popup.index')->with('alert_messages', $Messages::$popup['in_ok']);
+        if($create_result) return redirect()->route('adm.popup.index')->with('alert_messages', $Messages::$popup['in_ok']);
         else return redirect()->route('adm.popup.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -164,9 +164,10 @@ class PopupController extends Controller
             'pop_display'       => $request->input('pop_display'),
         );
 
-        $update_result = DB::table('popups')->where('id', $id)->limit(1)->update($data);
+        //$update_result = DB::table('popups')->where('id', $id)->limit(1)->update($data);
+        $update_result = Popups::find($id)->update($data);
 
-        if($update_result = 1) return redirect()->route('adm.popup.index','&page='.$page)->with('alert_messages', $Messages::$popup['up_ok']);
+        if($update_result) return redirect()->route('adm.popup.index','&page='.$page)->with('alert_messages', $Messages::$popup['up_ok']);
         else return redirect('adm.popup.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 

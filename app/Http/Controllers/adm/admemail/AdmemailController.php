@@ -157,7 +157,7 @@ class AdmemailController extends Controller
         $create_result = emails::create($data);
         $create_result->save();
 
-        if($create_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_save']);
+        if($create_result) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_save']);
         else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
@@ -291,7 +291,7 @@ class AdmemailController extends Controller
             $create_result->save();
         }
 
-        if($create_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['email_send']);
+        if($create_result) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['email_send']);
         else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
@@ -427,10 +427,11 @@ class AdmemailController extends Controller
                 }
             }
 
-            $update_result = DB::table('emails')->where('id', $request->input('email_id'))->limit(1)->update($data);
+            //$update_result = DB::table('emails')->where('id', $request->input('email_id'))->limit(1)->update($data);
+            $update_result = Emails::find($request->input('email_id'))->update($data);
         }
 
-        if($update_result = 1) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_modisave']);
+        if($update_result) return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$email['e_ment']['e_modisave']);
         else return redirect()->route('adm.admemail.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 

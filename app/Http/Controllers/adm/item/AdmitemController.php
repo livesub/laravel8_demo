@@ -294,7 +294,7 @@ class AdmitemController extends Controller
         $create_result = items::create($data);
         $create_result->save();
 
-        if($create_result = 1) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
+        if($create_result) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['insert']['in_ok']);
         else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
@@ -529,9 +529,10 @@ class AdmitemController extends Controller
             }
         }
 
-        $update_result = DB::table('items')->where('id', $id)->limit(1)->update($data);
+        //$update_result = DB::table('items')->where('id', $id)->limit(1)->update($data);
+        $update_result = Items::find($id)->update($data);
 
-        if($update_result = 1) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['update']['up_ok']);
+        if($update_result) return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$item['update']['up_ok']);
         else return redirect(route('adm.item.index'))->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 

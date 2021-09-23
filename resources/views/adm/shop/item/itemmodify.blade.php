@@ -279,9 +279,6 @@
         </td>
     </tr>
 
-
-
-
     <tr>
         <td>판매가격</td>
         <td><input type="text" name="item_price" id="item_price" value="{{ $item_info->item_price }}" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');">원</td>
@@ -407,6 +404,8 @@
                 <tr id="sit_option_frm">
                     <!-- 옵션 조합 리스트 나오는 곳 -->
                 </tr>
+
+@if($item_info->item_option_subject != "")
 <script>
     $.ajax({    //저장된 선택 옵션 가져 오기
         headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
@@ -425,7 +424,10 @@
             console.log(data);
         }
     });
+</script>
+@endif
 
+<script>
     $(function() {
         //옵션항목설정
         var arr_opt1 = new Array();
@@ -602,7 +604,6 @@
                     </td>
                 </tr>
 
-
                 <tr>
                     <td colspan="2"><button type="button" id="add_supply_row">옵션추가</button></td>
                 </tr>
@@ -614,6 +615,7 @@
                     <!-- 추가 옵션 조합 리스트 나오는 곳 -->
                 </tr>
 
+@if($item_info->item_supply_subject != "")
 <script>
     $.ajax({    //저장된 추가 옵션 가져 오기
         headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
@@ -629,7 +631,10 @@
             console.log(data);
         }
     });
+</script>
+@endif
 
+<script>
     $(function() {
         // 추가옵션의 항목 설정
         var arr_subj = new Array();
@@ -971,9 +976,6 @@
         </td>
     </tr>
 
-
-
-
     @for($i = 1; $i <=10; $i++)
     <tr>
         <td>상품 이미지{{ $i }}</td>
@@ -993,11 +995,11 @@
     @endfor
 
     <tr colspan="2">
-        <td><button type="button" onclick="submitContents();">저장</button></td>
+        <td><button type="button" onclick="submitContents();">수정</button></td>
     </tr>
 
 </table>
-<form>
+</form>
 
 
 <script>

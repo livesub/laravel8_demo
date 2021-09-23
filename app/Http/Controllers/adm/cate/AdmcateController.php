@@ -143,7 +143,7 @@ class AdmcateController extends Controller
             'ca_rank'    => $ca_rank,
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$category['insert']['in_ok']);
+        if($create_result) return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$category['insert']['in_ok']);
         else return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -236,7 +236,7 @@ class AdmcateController extends Controller
             'ca_rank'    => $ca_rank,
         ])->exists();
 
-        if($create_result = 1) return redirect()->route('adm.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['insert']['in_ok']);
+        if($create_result) return redirect()->route('adm.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['insert']['in_ok']);
         else return redirect()->route('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
     }
 
@@ -305,9 +305,10 @@ class AdmcateController extends Controller
         if($ca_rank == "") $data['ca_rank'] = 0;
         else $data['ca_rank'] = $ca_rank;
 
-        $update_result = DB::table('categorys')->where([['id', $id],['ca_id',$ca_id]])->limit(1)->update($data);
+        //$update_result = DB::table('categorys')->where([['id', $id],['ca_id',$ca_id]])->limit(1)->update($data);
+        $update_result = Categorys::find($id)->update($data);
 
-        if($update_result = 1) return redirect()->route('adm.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['update']['up_ok']);
+        if($update_result) return redirect()->route('adm.cate.index','&page='.$page)->with('alert_messages', $Messages::$category['update']['up_ok']);
         else return redirect('adm.cate.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 

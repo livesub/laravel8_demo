@@ -119,7 +119,7 @@ class JoinController extends Controller
             //이메일 발송 실패 시에 뭘 할건지 나중에 생각해야함
         }
 
-        if($create_result = 1) return redirect()->route('main.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['join_success']);
+        if($create_result) return redirect()->route('main.index')->with('alert_messages', $Messages::$join_confirm_ment['confirm']['join_success']);
         else return redirect()->route('main.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시 alert로 뿌리기 위해
 
 

@@ -106,7 +106,7 @@ class BoardmanageController extends Controller
             'bm_skin'       => $bm_skin,
         ])->exists(); //저장,실패 결과 값만 받아 오기 위해  exists() 를 씀
 
-        if($create_result = 1) return redirect()->route('adm.boardmanage.index')->with('alert_messages', $Messages::$boardmanage['bm']['bmm_tb_add_ok']);
+        if($create_result) return redirect()->route('adm.boardmanage.index')->with('alert_messages', $Messages::$boardmanage['bm']['bmm_tb_add_ok']);
         else return redirect()->route('adm.boardmanage.index')->with('alert_messages', $Messages::$fatal_fail_ment['fatal_fail']['error']);  //치명적인 에러가 있을시
     }
 
