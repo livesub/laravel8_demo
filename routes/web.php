@@ -266,8 +266,7 @@ Route::get('social/callback/{provider}', [
 Route::prefix('adm')->group(base_path('routes/adm.php'));
 
 /*** 관리자 페이지 쇼핑몰 접근 ***/
-Route::prefix('adm/shop')->group(base_path('routes/shop.php'));
+Route::prefix('adm/shop')->group(base_path('routes/admshop.php'));
 
-
-
-
+/*** 프론트 쇼핑몰 접근 ***/
+Route::prefix('shop')->group(base_path('routes/shop.php'));
