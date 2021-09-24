@@ -79,9 +79,9 @@
 
 <!-- 메뉴 불러 오기 -->
 @php
-    use App\Http\Controllers\menu\MenuController;
-    $menu = new MenuController();
-    echo $menu->menu_list();
+    use App\Http\Controllers\menu\CategoryController;
+    $cate = new CategoryController();
+    echo $cate->cate_list();
 @endphp
 <!-- 메뉴 불러 오기 -->
 

@@ -13,14 +13,14 @@
 <form name="search_form" id="search_form" method="get" action="{{ route('adm.item.index') }}">
     <tr>
         <td>
-            <select name="cate_search" id="cate_search">
+            <select name="ca_id" id="ca_id">
                 <option value="">전체분류</option>
                 @foreach($search_selectboxs as $search_selectbox)
                     @php
                         $len = strlen($search_selectbox->ca_id) / 2 - 1;
                         $nbsp = '';
                         for ($i=0; $i<$len; $i++) $nbsp .= '&nbsp;&nbsp;&nbsp;';
-                        if($search_selectbox->ca_id == $cate_search) $cate_selected = "selected";
+                        if($search_selectbox->ca_id == $ca_id) $cate_selected = "selected";
                         else $cate_selected = "";
                     @endphp
 
@@ -183,6 +183,16 @@
         $("#item_modi_form").submit();
     }
 </script>
+
+<script>
+    $("#ca_id").change(function(){
+        location.href = "{{ route('adm.item.index') }}?ca_id="+$(this).val();
+    });
+</script>
+
+
+
+
 
 
 @endsection

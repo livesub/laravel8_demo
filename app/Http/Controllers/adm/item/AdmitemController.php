@@ -55,35 +55,41 @@ class AdmitemController extends Controller
         $cate = "";
 
         //검색 selectbox 만들기
-        $search_selectboxs = DB::table('categorys')->orderby('ca_rank','DESC')->orderby('ca_id','ASC')->get();
+        $search_selectboxs = DB::table('categorys')->orderby('ca_id','ASC')->orderby('ca_rank','DESC')->get();
 
         //검색 처리
-        $cate_search    = $request->input('cate_search');
+        $ca_id          = $request->input('ca_id');
         $item_search    = $request->input('item_search');
         $keyword        = $request->input('keyword');
 
         if($item_search == "") $item_search = "item_name";
         $search_sql = "";
 
-        if($cate_search != ""){
-            $search_sql = " AND a.ca_id = b.ca_id AND a.ca_id LIKE '{$cate_search}%' AND a.{$item_search} LIKE '%{$keyword}%' ";
-        }else{
-            $search_sql .= " AND a.ca_id = b.ca_id AND a.{$item_search} LIKE '%{$keyword}%' ";
+        $search_caid_sql = "";
+        if(!is_null($ca_id)){
+            $search_caid_sql = " AND a.ca_id like '{$ca_id}%' ";
         }
 
-        $page_control = CustomUtils::page_function('items',$pageNum,$writeList,$pageNumList,$type,$tb_name,$cate_search,$item_search,$keyword);
+        $search_sql = "";
+        if($item_search != ""){
+            $search_sql = " AND a.ca_id = b.ca_id {$search_caid_sql} AND a.{$item_search} LIKE '%{$keyword}%' ";
+        }else{
+            $search_sql = " AND a.ca_id = b.ca_id {$search_caid_sql} ";
+        }
+
+        $page_control = CustomUtils::page_function('items',$pageNum,$writeList,$pageNumList,$type,$tb_name,$ca_id,$item_search,$keyword);
 
         $item_infos = DB::select("select a.*, b.ca_id from items a, categorys b where 1 {$search_sql} order by a.id DESC, a.item_rank ASC limit {$page_control['startNum']}, {$writeList} ");
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
 
         return view('adm.item.itemlist',[
+            'ca_id'             => $ca_id,
             'item_infos'        => $item_infos,
             'virtual_num'       => $page_control['virtual_num'],
             'totalCount'        => $page_control['totalCount'],
             'pageNum'           => $page_control['pageNum'],
             'pageList'          => $pageList,
-            'cate_search'       => $cate_search,
             'item_search'       => $item_search,
             'keyword'           => $keyword,
             'search_selectboxs' => $search_selectboxs,

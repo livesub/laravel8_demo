@@ -137,11 +137,19 @@ return $validator;
             if($cate != "") $search_sql = " AND a.ca_id = b.ca_id AND a.ca_id LIKE '{$cate}%' AND a.{$keymethod} LIKE '%{$keyword}%' ";
             else $search_sql = " AND a.ca_id = b.ca_id AND a.{$keymethod} LIKE '%{$keyword}%' ";
 
+            $cateinfo = "&ca_id=".$cate;
+            $cateinfo .= "&item_search=".$keymethod;
+            $cateinfo .= "&keyword=".$keyword;
+
             $total_tmp = DB::select("select count(*) as cnt from items a, categorys b where 1 {$search_sql} ");
             $total_cnt = $total_tmp[0]->cnt;
         }else if($type == 'shopitems'){ //쇼핑몰 상품
             if($cate != "") $search_sql = " AND a.sca_id = b.sca_id AND a.sca_id LIKE '{$cate}%' AND a.{$keymethod} LIKE '%{$keyword}%' ";
             else $search_sql = " AND a.sca_id = b.sca_id AND a.{$keymethod} LIKE '%{$keyword}%' ";
+
+            $cateinfo = "&ca_id=".$cate;
+            $cateinfo .= "&item_search=".$keymethod;
+            $cateinfo .= "&keyword=".$keyword;
 
             $total_tmp = DB::select("select count(*) as cnt from shopitems a, shopcategorys b where 1 {$search_sql} ");
             $total_cnt = $total_tmp[0]->cnt;
@@ -691,4 +699,40 @@ $um_value='80/0.5/3'
 		curl_close($ch);
 		return $data;
 	}
+
+
+
+    /* 쇼핑몰 관련 함수 */
+    // 금액 표시
+	public static function display_price($price, $tel_inq=false)
+    {
+        if ($tel_inq)
+            $price = '전화문의';
+        else
+            $price = number_format($price, 0).'원';
+
+        return $price;
+    }
+
+    // 상품이미지에 유형 아이콘 출력
+    public static function item_icon($item)
+    {
+        $icon = "<tr><td>";
+
+        if ($item->item_type1 != 0)
+            $icon .= '<span class="shop_icon shop_icon_1">히트</span>';
+
+        if ($item->item_type2 != 0)
+            $icon .= '<span class="shop_icon shop_icon_2">신상품</span>';
+
+        if ($item->item_type3 != 0)
+            $icon .= '<span class="shop_icon shop_icon_3">인기</span>';
+
+        if ($item->item_type4 != 0)
+            $icon .= '<span class="shop_icon shop_icon_4">할인</span>';
+        $icon .= "</td></tr>";
+
+        return $icon;
+    }
+
 }
