@@ -102,6 +102,23 @@ class AdmShopItemController extends Controller
 
         $ca_id     = $request->input('sca_id');
 
+        //환경 설정 DB에서 이미지 리사이징 값이 있는 지 파악
+        $setting_info = DB::table('shopsettings')->first();
+
+        if(is_null($setting_info)){
+            //리사이징 값이 없으면 리턴
+            return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
+            exit;
+        }else{
+            if(is_null($setting_info->shop_img_width) || is_null($setting_info->shop_img_height)){
+                return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
+                exit;
+            }else{
+                $img_resize['shop_img_width'] = $setting_info->shop_img_width;
+                $img_resize['shop_img_height'] = $setting_info->shop_img_height;
+            }
+        }
+dd("내일 함수화 하자!!!");
         //1단계 가져옴
         $one_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where('sca_display','Y')->whereRaw('length(sca_id) = 2')->orderby('sca_id', 'ASC')->get();
 
@@ -390,11 +407,11 @@ class AdmShopItemController extends Controller
         $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
         $path = 'data/shopitem';     //첨부물 저장 경로
-        $thumb_name = "";
 
         for($i = 1; $i <= 10; $i++){
             if($request->hasFile('item_img'.$i))
             {
+                $thumb_name = "";
                 $item_img[$i] = $request->file('item_img'.$i);
                 $file_type = $item_img[$i]->getClientOriginalExtension();    //이미지 확장자 구함
                 $file_size = $item_img[$i]->getSize();  //첨부 파일 사이즈 구함
@@ -1190,9 +1207,9 @@ class AdmShopItemController extends Controller
         $upload_max_filesize = substr($upload_max_filesize, 0, -1); //2M (뒤에 M자르기)
 
         $path = 'data/shopitem';     //첨부물 저장 경로
-        $thumb_name = "";
 
         for($i = 1; $i <= 10; $i++){
+            $thumb_name = "";
             $file_chk_tmp = 'file_chk'.$i;
             $file_chk = $request->input($file_chk_tmp); //수정,삭제,새로등록 체크 파악
 

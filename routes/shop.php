@@ -26,3 +26,9 @@ Route::get('/sitemdetail', [
     'as' => 'sitemdetail',
     'uses' => 'App\Http\Controllers\shop\ItemController@sitemdetail',
 ]);
+
+//상품 리스트 페이지 이미지 변환 처리
+Route::get('/sitemdetail_img', [
+    'as' => 'ajax_big_img_change',
+    'uses' => 'App\Http\Controllers\shop\ItemController@ajax_big_img_change',
+]);

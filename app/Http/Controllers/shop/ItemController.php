@@ -38,7 +38,7 @@ class ItemController extends Controller
         if($keymethod == "") $keymethod = "item_name";
 
         $tb_name = "items";
-        $type = 'shopitems';
+        $type = 'f_shopitems';
         $cate = "";
 
         $search_sql = "";
@@ -50,7 +50,7 @@ class ItemController extends Controller
 
         if($ca_id == ""){
             $cate_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where('sca_display','Y')->whereRaw('length(sca_id) = 2')->orderby('sca_rank', 'DESC')->get();
-            $item_infos = DB::select("select a.*, b.sca_id from shopitems a, shopcategorys b where 1 AND item_display = 'Y' AND a.sca_id = b.sca_id  {$search_sql} order by a.item_rank DESC limit {$page_control['startNum']}, {$writeList} ");
+            $item_infos = DB::select("select a.*, b.sca_id from shopitems a, shopcategorys b where a.item_display = 'Y' AND a.item_use = 1 AND a.sca_id = b.sca_id  {$search_sql} order by a.item_rank DESC limit {$page_control['startNum']}, {$writeList} ");
 
         }else{
             $down_cate = DB::table('shopcategorys')->where('sca_id','like',$ca_id.'%')->count();   //하위 카테고리 갯수
@@ -61,7 +61,7 @@ class ItemController extends Controller
                 $cate_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where('sca_display','Y')->where('sca_id','=',$ca_id )->whereRaw('length(sca_id) = '.$length)->whereRaw("sca_id like '{$ca_id}%'")->orderby('sca_rank', 'DESC')->get();
             }
 
-            $item_infos = DB::select("select a.*, b.sca_id from shopitems a, shopcategorys b where 1 AND item_display = 'Y' AND a.sca_id = b.sca_id AND a.sca_id like '{$ca_id}%' {$search_sql} order by a.item_rank DESC limit {$page_control['startNum']}, {$writeList} ");
+            $item_infos = DB::select("select a.*, b.sca_id from shopitems a, shopcategorys b where a.item_display = 'Y' AND a.item_use = 1 AND a.sca_id = b.sca_id AND a.sca_id like '{$ca_id}%' {$search_sql} order by a.item_rank DESC limit {$page_control['startNum']}, {$writeList} ");
         }
 
         $pageList = $page_control['preFirstPage'].$page_control['pre1Page'].$page_control['listPage'].$page_control['next1Page'].$page_control['nextLastPage'];
@@ -86,9 +86,76 @@ class ItemController extends Controller
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
         $item_code          = $request->input('item_code');
-dd($item_code);
-//$item_info = DB::table('shopitems')->where('item_code', $item_code)->first();   //상품 정보
+
+        $item_info = DB::select("select a.*, b.sca_display from shopitems a, shopcategorys b where a.item_code = '$item_code' and a.sca_id = b.sca_id ");
+
+        if(count($item_info) == 0){
+            return redirect()->back()->with('alert_messages', $Messages::$shop['no_data']);
+            exit;
+        }
+
+        //예외처리(카테고리 비출력, 상품 비출력, 판매 가능 여부)
+        if($item_info[0]->sca_display == 'N' || $item_info[0]->item_display == 'N' || $item_info[0]->item_use == '0'){
+            return redirect()->back()->with('alert_messages', $Messages::$shop['now_no_item']);
+            exit;
+        }
+
+        //이미지 처리
+        $j = 0;
+        $p = 0;
+        $big_img_disp = "";
+        $small_img = array();
+
+        for($i=1; $i<=10; $i++) {
+            $item_img = "item_img".$i;
+
+            if($item_info[0]->$item_img == "") continue;
+            $j++;
+            $item_img_cut = explode("@@",$item_info[0]->$item_img);
+
+            if(count($item_img_cut) == 1) $item_img_disp = $item_img_cut[0];
+            else $item_img_disp = $item_img_cut[1];
+
+            if($j == 1){
+                //큰이미지 출력
+                $big_img_disp = "/data/shopitem/".$item_img_disp;
+            }
+
+            //작은 이미지 출력 배열
+            $small_img_disp[$p] = "/data/shopitem/".$item_img_cut[3];
+            $small_item_img[$p] = $i;
+            $p++;
+        }
+
+        $CustomUtils = new CustomUtils();
+
         return view('shop.item_detail',[
+            "item_info"         => $item_info[0],
+            "big_img_disp"      => $big_img_disp,
+            "small_img_disp"    => $small_img_disp,
+            "small_item_img"    => $small_item_img,
+            'CustomUtils'       => $CustomUtils,
         ]);
     }
+
+    //ajax 큰이미지 변환
+    public function ajax_big_img_change(Request $request)
+    {
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
+
+        $item_code  = $request->input('item_code');
+        $item_img   = $request->input('item_img');
+
+        $item_img_col = "item_img".$item_img;
+
+        $img_serach = DB::table('shopitems')->select($item_img_col)->where('item_code',$item_code)->first();   //이미지 찾기
+        $item_img_cut = explode("@@",$img_serach->$item_img_col);
+
+        echo "/data/shopitem/".$item_img_cut[1];
+    }
+
+
+
+
+
 }

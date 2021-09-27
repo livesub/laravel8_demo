@@ -5,6 +5,16 @@ use Illuminate\Support\Facades\Route;
 //쇼핑몰 관련
 /* 로그인 사용자만 볼수 있는 페이지를 group 로 묶는다(관리자) */
 Route::group(['middleware' => 'is.admin'], function () {    //미들웨어로 만들어서 관리자 가 아니먄 튕기게 한다
+    /*** 환경 설정 */
+    Route::get('setting', [       //환경 설정
+        'as' => 'shop.setting.index',
+        'uses' => 'App\Http\Controllers\adm\shop\setting\AdmShopSettingController@index',
+    ]);
+
+    Route::post('setting', [       //환경 설정 저장
+        'as' => 'shop.setting.savesetting',
+        'uses' => 'App\Http\Controllers\adm\shop\setting\AdmShopSettingController@savesetting',
+    ]);
 
     /*** 분류 관리 */
     Route::get('scate', [       //카테고리 리스트

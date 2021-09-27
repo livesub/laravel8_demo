@@ -153,6 +153,16 @@ return $validator;
 
             $total_tmp = DB::select("select count(*) as cnt from shopitems a, shopcategorys b where 1 {$search_sql} ");
             $total_cnt = $total_tmp[0]->cnt;
+        }else if($type == 'f_shopitems'){ //프론트 쇼핑몰 상품 리스트
+            if($cate != "") $search_sql = " AND a.sca_id = b.sca_id AND a.sca_id LIKE '{$cate}%' AND a.{$keymethod} LIKE '%{$keyword}%' ";
+            else $search_sql = " AND a.sca_id = b.sca_id AND a.{$keymethod} LIKE '%{$keyword}%' ";
+
+            $cateinfo = "&ca_id=".$cate;
+            $cateinfo .= "&item_search=".$keymethod;
+            $cateinfo .= "&keyword=".$keyword;
+
+            $total_tmp = DB::select("select count(*) as cnt from shopitems a, shopcategorys b where 1 {$search_sql} and a.item_display = 'Y' and a.item_use = 1 and b.sca_display = 'Y' ");
+            $total_cnt = $total_tmp[0]->cnt;
         }else if($type == 'email_send'){
             //이메일 발송 리스트 일때
             $total_cnt = DB::table($table_name)->where($keymethod,$keyword)->count();

@@ -96,6 +96,9 @@ header('Pragma: public');
                         <td><br><br>쇼핑몰</td>
                     </tr>
                     <tr>
+                        <td><a href="{{ route('shop.setting.index') }}">환경 설정</a></td>
+                    </tr>
+                    <tr>
                         <td><a href="{{ route('shop.cate.index') }}">분류 관리</a></td>
                     </tr>
 

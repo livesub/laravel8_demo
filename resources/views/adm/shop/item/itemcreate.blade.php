@@ -200,7 +200,7 @@
     <tr>
         <td>판매가능</td>
         <td>잠시 판매를 중단하거나 재고가 없을 경우에 체크를 해제해 놓으면 출력되지 않으며, 주문도 받지 않습니다. <br>
-            <input type="checkbox" name="item_use" value="1" id="item_use" > 예
+            <input type="checkbox" name="item_use" value="1" id="item_use" checked> 예
         </td>
     </tr>
 
