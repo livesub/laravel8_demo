@@ -713,6 +713,29 @@ $um_value='80/0.5/3'
 
 
     /* 쇼핑몰 관련 함수 */
+    //환경 설정 리사이즈 체크
+    public static function resize_chk()
+    {
+        //환경 설정 DB에서 이미지 리사이징 값이 있는 지 파악
+        $setting_info = DB::table('shopsettings')->first();
+
+        if(is_null($setting_info)){
+            //리사이징 값이 없으면 리턴
+            return false;
+            exit;
+        }else{
+            if(is_null($setting_info->shop_img_width) || is_null($setting_info->shop_img_height)){
+                return false;
+                exit;
+            }else{
+                $img_resize['shop_img_width'] = $setting_info->shop_img_width;
+                $img_resize['shop_img_height'] = $setting_info->shop_img_height;
+            }
+        }
+
+        return $img_resize;
+    }
+
     // 금액 표시
 	public static function display_price($price, $tel_inq=false)
     {

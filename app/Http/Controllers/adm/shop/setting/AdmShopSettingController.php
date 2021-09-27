@@ -40,19 +40,19 @@ class AdmShopSettingController extends Controller
         $setting_info = DB::table('shopsettings')->first();
 
         $id = "";
-        $company_name           = "";
-        $company_saupja_no      = "";
-        $company_owner          = "";
-        $company_tel            = "";
-        $company_fax            = "";
-        $company_tongsin_no     = "";
-        $company_buga_no        = "";
-        $company_zip            = "";
-        $company_addr           = "";
-        $company_info_name      = "";
-        $company_info_email     = "";
+        $company_name           = "회사명";
+        $company_saupja_no      = "123-45-67890";
+        $company_owner          = "대표자명";
+        $company_tel            = "02-123-4567";
+        $company_fax            = "02-123-4568";
+        $company_tongsin_no     = "제 OO구 - 123호";
+        $company_buga_no        = "12345호";
+        $company_zip            = "123456";
+        $company_addr           = "OO도 OO시 OO구 OO동 123-45";
+        $company_info_name      = "정보책임자명";
+        $company_info_email     = "정보책임자 E-mail";
         $company_bank_use       = "";
-        $company_bank_account   = "";
+        $company_bank_account   = "OO은행 12345-67-89012 예금주명";
         $company_use_point      = "";
         $shop_img_width         = "500%%300%%100";
         $shop_img_height        = "500%%300%%100";
@@ -129,12 +129,12 @@ class AdmShopSettingController extends Controller
         $shop_img_width_tmp     = explode("%%",$shop_img_width);
         $shop_img_height_tmp    = explode("%%",$shop_img_height);
 
-        if(count($shop_img_width_tmp) < 3){
+        if($shop_img_width_tmp[2] == ""){
             return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['resize_num']);  //리사이즈 갯수 체크
             exit;
         }
 
-        if(count($shop_img_height_tmp) < 3){
+        if($shop_img_height_tmp[2] == ""){
             return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['resize_num']);  //리사이즈 갯수 체크
             exit;
         }

@@ -103,6 +103,13 @@ class AdmShopItemController extends Controller
         $ca_id     = $request->input('sca_id');
 
         //환경 설정 DB에서 이미지 리사이징 값이 있는 지 파악
+        $resiz_result = CustomUtils::resize_chk();
+
+        if(!$resiz_result){
+            return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
+            exit;
+        }
+/*
         $setting_info = DB::table('shopsettings')->first();
 
         if(is_null($setting_info)){
@@ -118,6 +125,7 @@ class AdmShopItemController extends Controller
                 $img_resize['shop_img_height'] = $setting_info->shop_img_height;
             }
         }
+*/
 dd("내일 함수화 하자!!!");
         //1단계 가져옴
         $one_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where('sca_display','Y')->whereRaw('length(sca_id) = 2')->orderby('sca_id', 'ASC')->get();
