@@ -129,12 +129,12 @@ class AdmShopSettingController extends Controller
         $shop_img_width_tmp     = explode("%%",$shop_img_width);
         $shop_img_height_tmp    = explode("%%",$shop_img_height);
 
-        if($shop_img_width_tmp[2] == ""){
+        if($shop_img_width_tmp[2] == ""){   //3개가 등록 되었는지 체크
             return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['resize_num']);  //리사이즈 갯수 체크
             exit;
         }
 
-        if($shop_img_height_tmp[2] == ""){
+        if($shop_img_height_tmp[2] == ""){  //3개가 등록 되었는지 체크
             return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['resize_num']);  //리사이즈 갯수 체크
             exit;
         }

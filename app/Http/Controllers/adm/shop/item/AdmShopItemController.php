@@ -109,24 +109,7 @@ class AdmShopItemController extends Controller
             return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
             exit;
         }
-/*
-        $setting_info = DB::table('shopsettings')->first();
 
-        if(is_null($setting_info)){
-            //리사이징 값이 없으면 리턴
-            return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
-            exit;
-        }else{
-            if(is_null($setting_info->shop_img_width) || is_null($setting_info->shop_img_height)){
-                return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
-                exit;
-            }else{
-                $img_resize['shop_img_width'] = $setting_info->shop_img_width;
-                $img_resize['shop_img_height'] = $setting_info->shop_img_height;
-            }
-        }
-*/
-dd("내일 함수화 하자!!!");
         //1단계 가져옴
         $one_step_infos = DB::table('shopcategorys')->select('sca_id', 'sca_name_kr', 'sca_name_en')->where('sca_display','Y')->whereRaw('length(sca_id) = 2')->orderby('sca_id', 'ASC')->get();
 
@@ -231,6 +214,14 @@ dd("내일 함수화 하자!!!");
             exit;
         }
 
+        //환경 설정 DB에서 이미지 리사이징 값이 있는 지 파악
+        $resiz_result = CustomUtils::resize_chk();
+
+        if(!$resiz_result){
+            return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
+            exit;
+        }
+dd($resiz_result['shop_img_height']);
         $ca_id                  = $request->input('ca_id');
         $item_code              = $request->input('item_code');
         $item_name              = addslashes($request->input('item_name'));
@@ -441,8 +432,8 @@ dd("내일 함수화 하자!!!");
                 }else{
                     //썸네일 만들기
                     for($k = 0; $k < 3; $k++){
-                        $resize_width_file_tmp = explode("%%","500%%300%%100");
-                        $resize_height_file_tmp = explode("%%","500%%300%%100");
+                        $resize_width_file_tmp = explode("%%",$resiz_result['shop_img_width']);
+                        $resize_height_file_tmp = explode("%%",$resiz_result['shop_img_height']);
 
                         $thumb_width = $resize_width_file_tmp[$k];
                         $thumb_height = $resize_height_file_tmp[$k];
@@ -758,6 +749,14 @@ dd("내일 함수화 하자!!!");
             exit;
         }
 
+        //환경 설정 DB에서 이미지 리사이징 값이 있는 지 파악
+        $resiz_result = CustomUtils::resize_chk();
+
+        if(!$resiz_result){
+            return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
+            exit;
+        }
+
         //스마트 에디터 첨부파일 디렉토리 사용자 정의에 따라 변경 하기(관리 하기 편하게..)
         $item_directory = "data/shopitem/editor";
         setcookie('directory', $item_directory, (time() + 10800),"/"); //일단 3시간 잡음(3*60*60)
@@ -1026,6 +1025,14 @@ dd("내일 함수화 하자!!!");
             exit;
         }
 
+        //환경 설정 DB에서 이미지 리사이징 값이 있는 지 파악
+        $resiz_result = CustomUtils::resize_chk();
+
+        if(!$resiz_result){
+            return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
+            exit;
+        }
+
         $id                     = $request->input('id');
         $ca_id                  = $request->input('ca_id');
         $item_code              = $request->input('item_code');
@@ -1245,8 +1252,8 @@ dd("내일 함수화 하자!!!");
                     }else{
                         //썸네일 만들기
                         for($k = 0; $k < 3; $k++){
-                            $resize_width_file_tmp = explode("%%","500%%300%%100");
-                            $resize_height_file_tmp = explode("%%","500%%300%%100");
+                            $resize_width_file_tmp = explode("%%",$resiz_result['shop_img_width']);
+                            $resize_height_file_tmp = explode("%%",$resiz_result['shop_img_height']);
 
                             $thumb_width = $resize_width_file_tmp[$k];
                             $thumb_height = $resize_height_file_tmp[$k];
