@@ -128,13 +128,65 @@ class ItemController extends Controller
         }
 
         $CustomUtils = new CustomUtils();
+        $use_point = $CustomUtils->setting_infos(); //환경 설정 포인트 설정
+
+        //포인트 타입에 따른 변경
+        $use_point_disp = "";
+        if($use_point->company_use_point == 1){ //포인트 사용
+            if($item_info[0]->item_point_type == 2){    //구매가 기준 설정비율
+                $use_point_disp = "구매금액(추가옵션 제외)의 ".$item_info[0]->item_point."%";
+            }else{
+                $item_point = $CustomUtils->get_item_point($item_info[0]);
+                $use_point_disp = number_format($item_point).'점';
+            }
+        }
+
+        //배송비 타입에 따른 변경
+        $sc_method_disp = "";
+        if($item_info[0]->item_sc_type == 1) $sc_method_disp = '무료배송';
+        else {
+            if($item_info[0]->item_sc_method == 1) $sc_method_disp = '수령후 지불';
+            else if($item_info[0]->item_sc_method == 2) {
+                //$ct_send_cost_label = '<label for="ct_send_cost">배송비결제</label>';
+                $sc_method_disp = '<select name="ct_send_cost" id="ct_send_cost">
+                                        <option value="0">주문시 결제</option>
+                                        <option value="1">수령후 지불</option>
+                                   </select>';
+            }else $sc_method_disp = '주문시 결제';
+        }
+
+        // 상품품절체크
+        $is_soldout = $CustomUtils->is_soldout($item_info[0]->item_code);
+
+        // 주문가능체크
+        $is_orderable = true;
+
+        if($item_info[0]->item_use != 1 || $item_info[0]->item_tel_inq == 1 || $is_soldout){
+            $is_orderable = false;
+        }
+
+        $option_item = $supply_item = '';
+
+        if($is_orderable){
+            //선택 옵션
+            $option_item = $CustomUtils->get_item_options($item_info[0]->item_code, $item_info[0]->item_option_subject, '');
+            $supply_item = $CustomUtils->get_item_supply($item_info[0]->item_code, $item_info[0]->item_supply_subject, '');
+        }
+
 
         return view('shop.item_detail',[
             "item_info"         => $item_info[0],
             "big_img_disp"      => $big_img_disp,
             "small_img_disp"    => $small_img_disp,
             "small_item_img"    => $small_item_img,
-            'CustomUtils'       => $CustomUtils,
+            "CustomUtils"       => $CustomUtils,
+            "use_point"         => $use_point->company_use_point,
+            "use_point_disp"    => $use_point_disp,
+            "sc_method_disp"    => $sc_method_disp,
+
+            "is_orderable"      => $is_orderable,   //재고가 있는지 파악 여부
+            "option_item"       => $option_item,    //선택 옵션
+            "supply_item"       => $supply_item,    //추가 옵션
         ]);
     }
 

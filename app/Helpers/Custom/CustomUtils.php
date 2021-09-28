@@ -768,4 +768,331 @@ $um_value='80/0.5/3'
         return $icon;
     }
 
+    //환경 설정 값
+    public static function setting_infos()
+    {
+        $setting_info = DB::table('shopsettings')->first();
+
+        if(is_null($setting_info)){
+            //값이 없으면 리턴
+            return false;
+        }else{
+            return $setting_info;
+        }
+    }
+
+    public static function get_item_point($item, $sio_id='', $trunc=10)
+    {
+        $item_point = 0;
+
+        if($item->item_point_type > 0) {    //판매 기준 설정 비율 일때
+            $item_price = $item->item_price;
+
+            if($item->item_point_type == 2 && $sio_id) {
+                $opts = DB::table('shopitemoptions')->select('sio_id', 'sio_price')->where([['item_code', $item->item_code],['sio_id', $sio_id],['sio_type','0'],['sio_use','1']])->first();
+                if(is_null($opts)){
+                    return false;
+                }else{
+                    if($opts->sio_id != "") $item_price += $opts->sio_price;
+                }
+            }
+
+            $item_point = floor(($item_price * ($item->item_point / 100) / $trunc)) * $trunc;
+        } else {
+            $item_point = $item->item_point;
+        }
+
+        return $item_point;
+    }
+
+    // 상품 선택 옵션
+    public static function get_item_options($item_code, $subject, $is_div='', $is_first_option_title='')
+    {
+        if(!$item_code || !$subject) return false;
+        $opts = DB::table('shopitemoptions')->where([['sio_type', 0],['item_code', $item_code],['sio_use','1'],['sio_use','1']])->orderby('id', 'asc')->get();
+
+        if(count($opts) == 0) return false;
+
+        $str = '';
+        $subj = explode(',', $subject);
+        $subj_count = count($subj);
+
+        if($subj_count > 1) {
+            $options = array();
+            $first_option_title = "";
+
+            // 옵션항목 배열에 저장
+            foreach($opts as $opt){
+                $opt_id = explode(chr(30), $opt->sio_id);
+
+                for($k=0; $k<$subj_count; $k++) {
+                    if(! (isset($options[$k]) && is_array($options[$k])))
+                        $options[$k] = array();
+
+                    if(isset($opt_id[$k]) && $opt_id[$k] && !in_array($opt_id[$k], $options[$k]))
+                        $options[$k][] = $opt_id[$k];
+                }
+            }
+
+            // 옵션선택목록 만들기
+            for($i=0; $i<$subj_count; $i++) {
+                $opt = $options[$i];
+                $opt_count = count($opt);
+                $disabled = '';
+
+                if($opt_count) {
+                    $seq = $i + 1;
+                    if($i > 0)
+                        $disabled = ' disabled="disabled"';
+
+                    if($is_div === 'div') {
+                        $str .= '<div class="get_item_options">'.PHP_EOL;
+                        $str .= '<label for="it_option_'.$seq.'" class="label-title">'.$subj[$i].'</label>'.PHP_EOL;
+                    } else {
+                        $str .= '<tr>'.PHP_EOL;
+                        $str .= '<th><label for="it_option_'.$seq.'" class="label-title">'.$subj[$i].'</label></th>'.PHP_EOL;
+                    }
+
+                    $select = '<select id="it_option_'.$seq.'" class="it_option"'.$disabled.'>'.PHP_EOL;
+
+                    $first_option_title = $is_first_option_title ? $subj[$i] : '선택';
+
+                    $select .= '<option value="">'.$first_option_title.'</option>'.PHP_EOL;
+                    for($k=0; $k<$opt_count; $k++) {
+                        $opt_val = $opt[$k];
+                        if(strlen($opt_val)) {
+                            $select .= '<option value="'.$opt_val.'">'.$opt_val.'</option>'.PHP_EOL;
+                        }
+                    }
+                    $select .= '</select>'.PHP_EOL;
+
+                    if($is_div === 'div') {
+                        $str .= '<span>'.$select.'</span>'.PHP_EOL;
+                        $str .= '</div>'.PHP_EOL;
+                    } else {
+                        $str .= '<td>'.$select.'</td>'.PHP_EOL;
+                        $str .= '</tr>'.PHP_EOL;
+                    }
+                }
+            }
+        }else{
+            if($is_div === 'div') {
+                $str .= '<div class="get_item_options">'.PHP_EOL;
+                $str .= '<label for="it_option_1">'.$subj[0].'</label>'.PHP_EOL;
+            } else {
+                $str .= '<tr>'.PHP_EOL;
+                $str .= '<th><label for="it_option_1">'.$subj[0].'</label></th>'.PHP_EOL;
+            }
+
+            $select = '<select id="it_option_1" class="it_option">'.PHP_EOL;
+            $select .= '<option value="">선택</option>'.PHP_EOL;
+
+            foreach($opts as $opt){
+                if($opt->sio_price >= 0) $price = '&nbsp;&nbsp;+ '.number_format($opt->sio_price).'원';
+                else $price = '&nbsp;&nbsp; '.number_format($opt->sio_price).'원';
+
+                if($opt->sio_stock_qty < 1) $soldout = '&nbsp;&nbsp;[품절]';
+                else $soldout = '';
+
+                $select .= '<option value="'.$opt->sio_id.','.$opt->sio_price.','.$opt->sio_stock_qty.'">'.$opt->sio_id.$price.$soldout.'</option>'.PHP_EOL;
+            }
+
+            $select .= '</select>'.PHP_EOL;
+
+            if($is_div === 'div') {
+                $str .= '<span>'.$select.'</span>'.PHP_EOL;
+                $str .= '</div>'.PHP_EOL;
+            } else {
+                $str .= '<td>'.$select.'</td>'.PHP_EOL;
+                $str .= '</tr>'.PHP_EOL;
+            }
+        }
+
+        return $str;
+    }
+
+    // 상품 추가옵션
+    function get_item_supply($item_code, $subject, $is_div='', $is_first_option_title='')
+    {
+        if(!$item_code || !$subject) return false;
+
+        $supplys = DB::table('shopitemoptions')->where([['sio_type', 1],['item_code', $item_code],['sio_use','1'],['sio_use','1']])->orderby('id', 'asc')->get();
+
+        if(count($supplys) == 0) return false;
+
+        $str = '';
+
+        $subj = explode(',', $subject);
+        $subj_count = count($subj);
+        $options = array();
+
+        // 옵션항목 배열에 저장
+        foreach($supplys as $supply){
+            $opt_id = explode(chr(30), $supply->sio_id);
+
+            if($opt_id[0] && !array_key_exists($opt_id[0], $options))
+                $options[$opt_id[0]] = array();
+
+            if(strlen($opt_id[1])) {
+                if($supply->sio_price >= 0)
+                    $price = '&nbsp;&nbsp;+ '.number_format($supply->sio_price).'원';
+                else
+                    $price = '&nbsp;&nbsp; '.number_format($supply->sio_price).'원';
+
+                $sio_stock_qty = $this->get_option_stock_qty($item_code, $supply->sio_id, $supply->sio_type);
+
+                if($sio_stock_qty < 1)
+                    $soldout = '&nbsp;&nbsp;[품절]';
+                else
+                    $soldout = '';
+
+                $options[$opt_id[0]][] = '<option value="'.$opt_id[1].','.$supply->sio_price.','.$sio_stock_qty.'">'.$opt_id[1].$price.$soldout.'</option>';
+            }
+        }
+
+        // 옵션항목 만들기
+        for($i=0; $i<$subj_count; $i++) {
+            $opt = (isset($subj[$i]) && isset($options[$subj[$i]])) ? $options[$subj[$i]] : array();
+            $opt_count = count($opt);
+            if($opt_count) {
+                $seq = $i + 1;
+                if($is_div === 'div') {
+                    $str .= '<div class="get_item_supply">'.PHP_EOL;
+                    $str .= '<label for="item_supply_'.$seq.'" class="label-title">'.$subj[$i].'</label>'.PHP_EOL;
+                } else {
+                    $str .= '<tr>'.PHP_EOL;
+                    $str .= '<th><label for="item_supply_'.$seq.'">'.$subj[$i].'</label></th>'.PHP_EOL;
+                }
+
+                $first_option_title = $is_first_option_title ? $subj[$i] : '선택';
+
+                $select = '<select id="item_supply_'.$seq.'" class="it_supply">'.PHP_EOL;
+                $select .= '<option value="">'.$first_option_title.'</option>'.PHP_EOL;
+                for($k=0; $k<$opt_count; $k++) {
+                    $opt_val = $opt[$k];
+                    if($opt_val) {
+                        $select .= $opt_val.PHP_EOL;
+                    }
+                }
+                $select .= '</select>'.PHP_EOL;
+
+                if($is_div === 'div') {
+                    $str .= '<span class="td_sit_sel">'.$select.'</span>'.PHP_EOL;
+                    $str .= '</div>'.PHP_EOL;
+                } else {
+                    $str .= '<td class="td_sit_sel">'.$select.'</td>'.PHP_EOL;
+                    $str .= '</tr>'.PHP_EOL;
+                }
+            }
+        }
+
+        return $str;
+    }
+
+    function is_soldout($item_code, $is_cache=false)
+    {
+        static $cache = array();
+
+        $it_id = preg_replace('/[^a-z0-9_\-]/i', '', $item_code);
+        $key = md5($item_code);
+
+        if( $is_cache && isset($cache[$key]) ){
+            return $cache[$key];
+        }
+
+        // 상품정보
+        $item = $this->get_shop_item($item_code, $is_cache);
+
+        if($item[0]->item_soldout || $item[0]->item_stock_qty <= 0) return true;
+
+        $count = 0;
+        $soldout = false;
+
+        // 상품에 선택옵션 있으면..
+        $option_cnt = DB::table('shopitemoptions')->where([['item_code',$item_code],['sio_type','0']])->count();
+
+        if($option_cnt < 0) {   //테스트
+        //if($option_cnt > 0) {     //정상
+            $option_gets = DB::table('shopitemoptions')->select('sio_id', 'sio_type', 'sio_stock_qty')->where([['item_code',$item_code],['sio_type','0'],['sio_use','1']])->get();
+
+            $k = 0;
+            foreach($option_gets as $option_get){
+                // 옵션 재고수량
+                $stock_qty = $this->get_option_stock_qty($item_code, $option_get->sio_id, $option_get->sio_type);
+
+                if($stock_qty <= 0) $count++;
+
+                $k++;
+            }
+
+            // 모든 선택옵션 품절이면 상품 품절
+            if($k == $count) $soldout = true;
+        }else{
+            // 상품 재고수량
+            $stock_qty = $this->get_item_stock_qty($item_code);
+
+            if($stock_qty <= 0) $soldout = true;
+        }
+
+        $cache[$key] = $soldout;
+
+        return $soldout;
+
+
+    }
+
+    public static function get_shop_item($item_code, $is_cache=false, $add_query='')
+    {
+        if($item_code != ""){
+            $item = DB::select("select * from shopitems where item_code = '{$item_code}' $add_query ");
+        }
+
+        return $item;
+    }
+
+
+    // 상품의 재고 (창고재고수량 - 주문대기수량)
+    public static function get_item_stock_qty($item_code)
+    {
+        $jaego = DB::table('shopitems')->select('item_stock_qty')->where('item_code',$item_code)->get();
+        $jaego_cnt = (int)$jaego[0]->item_stock_qty;
+        $daegi = 0;
+/*
+장바구니 만들고 처리!!!!
+        // 재고에서 빼지 않았고 주문인것만
+        $sql = " select SUM(ct_qty) as sum_qty
+                from {$g5['g5_shop_cart_table']}
+                where it_id = '$it_id'
+                    and io_id = ''
+                    and ct_stock_use = 0
+                    and ct_status in ('주문', '입금', '준비') ";
+        $row = sql_fetch($sql);
+        $daegi = (int)$row['sum_qty'];
+*/
+        return $jaego_cnt - $daegi;
+    }
+
+
+
+    // 옵션의 재고 (창고재고수량 - 주문대기수량)
+    public static function get_option_stock_qty($item_code, $sio_id, $type)
+    {
+        $jaego = DB::table('shopitemoptions')->select('sio_stock_qty')->where([['item_code',$item_code],['sio_id',$sio_id],['sio_type',$type],['sio_use','1']])->get();
+        $jaego_cnt = (int)$jaego[0]->sio_stock_qty;
+        $daegi = 0;
+/*
+장바구니 만들고 처리!!!!
+        // 재고에서 빼지 않았고 주문인것만
+        $sql = " select SUM(ct_qty) as sum_qty
+                from {$g5['g5_shop_cart_table']}
+                where it_id = '$it_id'
+                    and io_id = '$io_id'
+                    and io_type = '$type'
+                    and ct_stock_use = 0
+                    and ct_status in ('주문', '입금', '준비') ";
+        $row = sql_fetch($sql);
+        $daegi = (int)$row['sum_qty'];
+*/
+        return $jaego_cnt - $daegi;
+    }
 }
