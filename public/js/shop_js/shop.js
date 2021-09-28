@@ -289,7 +289,7 @@ $(function() {
 function sel_option_process(add_exec)
 {
     var item_price = parseInt($("input#item_price").val());
-alert(item_price);
+alert("선택옵션 추가처리====> "+item_price);
     var id = "";
     var value, info, sel_opt, item, price, stock, run_error = false;
     var option = sep = "";
