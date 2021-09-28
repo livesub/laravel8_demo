@@ -47,6 +47,7 @@
 	<input type="hidden" name="url">
 
 <input type="hidden" name="item_code[]" value="{{ $item_info->item_code }}">
+<input type="hidden" name="ajax_option_url" id="ajax_option_url" value="{{ route('ajax_option_change') }}">
             <table border=1>
                 <tr>
                     <td colspan="2"><b>{{ stripslashes($item_info->item_name) }}</b></td>
@@ -167,9 +168,49 @@
                             </tr>
                             @endif
 
+
+
+
                             <tr>
-                                <td>총 금액</td>
+                                <td>
+                                    <!-- 선택된 옵션 시작 { -->
+                                    <section id="sit_sel_option">
+                                        @if(!$option_item)
+                                        <ul id="sit_opt_added">
+                                            <li class="sit_opt_list">
+                                                <input type="hidden" name="io_type[][]" value="0">
+                                                <input type="hidden" name="io_id[][]" value="">
+                                                <input type="hidden" name="io_value[][]" value="">
+                                                <input type="hidden" class="io_price" value="0">
+                                                <input type="hidden" class="io_stock" value="">
+                                                <div class="opt_name">
+                                                    <span class="sit_opt_subj"></span>
+                                                </div>
+                                                <div class="opt_count">
+                                                    <label for="ct_qty_" class="sound_only">수량</label>
+                                                    <button type="button" class="sit_qty_minus"><i class="fa fa-minus" aria-hidden="true"></i><span class="sound_only">감소</span></button>
+                                                    <input type="text" name="ct_qty[][]" value="" id="ct_qty_" class="num_input" size="5">
+                                                    <button type="button" class="sit_qty_plus"><i class="fa fa-plus" aria-hidden="true"></i><span class="sound_only">증가</span></button>
+                                                    <span class="sit_opt_prc">+0원</span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <script>
+                                        $(function() {
+                                            //price_calculate();
+                                        });
+                                        </script>
+                                        @endif
+
+                                    </section>
+                                    <!-- } 선택된 옵션 끝 -->
+
+                                    <!-- 총 구매액 -->
+                                    <div id="sit_tot_price"></div>
+
+                                </td>
                             </tr>
+
                             <tr>
                                 <td>
                                     <button type="button">장바구니</button>
@@ -179,6 +220,10 @@
                         </table>
                     </td>
                 </tr>
+
+
+
+
                 @endif
 
             </table>

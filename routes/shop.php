@@ -32,3 +32,9 @@ Route::get('/sitemdetail_img', [
     'as' => 'ajax_big_img_change',
     'uses' => 'App\Http\Controllers\shop\ItemController@ajax_big_img_change',
 ]);
+
+//상품 리스트 선택 옵션 처리
+Route::get('/sitemdetail_option', [
+    'as' => 'ajax_option_change',
+    'uses' => 'App\Http\Controllers\shop\ItemController@ajax_option_change',
+]);

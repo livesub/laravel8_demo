@@ -206,7 +206,76 @@ class ItemController extends Controller
         echo "/data/shopitem/".$item_img_cut[1];
     }
 
+    //선택 옵션 ajax
+    public function ajax_option_change(Request $request)
+    {
+        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
+        $item_code  = $request->input('item_code');
+        $opt_id     = $request->input('opt_id');
+        $idx        = $request->input('idx');
+        $sel_count  = $request->input('sel_count');
+        $op_title   = $request->input('op_title');
+
+        $item_info = CustomUtils::get_shop_item($item_code);
+
+        if(count($item_info) == 0){
+            echo "No";
+            exit;
+        }
+
+        $options = DB::table('shopitemoptions')->where([['sio_type','0'],['item_code',$item_code],['sio_use','1'],['sio_id','like',$opt_id.chr(30).'%']])->orderby('id', 'asc')->get();   //옵션 찾기
+        $option_title = '선택';
+
+        if( $op_title && ($op_title !== $option_title) && $item_info[0]->item_option_subject ){
+            $array_tmps = explode(',', $item_info[0]->item_option_subject);
+            if( isset($array_tmps[$idx+1]) && $array_tmps[$idx+1] ){
+                $option_title = $array_tmps[$idx+1];
+            }
+        }
+
+        $str = '<option value="">'.$option_title.'</option>';
+        $opt = array();
+
+        foreach($options as $option){
+            $val = explode(chr(30), $option->sio_id);
+            $key = $idx + 1;
+
+            if(!strlen($val[$key])) continue;
+
+            $continue = false;
+            foreach($opt as $v) {
+                if(strval($v) === strval($val[$key])) {
+                    $continue = true;
+                    break;
+                }
+            }
+
+            if($continue) continue;
+
+            $opt[] = strval($val[$key]);
+
+            if($key + 1 < $sel_count) {
+                $str .= PHP_EOL.'<option value="'.$val[$key].'">'.$val[$key].'</option>';
+            } else {
+                if($option->sio_price >= 0)
+                    $price = '&nbsp;&nbsp;+ '.number_format($option->sio_price).'원';
+                else
+                    $price = '&nbsp;&nbsp; '.number_format($option->sio_price).'원';
+
+                $sio_stock_qty = CustomUtils::get_option_stock_qty($item_code, $option->sio_id, $option->sio_type);
+
+                if($sio_stock_qty < 1)
+                    $soldout = '&nbsp;&nbsp;[품절]';
+                else
+                    $soldout = '';
+
+                $str .= PHP_EOL.'<option value="'.$val[$key].','.$option->sio_price.','.$sio_stock_qty.'">'.$val[$key].$price.$soldout.'</option>';
+            }
+        }
+
+        echo $str;
+    }
 
 
 

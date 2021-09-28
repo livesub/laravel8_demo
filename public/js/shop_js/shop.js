@@ -52,15 +52,14 @@ $(function() {
     }
 
     $(document).on("change", "select.it_option", function() {
-alert("111111111111111");
         var sel_count = $("select.it_option").length,
             idx = $("select.it_option").index($(this)),
             val = $(this).val(),
-            it_id = $("input[name='it_id[]']").val(),
-            post_url = (typeof g5_shop_url !== "undefined") ? g5_shop_url+"/itemoption.php" : "./itemoption.php",
+            item_code = $("input[name='item_code[]']").val(),
+            post_url = $("#ajax_option_url").val(),
             $this = $(this),
             op_0_title = $this.find("option:eq(0)").text();
-alert("it_id===> "+ post_url);
+
         // 선택값이 없을 경우 하위 옵션은 disabled
         if(val == "") {
             $("select.it_option:gt("+idx+")").val("").attr("disabled", true);
@@ -87,10 +86,18 @@ alert("it_id===> "+ post_url);
                 opt_id = val;
             }
 
-            $.post(
-                post_url,
-                { it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count, op_title : op_0_title },
-                function(data) {
+            $.ajax({
+                type: 'get',
+                url: post_url,
+                dataType: 'text',
+                data: {
+                    'item_code' : item_code,
+                    'opt_id'    : opt_id,
+                    'idx'       : idx,
+                    'sel_count' : sel_count,
+                    'op_title'  : op_0_title,
+                },
+                success: function(data) {
                     $("select.it_option").eq(idx+1).empty().html(data).attr("disabled", false);
 
                     // select의 옵션이 변경됐을 경우 하위 옵션 disabled
@@ -100,8 +107,11 @@ alert("it_id===> "+ post_url);
                     }
 
                     $this.trigger("select_it_option_post", [$this, idx, sel_count, data]);
+                },error: function(result) {
+                    console.log(result);
                 }
-            );
+            });
+
         } else if((idx + 1) == sel_count) { // 선택옵션처리
             if(option_add && val == "")
                 return;
@@ -113,8 +123,7 @@ alert("it_id===> "+ post_url);
                 return false;
             }
 
-            if(option_add)
-                sel_option_process(true);
+            if(option_add) sel_option_process(true);
         }
     });
 
@@ -279,7 +288,8 @@ alert("it_id===> "+ post_url);
 // 선택옵션 추가처리
 function sel_option_process(add_exec)
 {
-    var it_price = parseInt($("input#it_price").val());
+    var item_price = parseInt($("input#item_price").val());
+alert(item_price);
     var id = "";
     var value, info, sel_opt, item, price, stock, run_error = false;
     var option = sep = "";
@@ -321,7 +331,7 @@ function sel_option_process(add_exec)
     stock = info[2];
 
     // 금액 음수 체크
-    if(it_price + parseInt(price) < 0) {
+    if(item_price + parseInt(price) < 0) {
         alert("구매금액이 음수인 상품은 구매할 수 없습니다.");
         return false;
     }
@@ -381,7 +391,7 @@ function sel_supply_process($el, add_exec)
 // 선택된 옵션 출력
 function add_sel_option(type, id, option, price, stock)
 {
-    var item_code = $("input[name='it_id[]']").val();
+    var item_code = $("input[name='item_code[]']").val();
     var opt = "";
     var li_class = "sit_opt_list";
     if(type)
@@ -490,4 +500,44 @@ function price_calculate()
 function chr(code)
 {
     return String.fromCharCode(code);
+}
+
+function number_format(data)
+{
+
+    var tmp = '';
+    var number = '';
+    var cutlen = 3;
+    var comma = ',';
+    var i;
+
+    data = data + '';
+
+    var sign = data.match(/^[\+\-]/);
+    if(sign) {
+        data = data.replace(/^[\+\-]/, "");
+    }
+
+    len = data.length;
+    mod = (len % cutlen);
+    k = cutlen - mod;
+    for (i=0; i<data.length; i++)
+    {
+        number = number + data.charAt(i);
+
+        if (i < data.length - 1)
+        {
+            k++;
+            if ((k % cutlen) == 0)
+            {
+                number = number + comma;
+                k = 0;
+            }
+        }
+    }
+
+    if(sign != null)
+        number = sign+number;
+
+    return number;
 }

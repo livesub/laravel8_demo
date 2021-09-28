@@ -1003,6 +1003,8 @@ $um_value='80/0.5/3'
         // 상품정보
         $item = $this->get_shop_item($item_code, $is_cache);
 
+        if(count($item) == 0) return true;
+
         if($item[0]->item_soldout || $item[0]->item_stock_qty <= 0) return true;
 
         $count = 0;
@@ -1041,7 +1043,7 @@ $um_value='80/0.5/3'
 
     }
 
-    public static function get_shop_item($item_code, $is_cache=false, $add_query='')
+    public static function get_shop_item($item_code, $add_query='')
     {
         if($item_code != ""){
             $item = DB::select("select * from shopitems where item_code = '{$item_code}' $add_query ");
