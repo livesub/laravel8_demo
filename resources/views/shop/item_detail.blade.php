@@ -3,6 +3,7 @@
 @section('content')
 
 <script src="{{ asset('/js/shop_js/shop.js') }}"></script>
+<script src="{{ asset('/js/shop_js/shop_override.js') }}"></script>
 
 <table border="1">
     <tr>
@@ -42,13 +43,9 @@
 
 
 <form name="fitem" id="fitem" method="post" action="">
-<input type="hidden" name="it_id[]" value="{{ $item_info->item_code }}">
-	<input type="hidden" name="sw_direct">
-	<input type="hidden" name="url">
-
 <input type="hidden" name="item_code[]" value="{{ $item_info->item_code }}">
 <input type="hidden" name="ajax_option_url" id="ajax_option_url" value="{{ route('ajax_option_change') }}">
-            <table border=1>
+            <table border=1 class="renewal_itemform">
                 <tr>
                     <td colspan="2"><b>{{ stripslashes($item_info->item_name) }}</b></td>
                 </tr>
@@ -135,12 +132,13 @@
                     <td colspan=2>
                         <table border=1 style="width:100%">
                             @if($option_item)
+
                             <tr>
                                 <td>선택옵션</td>
                             </tr>
                             <tr>
                                 <td>
-                                    <table>
+                                    <table class="sit_option">
                                         <tr>
                                             <td>
                                                 {!! $option_item !!}
@@ -157,7 +155,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <table>
+                                    <table class="sit_option">
                                         <tr>
                                             <td>
                                                 {!! $supply_item !!}
@@ -176,29 +174,31 @@
                                     <!-- 선택된 옵션 시작 { -->
                                     <section id="sit_sel_option">
                                         @if(!$option_item)
+                                        <!-- 선택 옵션이 없을때 처리 -->
                                         <ul id="sit_opt_added">
                                             <li class="sit_opt_list">
-                                                <input type="hidden" name="io_type[][]" value="0">
-                                                <input type="hidden" name="io_id[][]" value="">
-                                                <input type="hidden" name="io_value[][]" value="">
-                                                <input type="hidden" class="io_price" value="0">
-                                                <input type="hidden" class="io_stock" value="">
+                                                <input type="hidden" name="sio_type[{{ $item_info->item_code }}][]" value="0">
+                                                <input type="hidden" name="sio_id[{{ $item_info->item_code }}][]" value="">
+                                                <input type="hidden" name="sio_value[{{ $item_info->item_code }}][]" value="{{ $item_info->item_name }}">
+                                                <input type="hidden" class="sio_price" value="0">
+                                                <input type="hidden" class="sio_stock" value="{{ $item_info->item_stock_qty}}">
                                                 <div class="opt_name">
-                                                    <span class="sit_opt_subj"></span>
+                                                    <span class="item_opt_subj">{{ $item_info->item_name }}</span>
                                                 </div>
                                                 <div class="opt_count">
-                                                    <label for="ct_qty_" class="sound_only">수량</label>
+                                                    <label for="ct_qty_11" class="sound_only">수량</label>
                                                     <button type="button" class="sit_qty_minus"><i class="fa fa-minus" aria-hidden="true"></i><span class="sound_only">감소</span></button>
-                                                    <input type="text" name="ct_qty[][]" value="" id="ct_qty_" class="num_input" size="5">
+                                                    <input type="text" name="ct_qty[{{ $item_info->item_code }}][]" value="1" id="ct_qty_11" class="num_input" size="5" onKeyup="this.value=this.value.replace(/[^0-9]/g,'');">
                                                     <button type="button" class="sit_qty_plus"><i class="fa fa-plus" aria-hidden="true"></i><span class="sound_only">증가</span></button>
                                                     <span class="sit_opt_prc">+0원</span>
                                                 </div>
                                             </li>
                                         </ul>
+
                                         <script>
-                                        $(function() {
-                                            //price_calculate();
-                                        });
+                                            $(function() {
+                                                price_calculate();
+                                            });
                                         </script>
                                         @endif
 

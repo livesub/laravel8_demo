@@ -123,7 +123,8 @@ $(function() {
                 return false;
             }
 
-            if(option_add) sel_option_process(true);
+//            if(option_add) sel_option_process(true);
+            sel_option_process(true);
         }
     });
 
@@ -178,9 +179,11 @@ $(function() {
 
         if(val == "")
             return;
-
+/*
         if(supply_add)
             sel_supply_process($el, true);
+*/
+        sel_supply_process($el, true);
     });
 
     // 수량변경 및 삭제
@@ -189,7 +192,7 @@ $(function() {
             mode = $this.text(),
             this_qty, max_qty = 9999, min_qty = 1,
             $el_qty = $(this).closest("li").find("input[name^=ct_qty]"),
-            stock = parseInt($(this).closest("li").find("input.io_stock").val());
+            stock = parseInt($(this).closest("li").find("input.sio_stock").val());
 
         switch(mode) {
             case "증가":
@@ -204,6 +207,10 @@ $(function() {
                     alert("최대 구매수량은 "+number_format(String(max_qty))+" 입니다.");
                 }
 
+                if(isNaN(this_qty)){
+                    this_qty = 1;
+                }
+
                 $el_qty.val(this_qty);
                 $this.trigger("sit_sel_option_success", [$this, mode, this_qty]);
                 price_calculate();
@@ -211,10 +218,16 @@ $(function() {
 
             case "감소":
                 this_qty = parseInt($el_qty.val().replace(/[^0-9]/, "")) - 1;
+
                 if(this_qty < min_qty) {
                     this_qty = min_qty;
                     alert("최소 구매수량은 "+number_format(String(min_qty))+" 입니다.");
                 }
+
+                if(isNaN(this_qty)){
+                    this_qty = 1;
+                }
+
                 $el_qty.val(this_qty);
                 $this.trigger("sit_sel_option_success", [$this, mode, this_qty]);
                 price_calculate();
@@ -253,11 +266,12 @@ $(function() {
 
     // 수량직접입력
     $(document).on("keyup", "input[name^=ct_qty]", function() {
+
         var $this = $(this),
             val= $this.val(),
             force_val = 0;
 
-        if(val != "") {
+            if(val != "") {
             if(val.replace(/[0-9]/g, "").length > 0) {
                 alert("수량은 숫자만 입력해 주십시오.");
                 force_val = 1;
@@ -269,7 +283,7 @@ $(function() {
                     force_val = 1;
                     $(this).val(force_val);
                 } else {
-                    var stock = parseInt($(this).closest("li").find("input.io_stock").val());
+                    var stock = parseInt($(this).closest("li").find("input.sio_stock").val());
                     if(d_val > stock) {
                         alert("재고수량 보다 많은 수량을 구매할 수 없습니다.");
                         force_val = stock;
@@ -289,7 +303,6 @@ $(function() {
 function sel_option_process(add_exec)
 {
     var item_price = parseInt($("input#item_price").val());
-alert("선택옵션 추가처리====> "+item_price);
     var id = "";
     var value, info, sel_opt, item, price, stock, run_error = false;
     var option = sep = "";
@@ -391,7 +404,9 @@ function sel_supply_process($el, add_exec)
 // 선택된 옵션 출력
 function add_sel_option(type, id, option, price, stock)
 {
+alert(type);
     var item_code = $("input[name='item_code[]']").val();
+
     var opt = "";
     var li_class = "sit_opt_list";
     if(type)
@@ -404,11 +419,11 @@ function add_sel_option(type, id, option, price, stock)
         opt_prc = "("+number_format(String(price))+"원)";
 
     opt += "<li class=\""+li_class+"\">";
-    opt += "<input type=\"hidden\" name=\"io_type["+item_code+"][]\" value=\""+type+"\">";
-    opt += "<input type=\"hidden\" name=\"io_id["+item_code+"][]\" value=\""+id+"\">";
-    opt += "<input type=\"hidden\" name=\"io_value["+item_code+"][]\" value=\""+option+"\">";
-    opt += "<input type=\"hidden\" class=\"io_price\" value=\""+price+"\">";
-    opt += "<input type=\"hidden\" class=\"io_stock\" value=\""+stock+"\">";
+    opt += "<input type=\"hidden\" name=\"sio_type["+item_code+"][]\" value=\""+type+"\">";
+    opt += "<input type=\"hidden\" name=\"sio_id["+item_code+"][]\" value=\""+id+"\">";
+    opt += "<input type=\"hidden\" name=\"sio_value["+item_code+"][]\" value=\""+option+"\">";
+    opt += "<input type=\"hidden\" class=\"sio_price\" value=\""+price+"\">";
+    opt += "<input type=\"hidden\" class=\"sio_stock\" value=\""+stock+"\">";
     opt += "<span class=\"sit_opt_subj\">"+option+"</span>";
     opt += "<span class=\"sit_opt_prc\">"+opt_prc+"</span>";
     opt += "<div><input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"1\" class=\"frm_input\" size=\"5\">";
@@ -453,7 +468,7 @@ function add_sel_option(type, id, option, price, stock)
 function same_option_check(val)
 {
     var result = false;
-    $("input[name^=io_value]").each(function() {
+    $("input[name^=sio_value]").each(function() {
         if(val == $(this).val()) {
             result = true;
             return false;
@@ -469,14 +484,14 @@ function same_option_check(val)
 // 가격계산
 function price_calculate()
 {
-    var it_price = parseInt($("input#it_price").val());
+    var item_price = parseInt($("input#item_price").val());
 
-    if(isNaN(it_price))
+    if(isNaN(item_price))
         return;
 
-    var $el_prc = $("input.io_price");
+    var $el_prc = $("input.sio_price");
     var $el_qty = $("input[name^=ct_qty]");
-    var $el_type = $("input[name^=io_type]");
+    var $el_type = $("input[name^=sio_type]");
     var price, type, qty, total = 0;
 
     $el_prc.each(function(index) {
@@ -485,7 +500,7 @@ function price_calculate()
         type = $el_type.eq(index).val();
 
         if(type == "0") { // 선택옵션
-            total += (it_price + price) * qty;
+            total += (item_price + price) * qty;
         } else { // 추가옵션
             total += price * qty;
         }
