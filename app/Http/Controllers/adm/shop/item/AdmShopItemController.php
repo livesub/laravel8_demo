@@ -221,7 +221,7 @@ class AdmShopItemController extends Controller
             return redirect(route('shop.setting.index'))->with('alert_messages', $Messages::$shop['no_resize']);  //치명적인 에러가 있을시
             exit;
         }
-dd($resiz_result['shop_img_height']);
+
         $ca_id                  = $request->input('ca_id');
         $item_code              = $request->input('item_code');
         $item_name              = addslashes($request->input('item_name'));

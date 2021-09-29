@@ -38,3 +38,9 @@ Route::get('/sitemdetail_option', [
     'as' => 'ajax_option_change',
     'uses' => 'App\Http\Controllers\shop\ItemController@ajax_option_change',
 ]);
+
+//장바구니, 바로구매 처리
+Route::post('/cart', [
+    'as' => 'ajax_cart_register',
+    'uses' => 'App\Http\Controllers\shop\CartController@ajax_cart_register',
+]);

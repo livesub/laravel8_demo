@@ -42,9 +42,13 @@
         <td>
 
 
-<form name="fitem" id="fitem" method="post" action="">
+<form name="fitem" id="fitem" method="post" action="{{ route('ajax_cart_register') }}">
+{!! csrf_field() !!}
 <input type="hidden" name="item_code[]" value="{{ $item_info->item_code }}">
 <input type="hidden" name="ajax_option_url" id="ajax_option_url" value="{{ route('ajax_option_change') }}">
+<input type="hidden" name="sw_direct" id="sw_direct">
+<input type="hidden" name="url" id="url">
+
             <table border=1 class="renewal_itemform">
                 <tr>
                     <td colspan="2"><b>{{ stripslashes($item_info->item_name) }}</b></td>
@@ -166,9 +170,6 @@
                             </tr>
                             @endif
 
-
-
-
                             <tr>
                                 <td>
                                     <!-- 선택된 옵션 시작 { -->
@@ -213,17 +214,15 @@
 
                             <tr>
                                 <td>
-                                    <button type="button">장바구니</button>
-                                    <button type="button">바로구매</button>
+
+                                    <button type="submit" onclick="document.pressed=this.value;" value="장바구니" class="sit_btn_cart">장바구니</button>
+                                    <button type="button" onclick="fitem_submit('cart');">장바구니22222</button>
+                                    <button type="button" onclick="fitem_submit('buy');">바로구매</button>
                                 </td>
                             </tr>
                         </table>
                     </td>
                 </tr>
-
-
-
-
                 @endif
 
             </table>
@@ -262,6 +261,7 @@
     }
 </script>
 
+<!--
 <script>
 jQuery(function($){
     var change_name = "ct_copy_qty";
@@ -400,7 +400,110 @@ jQuery(function($){
     });
 });
 </script>
+-->
 
+<script>
+    // 바로구매, 장바구니 폼 전송
+    function fitem_submit(type)
+    {
+        //$("#fitem").attr("action", "{{ route('ajax_cart_register') }}");
+        //$("#fitem").attr('target', "");
+
+        if (type == "cart") {   //장바구니
+            $("#sw_direct").val(0);
+        } else { // 바로구매
+            $("#sw_direct").val(1);
+        }
+
+        // 판매가격이 0 보다 작다면
+        var aa = 0;
+        if( aa< 0){
+            alert("전화로 문의해 주시면 감사하겠습니다.");
+            return false;
+        }
+
+        if($(".sit_opt_list").length < 1) {
+            alert("상품의 선택옵션을 선택해 주십시오.");
+            return false;
+        }
+
+        var val, io_type, result = true;
+        var sum_qty = 0;
+        var $el_type = $("input[name^=sio_type]");
+
+        $("input[name^=ct_qty]").each(function(index) {
+            val = $(this).val();
+
+            if(val.length < 1) {
+                alert("수량을 입력해 주십시오.");
+                result = false;
+                return false;
+            }
+
+            if(val.replace(/[0-9]/g, "").length > 0) {
+                alert("수량은 숫자로 입력해 주십시오.");
+                result = false;
+                return false;
+            }
+
+            if(parseInt(val.replace(/[^0-9]/g, "")) < 1) {
+                alert("수량은 1이상 입력해 주십시오.");
+                result = false;
+                return false;
+            }
+
+            sio_type = $el_type.eq(index).val();
+
+            if(sio_type == "0") sum_qty += parseInt(val);
+        });
+
+        if(!result) {
+            return false;
+        }
+
+        //$("#fitem").submit();
+
+        var queryString = $("form[name=fitem]").serialize() ;
+
+        $.ajax({
+            type : 'post',
+            url : '{{ route('ajax_cart_register') }}',
+            data : queryString,
+            dataType : 'text',
+            success : function(result){
+alert(result);
+                if(result == "no_carts"){
+                    alert("장바구니에 담을 상품을 선택하여 주십시오.");
+                    return false;
+                }
+
+                if(result == "no_option"){
+                    alert("상품의 선택옵션을 선택해 주십시오.");
+                    return false;
+                }
+
+                if(result == "no_cnt"){
+                    alert("수량은 1 이상 입력해 주십시오.");
+                    return false;
+                }
+
+                if(result == "no_items"){
+                    alert("상품정보가 존재하지 않습니다.");
+                    return false;
+                }
+            },
+            error: function(result){
+                console.log(result);
+            },
+
+        });
+
+
+
+
+
+    }
+</script>
 
 
 

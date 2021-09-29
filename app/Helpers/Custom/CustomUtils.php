@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Mail;    //메일 class
 use App\Helpers\Custom\Messages_kr;    //한글 error 메세지 모음
 use App\Helpers\Custom\Messages_en;    //영어 error 메세지 모음
 use Illuminate\Support\Facades\DB;
+use App\Models\shop_uniqids;    //장바구니 키
+use Illuminate\Support\Facades\Auth;    //인증
 
 class CustomUtils extends Controller
 {
@@ -1039,8 +1041,6 @@ $um_value='80/0.5/3'
         $cache[$key] = $soldout;
 
         return $soldout;
-
-
     }
 
     public static function get_shop_item($item_code, $add_query='')
@@ -1051,7 +1051,6 @@ $um_value='80/0.5/3'
 
         return $item;
     }
-
 
     // 상품의 재고 (창고재고수량 - 주문대기수량)
     public static function get_item_stock_qty($item_code)
@@ -1074,8 +1073,6 @@ $um_value='80/0.5/3'
         return $jaego_cnt - $daegi;
     }
 
-
-
     // 옵션의 재고 (창고재고수량 - 주문대기수량)
     public static function get_option_stock_qty($item_code, $sio_id, $type)
     {
@@ -1097,4 +1094,52 @@ $um_value='80/0.5/3'
 */
         return $jaego_cnt - $daegi;
     }
+
+    //장바구니 키 생성
+    function set_cart_id($direct)
+    {
+        $tmp_cart_id = $this->get_uniqid();
+
+        session()->put('ss_cart_id', $tmp_cart_id);
+
+        if(Auth::user() && $tmp_cart_id){
+/*
+    회원일때 이거 변환 해야함
+            $sql = " update {$g5['g5_shop_cart_table']}
+                        set od_id = '$tmp_cart_id'
+                        where mb_id = '{$member['mb_id']}'
+                          and ct_direct = '0'
+                          and ct_status = '쇼핑' ";
+            sql_query($sql);
+*/
+        }
+    }
+
+    public static function get_uniqid()
+    {
+        DB::raw('LOCK TABLES shop_uniqid WRITE');
+        while (1) {
+            // 년월일시분초에 100분의 1초 두자리를 추가함 (1/100 초 앞에 자리가 모자르면 0으로 채움)
+            $key = date('YmdHis', time()) . str_pad((int)((float)microtime()*100), 2, "0", STR_PAD_LEFT);
+
+            //저장 처리
+            $data = array(
+                'uq_id' => $key,
+                'uq_ip' => $_SERVER['REMOTE_ADDR'],
+            );
+
+            $create_result = shop_uniqids::create($data);
+            $create_result->save();
+
+            if($create_result) break; // 쿼리가 정상이면 빠진다.
+
+            // insert 하지 못했으면 일정시간 쉰다음 다시 유일키를 만든다.
+            usleep(10000); // 100분의 1초를 쉰다
+        }
+
+        DB::raw('UNLOCK TABLES');
+
+        return $key;
+    }
+
 }
