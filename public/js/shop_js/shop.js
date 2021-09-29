@@ -404,7 +404,7 @@ function sel_supply_process($el, add_exec)
 // 선택된 옵션 출력
 function add_sel_option(type, id, option, price, stock)
 {
-alert(type);
+alert("이 메세지 보이면 개발자에세 연락");
     var item_code = $("input[name='item_code[]']").val();
 
     var opt = "";
