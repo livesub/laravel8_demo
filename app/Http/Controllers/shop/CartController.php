@@ -307,7 +307,9 @@ class CartController extends Controller
 
     public function cartlist(Request $request)
     {
-        //
+        $CustomUtils = new CustomUtils;
+        $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
+
 dd("cartlist");
     }
 
