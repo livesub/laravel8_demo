@@ -214,8 +214,6 @@
 
                             <tr>
                                 <td>
-
-                                    <button type="submit" onclick="document.pressed=this.value;" value="장바구니" class="sit_btn_cart">장바구니</button>
                                     <button type="button" onclick="fitem_submit('cart');">장바구니22222</button>
                                     <button type="button" onclick="fitem_submit('buy');">바로구매</button>
                                 </td>
@@ -472,6 +470,7 @@ jQuery(function($){
             dataType : 'text',
             success : function(result){
 alert(result);
+
                 if(result == "no_carts"){
                     alert("장바구니에 담을 상품을 선택하여 주십시오.");
                     return false;
@@ -491,17 +490,30 @@ alert(result);
                     alert("상품정보가 존재하지 않습니다.");
                     return false;
                 }
+
+                if(result == "negative_price"){
+                    alert("구매금액이 음수인 상품은 구매할 수 없습니다.");
+                    return false;
+                }
+
+                if(result == "no_qty"){
+                    alert("재고수량이 부족합니다.");
+                    return false;
+                }
+
+                if(result == "cart_page"){
+                    location.href = "{{ route('cartlist') }}";
+                }
+
+                if(result == "buy_page"){
+alert("buy_page");
+                }
             },
             error: function(result){
                 console.log(result);
             },
 
         });
-
-
-
-
-
     }
 </script>
 

@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 
 use App\Helpers\Custom\CustomUtils; //사용자 공동 함수
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;    //인증
+use App\Models\shopcarts;    //장바구니 모델 정의
 
 class CartController extends Controller
 {
@@ -32,10 +34,15 @@ class CartController extends Controller
 
         $sw_direct  = $request->input('sw_direct');     //장바구니 0, 바로구매 1
 
+        session_start();    //라라벨에서 세션이 바로 적용 되지 않기에 임시 방편으로 작업
+
         $CustomUtils->set_cart_id($sw_direct);
-        $tmp_cart_id = session()->get('ss_cart_id');
+
+        if($sw_direct) $tmp_cart_id = $CustomUtils->get_session('ss_cart_direct');
+        else $tmp_cart_id = $CustomUtils->get_session('ss_cart_id');
 
         $tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', $tmp_cart_id);
+
         $act = $request->input('act');
         $ct_chk = $request->input('ct_chk');
         $post_ct_chk = (isset($ct_chk) && is_array($ct_chk)) ? $ct_chk : array();
@@ -67,8 +74,8 @@ class CartController extends Controller
             $post_io_ids = (isset($sio_id) && is_array($sio_id)) ? $sio_id : array();
             $sio_type = $request->input('sio_type');
             $post_io_types = (isset($sio_type) && is_array($sio_type)) ? $sio_type : array();
-            $ct_qty = $request->input('ct_qty');
-            $post_ct_qtys = (isset($ct_qty) && is_array($ct_qty)) ? $ct_qty : array();
+            $sct_qty = $request->input('ct_qty');
+            $post_ct_qtys = (isset($sct_qty) && is_array($sct_qty)) ? $sct_qty : array();
 
             for($i=0; $i<$count; $i++) {
                 // 보관함의 상품을 담을 때 체크되지 않은 상품 건너뜀
@@ -87,9 +94,9 @@ class CartController extends Controller
                 }
 
                 // 상품정보
-                $item = $CustomUtils->get_shop_item($item_code, false);
+                $item_info = $CustomUtils->get_shop_item($item_code, false);
 
-                if(!$item[0]->item_code){
+                if(!$item_info[0]->item_code){
                     echo "no_items";
                     exit;
                 }
@@ -97,8 +104,7 @@ class CartController extends Controller
                 // 바로구매에 있던 장바구니 자료를 지운다.
                 if($i == 0 && $sw_direct == 1){
                     //장바구니 삭제 로직
-                    //$result_del = DB::table('board_datas_comment_tables')->where('id',$c_id)->delete();   //row 삭제
-                    //sql_query(" delete from {$g5['g5_shop_cart_table']} where od_id = '$tmp_cart_id' and ct_direct = 1 ", false);
+                    DB::table('shopcarts')->where([['od_id',$tmp_cart_id], ['sct_direct',1]])->delete();   //row 삭제
                 }
 
                 // 옵션정보를 얻어서 배열에 저장
@@ -122,92 +128,187 @@ class CartController extends Controller
                 //--------------------------------------------------------
                 // 이미 주문폼에 있는 같은 상품의 수량합계를 구한다.
                 if($sw_direct) {
-                    $sio_id = $request->input('sio_id');
-
-
-
                     for($k=0; $k<$opt_count; $k++) {
-                        $sio_id = $sio_id[$item_code][$k];
-                        var_dump($sio_id);
-/*
-                        $io_id = isset($_POST['io_id'][$item_code][$k]) ? preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$it_id][$k]) : '';
-                        $io_type = isset($_POST['io_type'][$it_id][$k]) ? preg_replace('#[^01]#', '', $_POST['io_type'][$it_id][$k]) : '';
-                        $io_value = isset($_POST['io_value'][$it_id][$k]) ? $_POST['io_value'][$it_id][$k] : '';
-*/
-                    }
-/*
-                    for($k=0; $k<$opt_count; $k++) {
-                        $io_id = isset($_POST['io_id'][$it_id][$k]) ? preg_replace(G5_OPTION_ID_FILTER, '', $_POST['io_id'][$it_id][$k]) : '';
-                        $io_type = isset($_POST['io_type'][$it_id][$k]) ? preg_replace('#[^01]#', '', $_POST['io_type'][$it_id][$k]) : '';
-                        $io_value = isset($_POST['io_value'][$it_id][$k]) ? $_POST['io_value'][$it_id][$k] : '';
+                        $sio_id = $request->input('sio_id');
+                        $sio_id = isset($sio_id[$item_code][$k]) ? $sio_id[$item_code][$k] : '';
+                        $sio_type = $request->input('sio_type');
+                        $sio_type = isset($sio_type[$item_code][$k]) ? $sio_type[$item_code][$k] : '';
+                        $sio_value = $request->input('sio_value');
+                        $sio_value = isset($sio_value[$item_code][$k]) ? $sio_value[$item_code][$k] : '';
+                        $sct_qty = $request->input('ct_qty');
 
-                        $sql = " select SUM(ct_qty) as cnt from {$g5['g5_shop_cart_table']}
-                                where od_id <> '$tmp_cart_id'
-                                    and it_id = '$it_id'
-                                    and io_id = '$io_id'
-                                    and io_type = '$io_type'
-                                    and ct_stock_use = 0
-                                    and ct_status = '쇼핑'
-                                    and ct_select = '1' ";
-                        $row = sql_fetch($sql);
-                        $sum_qty = $row['cnt'];
+                        $sum_qty = DB::table('shopcarts')->where([['od_id','<>',$tmp_cart_id], ['item_code',$item_code], ['sio_id',$sio_id], ['sio_type',$sio_type], ['sct_stock_use','0'], ['sct_status','쇼핑'], ['sct_select','1']])->sum('sct_qty');
 
                         // 재고 구함
-                        $ct_qty = isset($_POST['ct_qty'][$it_id][$k]) ? (int) $_POST['ct_qty'][$it_id][$k] : 0;
-                        if(!$io_id)
-                            $it_stock_qty = get_it_stock_qty($it_id);
-                        else
-                            $it_stock_qty = get_option_stock_qty($it_id, $io_id, $io_type);
+                        $sct_qty = isset($sct_qty[$item_code][$k]) ? (int) $sct_qty[$item_code][$k] : 0;
 
-                        if ($ct_qty + $sum_qty > $it_stock_qty)
+                        if(!$sio_id)
+                            $it_stock_qty = $CustomUtils->get_item_stock_qty($item_code);
+                        else
+                            $it_stock_qty = $CustomUtils->get_option_stock_qty($item_code, $sio_id, $sio_type);
+
+                        if ($sct_qty + $sum_qty > $it_stock_qty)
                         {
-                            alert($io_value." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
+                            echo "no_qty";
+                            exit;
                         }
                     }
-*/
                 }
                 //--------------------------------------------------------
 
-                var_dump($lst_count);
+                // 옵션수정일 때 기존 장바구니 자료를 먼저 삭제
+                if($act == 'optionmod') DB::table('shopcarts')->where([['od_id',$tmp_cart_id], ['item_code',$item_code]])->delete();   //row 삭제
 
+                // 장바구니에 Insert
+                // 바로구매일 경우 장바구니가 체크된것으로 강제 설정
+                if($sw_direct) {
+                    $sct_select = 1;
+                    $sct_select_time = date("Y-m-d H:i:s",time());
+                } else {
+                    $sct_select = 0;
+                    $sct_select_time = '0000-00-00 00:00:00';
+                }
 
+                // 장바구니에 Insert
+                $comma = '';
+                for($k=0; $k<$opt_count; $k++) {
+                    $sio_id = $request->input('sio_id');
+                    $sio_id = isset($sio_id[$item_code][$k]) ? $sio_id[$item_code][$k] : '';
+                    $sio_type = $request->input('sio_type');
+                    $sio_type = isset($sio_type[$item_code][$k]) ? $sio_type[$item_code][$k] : '';
+                    $sio_value = $request->input('sio_value');
+                    $sio_value = isset($sio_value[$item_code][$k]) ? $sio_value[$item_code][$k] : '';
+                    $sct_qty = $request->input('ct_qty');
 
-                exit;
+                    // 선택옵션정보가 존재하는데 선택된 옵션이 없으면 건너뜀
+                    if($lst_count && $sio_id == '') continue;
 
+                    // 구매할 수 없는 옵션은 건너뜀
+                    if($sio_id && !$opt_list[$sio_type][$sio_id]['use']) continue;
+
+                    $sio_price = isset($opt_list[$sio_type][$sio_id]['price']) ? $opt_list[$sio_type][$sio_id]['price'] : 0;
+                    $sct_qty = isset($sct_qty[$item_code][$k]) ? (int) $sct_qty[$item_code][$k] : 0;
+
+                    // 구매가격이 음수인지 체크
+                    if($sio_type) {
+                        if((int)$sio_price < 0){
+                            echo "negative_price";
+                            exit;
+                        }
+                    } else {
+                        if((int)$item_info[0]->item_price + (int)$sio_price < 0){
+                            echo "negative_price";
+                            exit;
+                        }
+                    }
+
+                    // 동일옵션의 상품이 있으면 수량 더함
+                    $sam_opt = DB::table('shopcarts')->select('id','sio_type','sct_qty')->where([['od_id',$tmp_cart_id],['item_code',$item_code],['sio_id',$sio_id],['sct_status','쇼핑']])->get();
+
+                    if(isset($sam_opt[0]->id) && $sam_opt[0]->id) {
+                        // 재고체크
+                        $tmp_ct_qty = $sam_opt[0]->sct_qty;
+
+                        if(!$sio_id)
+                            $tmp_it_stock_qty = $CustomUtils->get_item_stock_qty($item_code);
+                        else
+                            $tmp_it_stock_qty = $CustomUtils->get_option_stock_qty($item_code, $sio_id, $sam_opt[0]->sio_type);
+
+                        if ($tmp_ct_qty + $sct_qty > $tmp_it_stock_qty)
+                        {
+                            echo "no_qty";
+                            exit;
+                        }
+
+                        $up_result = shopcarts::whereid($sam_opt[0]->id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+                        $up_result->sct_qty = $up_result->sct_qty + 1;
+                        $result_up = $up_result->save();
+
+                        continue;
+                    }
+
+                    // 포인트
+                    $point = 0;
+                    $setting_info = $CustomUtils->setting_infos();
+
+                    if($setting_info->company_use_point == 1) {
+                        if($sio_type == 0) {
+                            $point = $CustomUtils->get_item_point($item_info[0], $sio_id);
+                        } else {
+                            $point = $item_info[0]->item_supply_point;
+                        }
+
+                        if($point < 0) $point = 0;
+                    }
+
+                    // 배송비결제
+                    $sct_send_cost = $request->input('sct_send_cost');
+                    $sct_send_cost = isset($sct_send_cost) ? (int)$sct_send_cost : 0;
+
+                    if($item_info[0]->item_sc_type == 1) $sct_send_cost = 2; // 무료
+                    else if($item_info[0]->item_sc_type > 1 && $item_info[0]->item_sc_method == 1) $sct_send_cost = 1; // 착불
+
+                    $sio_value = strip_tags($sio_value);
+                    $remote_addr = $_SERVER['REMOTE_ADDR'];
+
+                    if(Auth::user() != ""){
+                        $user_id = Auth::user()->user_id;
+                    }else{
+                        $user_id = "";
+                    }
+
+                    //DB 저장 배열 만들기
+                    $data = array(
+                        'od_id'             => $tmp_cart_id,
+                        'user_id'           => $user_id,
+                        'item_code'         => $item_info[0]->item_code,
+                        'item_name'         => addslashes($item_info[0]->item_name),
+                        'item_sc_type'      => (int)$item_info[0]->item_sc_type,
+                        'item_sc_method'    => (int)$item_info[0]->item_sc_method,
+                        'item_sc_price'     => (int)$item_info[0]->item_sc_price,
+                        'item_sc_minimum'   => (int)$item_info[0]->item_sc_minimum,
+                        'item_sc_qty'       => (int)$item_info[0]->item_sc_qty,
+                        'sct_status'        => '쇼핑',
+                        'sct_history'       => '',
+                        'sct_price'         => (int)$item_info[0]->item_price,
+                        'sct_point'         => (int)$point,
+                        'sct_point_use'     => 0,
+                        'sct_stock_use'     => 0,
+                        'sct_option'        => $sio_value,
+                        'sct_qty'           => (int)$sct_qty,
+                        'sio_id'            => $sio_id,
+                        'sio_type'          => (int)$sio_type,
+                        'sio_price'         => (int)$sio_price,
+                        'sct_ip'            => $remote_addr,
+                        'sct_send_cost'     => (int)$sct_send_cost,
+                        'sct_direct'        => (int)$sw_direct,
+                        'sct_select'        => (int)$sct_select,
+                        'sct_select_time'   => $sct_select_time,
+                    );
+
+                    $in_result = shopcarts::create($data);
+                    $in_result->save();
+                }
             }
-
         }
 
+        //페이지 이동
+        if ($sw_direct)
+        {
+            //바로구매 일 경우
+            echo "buy_page";
+            exit;
+        }else{
+            //장바구니 일 경우
+            echo "cart_page";
+            exit;
+        }
+    }
 
-
-
-
-
-
-
-
-        exit;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-echo "ㄴㅇㅍㄴㅇ";
-//        $sw_direct = (isset($_REQUEST['sw_direct']) && $_REQUEST['sw_direct']) ? 1 : 0;
-
+    public function cartlist(Request $request)
+    {
+        //
+dd("cartlist");
     }
 
     public function index()
@@ -215,6 +316,7 @@ echo "ㄴㅇㅍㄴㅇ";
         //
 dd("들어옴~~~~");
     }
+
 
     /**
      * Show the form for creating a new resource.

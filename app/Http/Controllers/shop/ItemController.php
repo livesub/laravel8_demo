@@ -147,8 +147,8 @@ class ItemController extends Controller
         else {
             if($item_info[0]->item_sc_method == 1) $sc_method_disp = '수령후 지불';
             else if($item_info[0]->item_sc_method == 2) {
-                //$ct_send_cost_label = '<label for="ct_send_cost">배송비결제</label>';
-                $sc_method_disp = '<select name="ct_send_cost" id="ct_send_cost">
+                //$ct_send_cost_label = '<label for="sct_send_cost">배송비결제</label>';
+                $sc_method_disp = '<select name="sct_send_cost" id="sct_send_cost">
                                         <option value="0">주문시 결제</option>
                                         <option value="1">수령후 지불</option>
                                    </select>';

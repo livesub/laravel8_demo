@@ -1058,18 +1058,11 @@ $um_value='80/0.5/3'
         $jaego = DB::table('shopitems')->select('item_stock_qty')->where('item_code',$item_code)->get();
         $jaego_cnt = (int)$jaego[0]->item_stock_qty;
         $daegi = 0;
-/*
-장바구니 만들고 처리!!!!
+
         // 재고에서 빼지 않았고 주문인것만
-        $sql = " select SUM(ct_qty) as sum_qty
-                from {$g5['g5_shop_cart_table']}
-                where it_id = '$it_id'
-                    and io_id = ''
-                    and ct_stock_use = 0
-                    and ct_status in ('주문', '입금', '준비') ";
-        $row = sql_fetch($sql);
-        $daegi = (int)$row['sum_qty'];
-*/
+        $sct_qty = DB::table('shopcarts')->where([['item_code',$item_code], ['sio_id',''], ['sct_stock_use','0'], ['sct_status','in','(\'주문\', \'입금\', \'준비\')']])->sum('sct_qty');
+        $daegi = (int)$sct_qty;
+
         return $jaego_cnt - $daegi;
     }
 
@@ -1079,39 +1072,38 @@ $um_value='80/0.5/3'
         $jaego = DB::table('shopitemoptions')->select('sio_stock_qty')->where([['item_code',$item_code],['sio_id',$sio_id],['sio_type',$type],['sio_use','1']])->get();
         $jaego_cnt = (int)$jaego[0]->sio_stock_qty;
         $daegi = 0;
-/*
-장바구니 만들고 처리!!!!
+
         // 재고에서 빼지 않았고 주문인것만
-        $sql = " select SUM(ct_qty) as sum_qty
-                from {$g5['g5_shop_cart_table']}
-                where it_id = '$it_id'
-                    and io_id = '$io_id'
-                    and io_type = '$type'
-                    and ct_stock_use = 0
-                    and ct_status in ('주문', '입금', '준비') ";
-        $row = sql_fetch($sql);
-        $daegi = (int)$row['sum_qty'];
-*/
+        $sct_qty = DB::table('shopcarts')->where([['item_code',$item_code], ['sio_id',$sio_id], ['sio_type',$type], ['sct_stock_use','0'], ['sct_status','in','(\'주문\', \'입금\', \'준비\')']])->sum('sct_qty');
+        $daegi = (int)$sct_qty;
+
         return $jaego_cnt - $daegi;
     }
 
     //장바구니 키 생성
     function set_cart_id($direct)
     {
-        $tmp_cart_id = $this->get_uniqid();
+        if ($direct) {  //바로구매
+            //$tmp_cart_id = session()->get('ss_cart_direct');
+            $tmp_cart_id = $this->get_session('ss_cart_direct');
+            if(!$tmp_cart_id) {
+                $tmp_cart_id = $this->get_uniqid();
+                //session()->put('ss_cart_direct', $tmp_cart_id);
+                $this->set_session('ss_cart_direct', $tmp_cart_id);
+            }
+        }else{  //장바구니
+            //$tmp_cart_id = session()->get('ss_cart_id');
+            $tmp_cart_id = $this->get_session('ss_cart_id');
 
-        session()->put('ss_cart_id', $tmp_cart_id);
+            if(!$tmp_cart_id) {
+                $tmp_cart_id = $this->get_uniqid();
+                //session()->put('ss_cart_id', $tmp_cart_id);
+                $this->set_session('ss_cart_id', $tmp_cart_id);
+            }
+        }
 
         if(Auth::user() && $tmp_cart_id){
-/*
-    회원일때 이거 변환 해야함
-            $sql = " update {$g5['g5_shop_cart_table']}
-                        set od_id = '$tmp_cart_id'
-                        where mb_id = '{$member['mb_id']}'
-                          and ct_direct = '0'
-                          and ct_status = '쇼핑' ";
-            sql_query($sql);
-*/
+            $up_result = DB::table('shopcarts')->where([['user_id', Auth::user()->user_id], ['sct_direct','0'], ['sct_status','쇼핑']])->update(['od_id' => $tmp_cart_id]);
         }
     }
 
@@ -1142,4 +1134,31 @@ $um_value='80/0.5/3'
         return $key;
     }
 
+    function set_session($session_name, $value)
+    {
+        static $check_cookie = null;
+
+        if( $check_cookie === null ){
+            $cookie_session_name = session_name();
+            if(! ($cookie_session_name && isset($_COOKIE[$cookie_session_name]) && $_COOKIE[$cookie_session_name]) && ! headers_sent() ){
+                @session_regenerate_id(false);
+            }
+
+            $check_cookie = 1;
+        }
+
+        if (PHP_VERSION < '5.3.0')
+            session_register($session_name);
+        // PHP 버전별 차이를 없애기 위한 방법
+        $$session_name = $_SESSION[$session_name] = $value;
+    }
+
+    // 세션변수값 얻음
+    function get_session($session_name)
+    {
+        return isset($_SESSION[$session_name]) ? $_SESSION[$session_name] : '';
+    }
 }
+
+
+

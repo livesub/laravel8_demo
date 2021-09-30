@@ -40,7 +40,12 @@ Route::get('/sitemdetail_option', [
 ]);
 
 //장바구니, 바로구매 처리
-Route::post('/cart', [
+Route::post('/cartprocess', [
     'as' => 'ajax_cart_register',
     'uses' => 'App\Http\Controllers\shop\CartController@ajax_cart_register',
+]);
+
+Route::get('/cart', [
+    'as' => 'cartlist',
+    'uses' => 'App\Http\Controllers\shop\CartController@cartlist',
 ]);
