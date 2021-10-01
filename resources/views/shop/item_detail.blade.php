@@ -469,7 +469,7 @@ jQuery(function($){
             data : queryString,
             dataType : 'text',
             success : function(result){
-alert(result);
+//alert(result);
 
                 if(result == "no_carts"){
                     alert("장바구니에 담을 상품을 선택하여 주십시오.");
@@ -501,18 +501,23 @@ alert(result);
                     return false;
                 }
 
-                if(result == "cart_page"){
-                    location.href = "{{ route('cartlist') }}";
+                if(result == "yes_mem"){
+                    //goto_url(G5_SHOP_URL."/orderform.php?sw_direct=$sw_direct");
+                    location.href = "{{ route('orderform') }}";
                 }
 
-                if(result == "buy_page"){
-alert("buy_page");
+                if(result == "no_mem"){
+                    //goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL."/orderform.php?sw_direct=$sw_direct"));
+                    location.href = "";
+                }
+
+                if(result == "cart_page"){
+                    location.href = "{{ route('cartlist') }}";
                 }
             },
             error: function(result){
                 console.log(result);
             },
-
         });
     }
 </script>

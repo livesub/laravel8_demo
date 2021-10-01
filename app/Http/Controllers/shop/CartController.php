@@ -27,14 +27,19 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        session_start();
+    }
+
     public function ajax_cart_register(Request $request)
     {
-        $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
         $CustomUtils = new CustomUtils;
+        $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
 
         $sw_direct  = $request->input('sw_direct');     //장바구니 0, 바로구매 1
 
-        session_start();    //라라벨에서 세션이 바로 적용 되지 않기에 임시 방편으로 작업
+        //session_start();    //라라벨에서 세션이 바로 적용 되지 않기에 임시 방편으로 작업
 
         $CustomUtils->set_cart_id($sw_direct);
 
@@ -292,14 +297,19 @@ class CartController extends Controller
             }
         }
 
-        //페이지 이동
-        if ($sw_direct)
-        {
-            //바로구매 일 경우
-            echo "buy_page";
-            exit;
+        if ($sw_direct){
+            // 바로 구매일 경우
+            if(Auth::user() != ""){
+                //회원
+                echo "yes_mem";
+                exit;
+            }else{
+                //비회원
+                echo "no_mem";
+                exit;
+            }
         }else{
-            //장바구니 일 경우
+            //장바구니
             echo "cart_page";
             exit;
         }
@@ -310,13 +320,69 @@ class CartController extends Controller
         $CustomUtils = new CustomUtils;
         $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
 
-dd("cartlist");
+        $sw_direct  = $request->input('sw_direct');     //장바구니 0, 바로구매 1
+        $sw_direct = isset($sw_direct) ? (int) $sw_direct : 0;
+
+        //session_start();
+        $CustomUtils->set_cart_id($sw_direct);
+        $s_cart_id = $CustomUtils->get_session('ss_cart_id');
+
+        // 선택필드 초기화
+        $up_result = shopcarts::whereod_id($s_cart_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+        $up_result->sct_select = 0;
+        $result_up = $up_result->save();
+
+        $CustomUtils->before_check_cart_price($s_cart_id, true, true, true);
+
+        // $s_cart_id 로 현재 장바구니 자료 쿼리
+        $cart_infos = DB::table('shopcarts as a')
+            ->select('a.id', 'a.item_code', 'a.item_name', 'a.sct_price', 'a.sct_point', 'a.sct_qty', 'a.sct_status', 'a.sct_send_cost', 'a.item_sc_type', 'b.sca_id')
+            ->leftjoin('shopitems as b', function($join) {
+                    $join->on('a.item_code', '=', 'b.item_code');
+                })
+            ->where('a.od_id',$s_cart_id)
+            ->groupBy('a.item_code')
+            ->orderBy('a.id')
+            ->get();
+
+        return view('shop.cart_page',[
+            'num'           => 0,
+            's_cart_id'     => $s_cart_id,
+            'cart_infos'    => $cart_infos,
+            'CustomUtils'   => $CustomUtils,
+        ]);
     }
 
-    public function index()
+    public function ajax_choice_modify(Request $request)
     {
-        //
-dd("들어옴~~~~");
+        $CustomUtils = new CustomUtils;
+        $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
+
+        $item_code  = $request->input('item_code');
+        $item_code  = isset($item_code) ? $item_code : '';
+
+        $item = DB::table('shopitems')->where([['item_code', $item_code], ['item_use',1]])->first();
+
+        $item_point = $CustomUtils->get_item_point($item);
+
+        if(!$item->item_code){
+            echo "no_item";
+            exit;
+        }
+
+        // 장바구니 자료
+        $cart_id = $CustomUtils->get_session('ss_cart_id');
+
+        $carts = DB::table('shopcarts')->where([['od_id',$cart_id], ['item_code', $item_code]])->orderBy('sio_type','asc')->orderBy('id','asc')->get();
+
+        // 판매가격
+        $price = DB::table('shopcarts')->select('sct_price', 'item_name', 'sct_send_cost')->where([['od_id',$cart_id], ['item_code', $item_code]])->orderBy('id','asc')->limit(1)->get();
+
+        if(!count($carts)){
+            echo "no_cart";
+            exit;
+        }
+
     }
 
 

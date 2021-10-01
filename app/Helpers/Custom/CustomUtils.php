@@ -1043,10 +1043,18 @@ $um_value='80/0.5/3'
         return $soldout;
     }
 
-    public static function get_shop_item($item_code, $add_query='')
+    public static function get_shop_item($item_code, $is_cache=false, $add_query='')
     {
         if($item_code != ""){
             $item = DB::select("select * from shopitems where item_code = '{$item_code}' $add_query ");
+        }
+
+        if( isset($item[0]->item_basic) ) {
+            $item[0]->item_basic = $item[0]->item_basic;
+        }
+
+        if( ! isset($item[0]->item_code) ){
+            $item[0]->item_code = '';
         }
 
         return $item;
@@ -1157,6 +1165,171 @@ $um_value='80/0.5/3'
     function get_session($session_name)
     {
         return isset($_SESSION[$session_name]) ? $_SESSION[$session_name] : '';
+    }
+
+    // 장바구니 금액 체크 $is_price_update 가 true 이면 장바구니 가격 업데이트한다.
+    function before_check_cart_price($s_cart_id, $is_ct_select_condition=false, $is_price_update=false, $is_item_cache=false)
+    {
+        if( !$s_cart_id ){
+            return;
+        }
+
+        $select_where_add = '';
+
+        if( $is_ct_select_condition ){
+            $select_where_add = " and sct_select = '0' ";
+        }
+
+        $cart_infos = DB::select("select * from shopcarts where od_id = '{$s_cart_id}' {$select_where_add} ");
+        $check_need_update = false;
+
+        foreach($cart_infos as $cart_info){
+            if(!$cart_info->item_code) continue;
+
+            $item_code = $cart_info->item_code;
+            $item = $this->get_shop_item($item_code, $is_item_cache);
+
+            $update_querys = array();
+
+            if(!$item[0]->item_code) continue;
+
+            if( $item[0]->item_price !== $cart_info->sct_price ){
+                // 장바구니 테이블 상품 가격과 상품 테이블의 상품 가격이 다를경우
+                $update_querys['sct_price'] = $item[0]->item_price;
+            }
+
+            if($cart_info->sio_id){
+                $sio_infos = DB::table('shopitemoptions')->where([['item_code',$item_code],['sio_id',$cart_info->sio_id]])->get();
+
+                $this_io_type = 0;
+                if( $sio_infos[0]->sio_type ){
+                    $this_io_type = $sio_infos[0]->sio_type;
+                }
+
+                if( $sio_infos[0]->sio_id && $sio_infos[0]->sio_price !== $cart_info->sio_price ){
+                    // 장바구니 테이블 옵션 가격과 상품 옵션테이블의 옵션 가격이 다를경우
+                    $update_querys['sio_price'] = $sio_infos[0]->sio_price;
+                }
+
+                // 포인트
+                $compare_point = 0;
+                $setting_info = $this->setting_infos();
+
+                if($setting_info->company_use_point == 1) {
+                    // DB 에 sio_type 이 1이면 상품추가옵션이며, 0이면 상품선택옵션이다
+                    if($cart_info->sio_type == 0) {
+                        $compare_point = $this->get_item_point($item[0], $cart_info->sio_id);
+                    } else {
+                        $compare_point = $item[0]->item_supply_point;
+                    }
+
+                    if($compare_point < 0)
+                        $compare_point = 0;
+                }
+
+                if((int) $cart_info->sct_point !== (int) $compare_point){
+                    // 장바구니 테이블 적립 포인트와 상품 테이블의 적립 포인트가 다를경우
+                    $update_querys['sct_point'] = $compare_point;
+                }
+
+                if( $update_querys ){
+                    $check_need_update = true;
+                }
+
+                // 장바구니에 담긴 금액과 실제 상품 금액에 차이가 있고, $is_price_update 가 true 인 경우 장바구니 금액을 업데이트 합니다.
+                if( $is_price_update && $update_querys ){
+                    $conditions = array();
+
+                    foreach ($update_querys as $column => $value) {
+                        $data[$column] = $value;  //배열에 추가 함
+                    }
+
+                    $update_result = DB::table('shopcarts')->where([['item_code', $item[0]->item_code], ['od_id',$s_cart_id], ['id',$cart_info->id]])->limit(1)->update($data);
+                }
+            }
+        }
+
+        // 장바구니에 담긴 금액과 실제 상품 금액에 차이가 있다면
+        if( $check_need_update ){
+            return false;
+        }
+
+        return true;
+    }
+
+    function get_item_image($item_code, $array_num)
+    {
+        if(!$item_code) return '';
+
+        $item = $this->get_shop_item($item_code, true);
+
+        $j = 0;
+        $small_img_disp = "";
+        for($i=1; $i<=10; $i++) {
+            $item_img = "item_img".$i;
+
+            if($item[0]->$item_img == "") continue;
+            $j++;
+            $item_img_cut = explode("@@",$item[0]->$item_img);
+
+            if(count($item_img_cut) == 1) $item_img_disp = $item_img_cut[0];
+            else $item_img_disp = $item_img_cut[$array_num];
+
+            if($j == 1){
+                //작은 이미지 출력
+                $small_img_disp = "/data/shopitem/".$item_img_disp;
+            }
+        }
+
+        return $small_img_disp;
+    }
+
+    // 상품별 배송비
+    public static function get_item_sendcost($item_code, $price, $qty, $cart_id)
+    {
+        $ct = DB::table('shopcarts')->select('item_code', 'item_sc_type', 'item_sc_method', 'item_sc_price', 'item_sc_minimum', 'item_sc_qty')->where([['item_code', $item_code],['od_id',$cart_id]])->orderby('id', 'asc')->first();
+
+        if(!$ct->item_code) return 0;
+
+        if($ct->item_sc_type > 1) {
+            if($ct->item_sc_type == 2) { // 조건부무료
+                if($price >= $ct->item_sc_minimum)
+                    $sendcost = 0;
+                else
+                    $sendcost = $ct->item_sc_price;
+            } else if($ct->item_sc_type == 3) { // 유료배송
+                $sendcost = $ct->item_sc_price;
+            } else { // 수량별 부과
+                if(!$ct->item_sc_qty) $ct->item_sc_qty = 1;
+
+                $q = ceil((int)$qty / (int)$ct->item_sc_qty);
+                $sendcost = (int)$ct->item_sc_price * $q;
+            }
+        } else if($ct->item_sc_type == 1) { // 무료배송
+            $sendcost = 0;
+        } else {
+            $sendcost = -1;
+        }
+
+        return $sendcost;
+    }
+
+    //장바구니 옵션 뿌리기
+    function print_item_options($item_code, $cart_id)
+    {
+        $item_options = DB::table('shopcarts')->select('sct_option', 'sct_qty', 'sio_price')->where([['item_code', $item_code],['od_id',$cart_id]])->orderby('sio_type', 'asc')->orderby('id', 'asc')->get();
+
+        $str = '';
+        $i = '';
+        foreach($item_options as $item_option){
+            if($i == 0) $str .= '<ul>'.PHP_EOL;
+            $price_plus = '';
+
+            if($item_option->sio_price >= 0) $price_plus = '+';
+            $str .= '<tr><td>옵션 : '.$item_option->sct_option.' '.$item_option->sct_qty.'개 ('.$price_plus.$this->display_price($item_option->sio_price).')</td></tr>'.PHP_EOL;
+        }
+
+        return $str;
     }
 }
 

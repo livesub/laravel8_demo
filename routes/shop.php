@@ -45,7 +45,20 @@ Route::post('/cartprocess', [
     'uses' => 'App\Http\Controllers\shop\CartController@ajax_cart_register',
 ]);
 
+//장바구니
 Route::get('/cart', [
     'as' => 'cartlist',
     'uses' => 'App\Http\Controllers\shop\CartController@cartlist',
+]);
+
+//장바구니
+Route::post('/cart', [
+    'as' => 'ajax_choice_modify',
+    'uses' => 'App\Http\Controllers\shop\CartController@ajax_choice_modify',
+]);
+
+//주문서
+Route::get('/orderform', [
+    'as' => 'orderform',
+    'uses' => 'App\Http\Controllers\shop\OrderController@orderform',
 ]);
