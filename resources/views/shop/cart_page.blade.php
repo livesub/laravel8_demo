@@ -11,7 +11,8 @@
     </tr>
 </table>
 
-<form name="frmcartlist" id="sod_bsk_list" method="post" action="">
+<form name="frmcartlist" id="sod_bsk_list" method="post" action="{{ route('ajax_cart_register') }}">
+<input type="hidden" name="ajax_option_url" id="ajax_option_url" value="{{ route('ajax_option_change') }}">
 {!! csrf_field() !!}
 <table border=1>
     <tr>
@@ -24,6 +25,11 @@
         <td>소계</td>
     </tr>
 
+    @php
+        $tot_point = 0;
+        $tot_sell_price = 0;
+        $send_cost = 0;
+    @endphp
 
     @foreach($cart_infos as $cart_info)
         @php
@@ -100,17 +106,69 @@
     </tr>
         @php
             $num++;
+            $tot_point      += $point;
+            $tot_sell_price += $sell_price;
         @endphp
 
     @endforeach
 
-
+    @php
+        if ($num == 0) {
+            echo '<tr><td colspan="7" class="empty_table">장바구니에 담긴 상품이 없습니다.</td></tr>';
+        } else {
+            // 배송비 계산
+            $send_cost = $CustomUtils->get_sendcost($s_cart_id, 0);
+        }
+    @endphp
 </table>
 
+@if($num > 0)
 <table border=1>
     <tr>
-        <td>선택삭제</td>
-        <td>비우기</td>
+        <button type="button" onclick="return form_check('seldelete');">선택삭제</button>
+        <button type="button" onclick="return form_check('alldelete');">비우기</button>
+    </tr>
+</table>
+@endif
+
+@php
+    $tot_price = $tot_sell_price + $send_cost; // 총계 = 주문상품금액합계 + 배송비
+@endphp
+
+@if ($tot_price > 0 || $send_cost > 0)
+<table border=1>
+    <tr>
+        <td>배송비</td>
+        <td><strong>{{ number_format($send_cost)  }}</strong> 원</td>
+        <td>포인트</td>
+        <td><strong>{{ number_format($tot_point)  }}</strong> 점</td>
+        <td>총계 가격</td>
+        <td><strong>{{ number_format($tot_price) }}</strong> 원</td>
+    </tr>
+</table>
+@endif
+
+
+<table>
+    <tr>
+        <td>
+@if($num == 0)
+            <a href="{{ route('index') }}" class="btn01">쇼핑 계속하기</a>
+@else
+            <table>
+                <tr>
+                    <td>
+                        <input type="hidden" name="url" value="./orderform.php">
+                        <input type="hidden" name="records" value="{{ $num }}">
+                        <input type="hidden" name="act" id="act" value="">
+                        <a href="{{ route('sitem','ca_id='.$continue_ca_id) }}">쇼핑 계속하기</a>
+                        <button type="button" onclick="return form_check('buy');" class="btn_submit">주문하기</button>
+                    </td>
+                </tr>
+            </table>
+@endif
+
+        </td>
     </tr>
 </table>
 </form>
@@ -129,18 +187,16 @@ $(function() {
         close_btn_idx = $(".mod_options").index($(this));
         var item_code = $("#item_code"+close_btn_idx).val();
 
-
-
         $.ajax({
             headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
             type : 'post',
-            url : '{{ route('ajax_choice_modify') }}',
+            url : '{{ route('ajax_choice_option_modify') }}',
             data : {
                 item_code : item_code,
             },
             dataType : 'text',
             success : function(result){
-alert(result);
+//alert(result);
                 if(result == "no_item"){
                     alert("상품이 없습니다.");
                 }
@@ -148,33 +204,16 @@ alert(result);
                 if(result == "no_cart"){
                     alert("장바구니에 상품이 없습니다.");
                 }
-/*
+
                 $("#mod_option_frm").remove();
                 $this.after("<div id=\"mod_option_frm\"></div><div class=\"mod_option_bg\"></div>");
-                $("#mod_option_frm").html(data);
+                $("#mod_option_frm").html(result);
                 price_calculate();
-*/
-
             },
             error: function(result){
                 console.log(result);
             },
         });
-
-
-
-/*
-        $.post(
-            "./cartoption.php",
-            { it_id: it_id },
-            function(data) {
-                $("#mod_option_frm").remove();
-                $this.after("<div id=\"mod_option_frm\"></div><div class=\"mod_option_bg\"></div>");
-                $("#mod_option_frm").html(data);
-                price_calculate();
-            }
-        );
-*/
     });
 
     // 모두선택
@@ -222,8 +261,27 @@ function form_check(act) {
     }
     else if (act == "alldelete")
     {
-        f.act.value = act;
-        f.submit();
+        if (confirm("정말 비우시겠습니까?") == true){    //확인
+            $("#act").val(act);
+
+            var queryString = $("form[name=frmcartlist]").serialize() ;
+            $.ajax({
+                type : 'post',
+                url : '{{ route('ajax_cart_register') }}',
+                data : queryString,
+                dataType : 'text',
+                success : function(result){
+//alert(result);
+                    if(result == "cart_page"){
+                        location.href = "{{ route('cartlist') }}";
+                    }
+                },
+                error: function(result){
+                    console.log(result);
+                },
+            });
+        }
+        //f.submit();
     }
     else if (act == "seldelete")
     {
@@ -232,11 +290,34 @@ function form_check(act) {
             return false;
         }
 
-        f.act.value = act;
-        f.submit();
-    }
+        if (confirm("정말 삭제하시겠습니까?") == true){    //확인
+            $("#act").val(act);
 
-    return true;
+            var queryString = $("form[name=frmcartlist]").serialize() ;
+            $.ajax({
+                type : 'post',
+                url : '{{ route('ajax_cart_register') }}',
+                data : queryString,
+                dataType : 'text',
+                success : function(result){
+    //alert(result);
+                    if(result == "no_cnt"){
+                        alert("삭제하실 상품을 하나이상 선택해 주십시오.");
+                        return false;
+                    }
+
+                    if(result == "cart_page"){
+                        location.href = "{{ route('cartlist') }}";
+                    }
+                },
+                error: function(result){
+                    console.log(result);
+                },
+            });
+        }else{
+            return false;
+        }
+    }
 }
 </script>
 

@@ -214,7 +214,7 @@
 
                             <tr>
                                 <td>
-                                    <button type="button" onclick="fitem_submit('cart');">장바구니22222</button>
+                                    <button type="button" onclick="fitem_submit('cart');">장바구니</button>
                                     <button type="button" onclick="fitem_submit('buy');">바로구매</button>
                                 </td>
                             </tr>
@@ -459,7 +459,7 @@ jQuery(function($){
             return false;
         }
 
-        //$("#fitem").submit();
+        //$("#fitem").submit();//11
 
         var queryString = $("form[name=fitem]").serialize() ;
 

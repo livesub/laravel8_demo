@@ -52,6 +52,7 @@ $(function() {
     }
 
     $(document).on("change", "select.it_option", function() {
+
         var sel_count = $("select.it_option").length,
             idx = $("select.it_option").index($(this)),
             val = $(this).val(),
@@ -311,7 +312,7 @@ function sel_option_process(add_exec)
     $("select.it_option").each(function(index) {
 
         value = $(this).val();
-        item = $(this).closest(".get_item_options").length ? $(this).closest(".get_item_options").find("label[for^=it_option]").text() : "";
+        item = $(this).closest(".get_item_options").length ? $(this).closest(".get_item_options").find("label[for^=item_option]").text() : "";
 
         if( !item ){
             item = $(this).closest("tr").length ? $(this).closest("tr").find("th label").text() : "";
@@ -404,9 +405,7 @@ function sel_supply_process($el, add_exec)
 // 선택된 옵션 출력
 function add_sel_option(type, id, option, price, stock)
 {
-alert("이 메세지 보이면 개발자에게 연락");
     var item_code = $("input[name='item_code[]']").val();
-
     var opt = "";
     var li_class = "sit_opt_list";
     if(type)
@@ -426,7 +425,7 @@ alert("이 메세지 보이면 개발자에게 연락");
     opt += "<input type=\"hidden\" class=\"sio_stock\" value=\""+stock+"\">";
     opt += "<span class=\"sit_opt_subj\">"+option+"</span>";
     opt += "<span class=\"sit_opt_prc\">"+opt_prc+"</span>";
-    opt += "<div><input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"1\" class=\"frm_input\" size=\"5\">";
+    opt += "<div><input type=\"text\" name=\"ct_qty["+item_code+"][]\" value=\"1\" class=\"frm_input\" size=\"5\" onKeyup=\"this.value=this.value.replace(/[^0-9]/g,'');\">";
     opt += "<button type=\"button\" class=\"sit_qty_plus btn_frmline\">증가</button>";
     opt += "<button type=\"button\" class=\"sit_qty_minus btn_frmline\">감소</button>";
     opt += "<button type=\"button\" class=\"sit_opt_del btn_frmline\">삭제</button></div>";
@@ -519,7 +518,6 @@ function chr(code)
 
 function number_format(data)
 {
-
     var tmp = '';
     var number = '';
     var cutlen = 3;

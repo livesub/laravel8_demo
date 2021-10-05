@@ -50,6 +50,7 @@ class CartController extends Controller
 
         $act = $request->input('act');
         $ct_chk = $request->input('ct_chk');
+
         $post_ct_chk = (isset($ct_chk) && is_array($ct_chk)) ? $ct_chk : array();
 
         $item_code = $request->input('item_code');
@@ -59,11 +60,26 @@ class CartController extends Controller
         {
 
 
-        }else if ($act == "alldelete"){ // 모두 삭제이면
-
-
+        }else if ($act == "alldelete"){ // 비우기 이면
+            DB::table('shopcarts')->where('od_id',$tmp_cart_id)->delete();   //row 삭제
         }else if ($act == "seldelete"){ // 선택삭제
+            if(!count($post_ct_chk)){
+                echo "no_cnt";
+                exit;
+            }
 
+            $fldcnt = count($post_item_codes);
+
+            for($i=0; $i<$fldcnt; $i++) {
+                $ct_chk = isset($post_ct_chk[$i]) ? 1 : 0;
+
+                if($ct_chk) {
+                    $item_code = $post_item_codes[$i];
+                    if($item_code){
+                        DB::table('shopcarts')->where([['item_code',$item_code], ['od_id',$tmp_cart_id]])->delete();   //row 삭제
+                    }
+                }
+            }
         }else{ // 장바구니에 담기
             $count = count($post_item_codes);
 
@@ -327,11 +343,6 @@ class CartController extends Controller
         $CustomUtils->set_cart_id($sw_direct);
         $s_cart_id = $CustomUtils->get_session('ss_cart_id');
 
-        // 선택필드 초기화
-        $up_result = shopcarts::whereod_id($s_cart_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
-        $up_result->sct_select = 0;
-        $result_up = $up_result->save();
-
         $CustomUtils->before_check_cart_price($s_cart_id, true, true, true);
 
         // $s_cart_id 로 현재 장바구니 자료 쿼리
@@ -345,6 +356,13 @@ class CartController extends Controller
             ->orderBy('a.id')
             ->get();
 
+        if(count($cart_infos) > 0){
+            // 선택필드 초기화
+            $up_result = shopcarts::whereod_id($s_cart_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+            $up_result->sct_select = 0;
+            $result_up = $up_result->save();
+        }
+
         return view('shop.cart_page',[
             'num'           => 0,
             's_cart_id'     => $s_cart_id,
@@ -353,7 +371,7 @@ class CartController extends Controller
         ]);
     }
 
-    public function ajax_choice_modify(Request $request)
+    public function ajax_choice_option_modify(Request $request)
     {
         $CustomUtils = new CustomUtils;
         $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
@@ -373,7 +391,7 @@ class CartController extends Controller
         // 장바구니 자료
         $cart_id = $CustomUtils->get_session('ss_cart_id');
 
-        $carts = DB::table('shopcarts')->where([['od_id',$cart_id], ['item_code', $item_code]])->orderBy('sio_type','asc')->orderBy('id','asc')->get();
+        $carts = DB::table('shopcarts')->where([['od_id',$cart_id], ['item_code', $item_code]])->orderBy('sio_type','asc')->orderBy('id','asc')->get(); //장바구니
 
         // 판매가격
         $price = DB::table('shopcarts')->select('sct_price', 'item_name', 'sct_send_cost')->where([['od_id',$cart_id], ['item_code', $item_code]])->orderBy('id','asc')->limit(1)->get();
@@ -383,8 +401,20 @@ class CartController extends Controller
             exit;
         }
 
-    }
+        $option_1 = $CustomUtils->get_item_options($item->item_code, $item->item_option_subject, '');
+        $option_2 = $CustomUtils->get_item_supply($item->item_code, $item->item_supply_subject, '');
 
+        $view = view('shop.ajax_choice_opt_modi',[
+            "carts"         => $carts,
+            "CustomUtils"   => $CustomUtils,
+            "item"          => $item,
+            "option_1"      => $option_1,
+            "option_2"      => $option_2,
+            "price"         => $price[0],
+        ]);
+
+        return $view;
+    }
 
     /**
      * Show the form for creating a new resource.

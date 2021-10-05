@@ -53,8 +53,8 @@ Route::get('/cart', [
 
 //장바구니
 Route::post('/cart', [
-    'as' => 'ajax_choice_modify',
-    'uses' => 'App\Http\Controllers\shop\CartController@ajax_choice_modify',
+    'as' => 'ajax_choice_option_modify',
+    'uses' => 'App\Http\Controllers\shop\CartController@ajax_choice_option_modify',
 ]);
 
 //주문서
