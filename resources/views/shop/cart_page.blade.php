@@ -256,8 +256,38 @@ function form_check(act) {
             return false;
         }
 
-        f.act.value = act;
-        f.submit();
+        $("#act").val(act);
+        var queryString = $("form[name=frmcartlist]").serialize() ;
+        $.ajax({
+            type : 'post',
+            url : '{{ route('ajax_cart_register') }}',
+            data : queryString,
+            dataType : 'text',
+            success : function(result){
+alert(result);
+                if(result == "no_item"){
+                    alert("주문하실 상품을 하나이상 선택해 주십시오.");
+                    return false;
+                }
+
+                if(result == "no_qty"){
+                    alert("재고수량이 부족합니다.");
+                    return false;
+                }
+/*
+                if(result == "cart_page"){
+                    location.href = "{{ route('cartlist') }}";
+                }
+*/
+            },
+            error: function(result){
+                console.log(result);
+            },
+        });
+
+
+//        f.act.value = act;
+//        f.submit();
     }
     else if (act == "alldelete")
     {

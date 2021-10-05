@@ -58,8 +58,68 @@ class CartController extends Controller
 
         if($act == "buy")
         {
+            if(!count($post_ct_chk)){
+                echo "no_item";
+                exit;
+            }
+
+            // 선택필드 초기화
+            $up_result = shopcarts::whereod_id($tmp_cart_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+            $up_result->sct_select = 0;
+            $result_up = $up_result->save();
+
+            $fldcnt = count($post_item_codes);
+            for($i=0; $i<$fldcnt; $i++) {
+                $ct_chk = isset($post_ct_chk[$i]) ? 1 : 0;
+
+                if($ct_chk) {
+                    $item_code = $post_item_codes[$i];
+
+                    if( !$item_code ) continue;
+
+                    // 주문 상품의 재고체크
+                    $cart_infos = DB::table('shopcarts')->where([['od_id', $tmp_cart_id], ['item_code',$item_code]])->get();
+
+                    foreach($cart_infos as $cart_info){
+                        $sum_qty = DB::table('shopcarts')->where([['od_id','<>',$tmp_cart_id], ['item_code',$item_code], ['sio_id',$cart_info->sio_id], ['sio_type',$cart_info->sio_type], ['sct_stock_use','0'], ['sct_status','쇼핑'], ['sct_select','1']])->sum('sct_qty');
+                        //$sum_qty = $sum['cnt'];
+
+                        // 재고 구함
+                        $sct_qty = $cart_info->sct_qty;
+
+                        if(!$cart_info->sio_id) $it_stock_qty = $CustomUtils->get_it_stock_qty($item_code);
+                        else $it_stock_qty = $CustomUtils->get_option_stock_qty($item_code, $cart_info->sio_id, $cart_info->sio_type);
+
+                        if ($sct_qty + $sum_qty > $it_stock_qty)
+                        {
+                            $item_option = $cart_info->item_name;
+                            if($cart_info->sio_id) $item_option .= '('.$cart_info->sct_option.')';
+
+                            echo "no_qty";
+                            exit;
+                            //alert($item_option." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
+                        }
+                    }
+var_dump("주문서 저장 햐아함!!!!");
+/*
+                    $up_result = shopcarts::whereod_id($tmp_cart_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
+                    $up_result->sct_qty = $up_result->sct_qty + 1;
+                    $result_up = $up_result->save();
+
+                    $sql = " update {$g5['g5_shop_cart_table']}
+                    set ct_select = '1',
+                        ct_select_time = '".G5_TIME_YMDHIS."'
+                    where od_id = '$tmp_cart_id'
+                      and it_id = '$it_id' ";
+                sql_query($sql);
+*/
 
 
+
+                }
+            }
+
+exit;
         }else if ($act == "alldelete"){ // 비우기 이면
             DB::table('shopcarts')->where('od_id',$tmp_cart_id)->delete();   //row 삭제
         }else if ($act == "seldelete"){ // 선택삭제
