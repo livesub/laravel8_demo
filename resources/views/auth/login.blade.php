@@ -80,10 +80,11 @@
         <button type="button" onclick="location.href='{{ route('social.login','facebook') }}'">페이스북 로그인</button>
       </p>
     </div>
-
+</form>
 
 <!-- 쇼핑몰 비회원 처리 -->
     @if (preg_match("/orderform/", $url))
+  <form name="login_order_form" id="login_order_form" method='get' action='{{ route('orderform') }}'>
     <section id="mb_login_notmb">
         <h2>비회원 구매</h2>
         <p>비회원으로 주문하시는 경우 포인트는 지급하지 않습니다.</p>
@@ -98,7 +99,7 @@
 		</div>
 
         <div class="btn_confirm">
-            <a href="javascript:guest_submit(document.flogin);" class="btn_submit">비회원으로 구매하기</a>
+            <a href="javascript:guest_submit(document.login_order_form);" class="btn_submit">비회원으로 구매하기</a>
         </div>
 
         <script>
@@ -111,14 +112,15 @@
                 }
             }
 
-            f.url.value = "{{ $url }}";
+            //f.url.value = "{{ $url }}";
             f.action = "{{ route('orderform') }}";
             f.submit();
         }
         </script>
     </section>
-    @endif
 </form>
+    @endif
+
 
 
 @endsection

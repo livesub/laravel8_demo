@@ -1379,7 +1379,12 @@ $um_value='80/0.5/3'
         return ($total_send_cost + $send_cost);
     }
 
-
+    // 장바구니 건수 검사
+    public static function get_cart_count($cart_id)
+    {
+        $cnt = DB::table('shopcarts')->where('od_id', $cart_id)->count();
+        return $cnt;
+    }
 }
 
 

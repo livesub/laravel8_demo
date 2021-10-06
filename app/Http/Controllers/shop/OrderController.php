@@ -26,11 +26,67 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        session_start();
+    }
+
     public function orderform(Request $request)
     {
         $CustomUtils = new CustomUtils;
         $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
-dd("orderform");
+
+        $sw_direct  = $request->input('sw_direct');     //장바구니 0, 바로구매 1
+
+        $CustomUtils->set_session("ss_direct", $sw_direct);
+
+        if($sw_direct){
+            $tmp_cart_id = $CustomUtils->get_session('ss_cart_direct');
+        }else{
+            $tmp_cart_id = $CustomUtils->get_session('ss_cart_id');
+        }
+
+        if ($CustomUtils->get_cart_count($tmp_cart_id) == 0){
+            return redirect()->route('cartlist')->with('alert_messages', '장바구니가 비어 있습니다.');
+            exit;
+        }
+
+        if(!$CustomUtils->before_check_cart_price($tmp_cart_id)){
+            return redirect()->route('cartlist')->with('alert_messages', '장바구니 금액에 변동사항이 있습니다.\n장바구니를 다시 확인해 주세요.');
+            exit;
+        }
+
+        // 새로운 주문번호 생성
+        $od_id = $CustomUtils->get_uniqid();
+        $CustomUtils->set_session('ss_order_id', $od_id);
+        $s_cart_id = $tmp_cart_id;
+/*
+        if($default['de_pg_service'] == 'inicis' || $default['de_inicis_lpay_use'] || $default['de_inicis_kakaopay_use'])
+            set_session('ss_order_inicis_id', $od_id);
+*/
+        $tot_price = 0;
+        $tot_point = 0;
+        $tot_sell_price = 0;
+
+        $goods = $goods_item_code = "";
+        $goods_count = -1;
+
+        $cart_infos = DB::table('shopcarts as a')
+            ->select('a.id', 'a.item_code', 'a.item_name', 'a.sct_price', 'a.sct_point', 'a.sct_qty', 'a.sct_status', 'a.sct_send_cost', 'a.item_sc_type', 'b.sca_id')
+            ->leftjoin('shopitems as b', function($join) {
+                    $join->on('a.item_code', '=', 'b.item_code');
+                })
+            ->where([['a.od_id',$s_cart_id], ['a.sct_select','1']])
+            ->groupBy('a.item_code')
+            ->orderBy('a.id')
+            ->get();
+
+        return view('shop.order_page',[
+            's_cart_id'     => $s_cart_id,
+            'cart_infos'    => $cart_infos,
+            'CustomUtils'   => $CustomUtils,
+        ],$Messages::$blade_ment['login']);
+
     }
 
     /**
