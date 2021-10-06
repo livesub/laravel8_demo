@@ -100,26 +100,18 @@ class CartController extends Controller
                             //alert($item_option." 의 재고수량이 부족합니다.\\n\\n현재 재고수량 : " . number_format($it_stock_qty - $sum_qty) . " 개");
                         }
                     }
-var_dump("주문서 저장 햐아함!!!!");
-/*
-                    $up_result = shopcarts::whereod_id($tmp_cart_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
-                    $up_result->sct_qty = $up_result->sct_qty + 1;
-                    $result_up = $up_result->save();
 
-                    $sql = " update {$g5['g5_shop_cart_table']}
-                    set ct_select = '1',
-                        ct_select_time = '".G5_TIME_YMDHIS."'
-                    where od_id = '$tmp_cart_id'
-                      and it_id = '$it_id' ";
-                sql_query($sql);
-*/
-
-
-
+                    $update_result = DB::table('shopcarts')->where([['od_id', $tmp_cart_id], ['item_code',$item_code]])->limit(1)->update(['sct_select' => '1','sct_select_time' => date("Y-m-d H:i:s", time())]);
                 }
             }
 
-exit;
+            if(Auth::user() != ""){     // 회원인 경우
+                echo "mem_order";
+                exit;
+            }else{      // 비회원인 경우
+                echo "no_mem_order";
+                exit;
+            }
         }else if ($act == "alldelete"){ // 비우기 이면
             DB::table('shopcarts')->where('od_id',$tmp_cart_id)->delete();   //row 삭제
         }else if ($act == "seldelete"){ // 선택삭제

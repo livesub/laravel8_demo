@@ -37,11 +37,15 @@ class LoginController extends Controller
         $this->middleware('guest', ['except' => 'destroy']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        return view('auth.login',$Messages::$blade_ment['login']);
+        $url  = $request->input('url');
+
+        return view('auth.login',[
+            'url'   => $url,
+        ],$Messages::$blade_ment['login']);
     }
 
     /**
@@ -58,9 +62,10 @@ class LoginController extends Controller
     {
         $Messages = CustomUtils::language_pack(session()->get('multi_lang'));
 
-        $user_id = $request->get('user_id');
-        $user_pw = $request->get('user_pw');
-        $remember = $request->has('remember');
+        $user_id    = $request->get('user_id');
+        $user_pw    = $request->get('user_pw');
+        $remember   = $request->has('remember');
+        $url        = $request->input('url'); //쇼핑몰 등 리턴 페이지가 있을때
 
         Validator::validate($request->all(), [
             'user_id'  => ['required', 'regex:/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}/', 'max:200'],
@@ -75,7 +80,11 @@ class LoginController extends Controller
 
         if (!Auth::attempt($credentials, $remember))
         {
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_chk']);
+            if (preg_match("/orderform/", $url)){   //장바구니로 왔는데 로그인 실패시 계속 로그인 페이지에 남기
+                return redirect()->route('login.index','url='.urlencode(route('orderform')))->with('alert_messages', $Messages::$login_chk['login_chk']['login_chk']);
+            }else{
+                return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_chk']);
+            }
             exit;
         }
 
@@ -83,7 +92,11 @@ class LoginController extends Controller
         if(!auth()->user()->user_activated)
         {
             auth()->logout();
-            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['email_chk']);
+            if (preg_match("/orderform/", $url)){   //장바구니로 왔는데 로그인 실패시 계속 로그인 페이지에 남기
+                return redirect()->route('login.index','url='.urlencode(route('orderform')))->with('alert_messages', $Messages::$login_chk['login_chk']['email_chk']);
+            }else{
+                return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['email_chk']);
+            }
             exit;
         }
 
@@ -91,7 +104,11 @@ class LoginController extends Controller
         $statistics = new StatisticsController();
         $statistics->mem_statistics($user_id);
 
-        return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+        if (preg_match("/orderform/", $url)){   //장바구니로 리턴
+            return redirect()->route('orderform')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+        }else{
+            return redirect()->route('main.index')->with('alert_messages', $Messages::$login_chk['login_chk']['login_ok']);
+        }
     }
 
     /**

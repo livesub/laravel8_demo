@@ -58,7 +58,7 @@ Route::post('/cart', [
 ]);
 
 //주문서
-Route::get('/orderform', [
+Route::post('/orderform', [
     'as' => 'orderform',
     'uses' => 'App\Http\Controllers\shop\OrderController@orderform',
 ]);

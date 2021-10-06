@@ -264,7 +264,7 @@ function form_check(act) {
             data : queryString,
             dataType : 'text',
             success : function(result){
-alert(result);
+//alert(result);
                 if(result == "no_item"){
                     alert("주문하실 상품을 하나이상 선택해 주십시오.");
                     return false;
@@ -274,11 +274,14 @@ alert(result);
                     alert("재고수량이 부족합니다.");
                     return false;
                 }
-/*
-                if(result == "cart_page"){
-                    location.href = "{{ route('cartlist') }}";
+
+                if(result == "mem_order"){  //회원 주문
+                    location.href = "{{ route('orderform') }}";
                 }
-*/
+
+                if(result == "no_mem_order"){  //비회원 주문
+                    location.href = "{{ route('login.index','url='.urlencode(route('orderform'))) }}";
+                }
             },
             error: function(result){
                 console.log(result);

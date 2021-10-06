@@ -3,8 +3,9 @@
 @section('content')
 
 
-  <form action='{{ route('login.store') }}' method='POST' role='form' class='form__auth'>
+  <form name="flogin" id="flogin" method='POST' action='{{ route('login.store') }}' role='form' class='form__auth'>
     {!! csrf_field() !!}
+    <input type="hidden" name="url" id="url" value="{{ $url }}">
 
     <div class='page-header'>
       <h4>
@@ -61,7 +62,6 @@
       </p>
 
     </div>
-  </form>
 
     <div>
       <p class='text-center'>
@@ -80,5 +80,45 @@
         <button type="button" onclick="location.href='{{ route('social.login','facebook') }}'">페이스북 로그인</button>
       </p>
     </div>
+
+
+<!-- 쇼핑몰 비회원 처리 -->
+    @if (preg_match("/orderform/", $url))
+    <section id="mb_login_notmb">
+        <h2>비회원 구매</h2>
+        <p>비회원으로 주문하시는 경우 포인트는 지급하지 않습니다.</p>
+
+        <div id="guest_privacy">
+            약관 우짜구....
+        </div>
+
+		<div class="chk_box">
+			<input type="checkbox" id="agree" value="1" class="selec_chk">
+        	<label for="agree"><span></span> 개인정보수집에 대한 내용을 읽었으며 이에 동의합니다.</label>
+		</div>
+
+        <div class="btn_confirm">
+            <a href="javascript:guest_submit(document.flogin);" class="btn_submit">비회원으로 구매하기</a>
+        </div>
+
+        <script>
+        function guest_submit(f)
+        {
+            if (document.getElementById('agree')) {
+                if (!document.getElementById('agree').checked) {
+                    alert("개인정보수집에 대한 내용을 읽고 이에 동의하셔야 합니다.");
+                    return;
+                }
+            }
+
+            f.url.value = "{{ $url }}";
+            f.action = "{{ route('orderform') }}";
+            f.submit();
+        }
+        </script>
+    </section>
+    @endif
+</form>
+
 
 @endsection
