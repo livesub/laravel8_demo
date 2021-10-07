@@ -186,24 +186,6 @@
             require_once(G5_SHOP_PATH.'/kakaopay/orderform.2.php');
         }
 */
-
-$user_name = '';
-$user_tel = '';
-$user_phone = '';
-$user_zip = '';
-$user_addr1 = '';
-$user_addr2 = '';
-$user_addr3 = '';
-$user_addr_jibeon = '';
-
-if(Auth::user()->user_name != "") $user_name = Auth::user()->user_name;
-if(Auth::user()->user_tel != "") $user_tel = Auth::user()->user_tel;
-if(Auth::user()->user_phone != "") $user_phone = Auth::user()->user_phone;
-if(Auth::user()->user_zip != "") $user_zip = Auth::user()->user_zip;
-if(Auth::user()->user_addr1 != "") $user_addr1 = Auth::user()->user_addr1;
-if(Auth::user()->user_addr2 != "") $user_addr2 = Auth::user()->user_addr2;
-if(Auth::user()->user_addr3 != "") $user_addr3 = Auth::user()->user_addr3;
-if(Auth::user()->user_addr_jibeon != "") $user_addr_jibeon = Auth::user()->user_addr_jibeon;
 @endphp
     <tr>
         <td>
@@ -239,7 +221,7 @@ if(Auth::user()->user_addr_jibeon != "") $user_addr_jibeon = Auth::user()->user_
                     <td>
                         <label for="od_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
                         <input type="text" name="od_zip" value="{{ $user_zip }}" id="od_zip" required class="frm_input required" size="8" maxlength="6" placeholder="우편번호">
-                        <button type="button" class="btn_address" onclick="win_zip('forderform', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');">주소 검색</button>
+                        <button type="button" class="btn_address" onclick="win_zip();">주소 검색</button>
 <div id="wrap" style="display:none;border:1px solid;width:500px;height:300px;margin:5px 0;position:relative">
 <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">
 </div>

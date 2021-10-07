@@ -81,10 +81,38 @@ class OrderController extends Controller
             ->orderBy('a.id')
             ->get();
 
+
+            $user_name = '';
+            $user_tel = '';
+            $user_phone = '';
+            $user_zip = '';
+            $user_addr1 = '';
+            $user_addr2 = '';
+            $user_addr3 = '';
+            $user_addr_jibeon = '';
+
+            if(Auth::user()->user_name != "") $user_name = Auth::user()->user_name;
+            if(Auth::user()->user_tel != "") $user_tel = Auth::user()->user_tel;
+            if(Auth::user()->user_phone != "") $user_phone = Auth::user()->user_phone;
+            if(Auth::user()->user_zip != "") $user_zip = Auth::user()->user_zip;
+            if(Auth::user()->user_addr1 != "") $user_addr1 = Auth::user()->user_addr1;
+            if(Auth::user()->user_addr2 != "") $user_addr2 = Auth::user()->user_addr2;
+            if(Auth::user()->user_addr3 != "") $user_addr3 = Auth::user()->user_addr3;
+            if(Auth::user()->user_addr_jibeon != "") $user_addr_jibeon = Auth::user()->user_addr_jibeon;
+
         return view('shop.order_page',[
             's_cart_id'     => $s_cart_id,
             'cart_infos'    => $cart_infos,
             'CustomUtils'   => $CustomUtils,
+
+            'user_name'     => $user_name,
+            'user_tel'      => $user_tel,
+            'user_phone'    => $user_phone,
+            'user_zip'      => $user_zip,
+            'user_addr1'    => $user_addr1,
+            'user_addr2'    => $user_addr2,
+            'user_addr3'    => $user_addr3,
+            'user_addr_jibeon'  => $user_addr_jibeon,
         ],$Messages::$blade_ment['login']);
 
     }
