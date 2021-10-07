@@ -4,6 +4,7 @@
 
   <form action='{{ route('join.store') }}' method='POST' role='form' class='form__auth'>
     {!! csrf_field() !!}
+    <input type="hidden" name="url" id="url" value="{{ $url }}">
 
     <div class='page-header'>
       <h4>

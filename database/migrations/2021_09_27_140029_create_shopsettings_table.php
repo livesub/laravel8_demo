@@ -29,6 +29,12 @@ class CreateShopsettingsTable extends Migration
             $table->tinyInteger('company_bank_use')->length(1)->default(1)->comment('무통장입금사용:0=>사용안함,1=>사용함');
             $table->text('company_bank_account')->nullable()->comment('은행계좌번호');
             $table->tinyInteger('company_use_point')->length(1)->default(1)->comment('포인트 사용');
+
+            $table->tinyInteger('member_reg_coupon_use')->length(1)->default(0)->comment('회원가입 쿠폰 사용유무');
+            $table->integer('member_reg_coupon_price')->default(0)->comment('쿠폰 금액');
+            $table->integer('member_reg_coupon_minimum')->default(0)->comment('주문최소금액');
+            $table->integer('member_reg_coupon_term')->default(0)->comment('쿠폰유효기간');
+
             $table->string('shop_img_width')->nullable()->comment('이미지리사이징-넓이');
             $table->string('shop_img_height')->nullable()->comment('이미지리사이징-높이');
             $table->timestamps();

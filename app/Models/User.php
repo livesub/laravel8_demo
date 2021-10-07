@@ -30,6 +30,7 @@ class User extends Authenticatable
         'user_id',
         'user_name',
         'password',
+        'user_tel',
         'user_phone',
         'user_imagepath',
         'user_ori_imagepath',
@@ -38,7 +39,12 @@ class User extends Authenticatable
         'user_activated',
         'user_level',
         'user_type',
-        'user_platform_type'
+        'user_platform_type',
+        'user_zip',
+        'user_addr1',
+        'user_addr2',
+        'user_addr3',
+        'user_addr_jibeon'
     ];
 
     /**

@@ -54,7 +54,7 @@
 
     <div>
       <p class='text-center'>
-        {!! trans($ask_registration, ['url' => route('join.create')]) !!}
+        {!! trans($ask_registration, ['url' => route('join.create','url='.urlencode($url))]) !!}
       </p>
 
       <p class='text-center'>

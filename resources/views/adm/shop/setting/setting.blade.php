@@ -94,6 +94,33 @@
     </tr>
 </table>
 
+
+<table border=1>
+    <tr>
+        <td><b>신규회원 쿠폰발행</b></td>
+        <td>
+            신규회원에게 주문금액 할인 쿠폰을 발행하시려면 아래를 설정하십시오.<br>
+                <label for="member_reg_coupon_use">쿠폰발행</label>
+                @php
+                    $check = "";
+                    if($member_reg_coupon_use == 1) $check = "checked";
+                    else $check = "";
+                @endphp
+                <input type="checkbox" name="member_reg_coupon_use" value="1" id="member_reg_coupon_use" {{ $check }}>
+                <label for="member_reg_coupon_price">쿠폰할인금액</label>
+                <input type="text" name="member_reg_coupon_price" value="{{ $member_reg_coupon_price }}" id="member_reg_coupon_price" class="frm_input" size="10"> 원
+                <label for="member_reg_coupon_minimum">주문최소금액</label>
+                <input type="text" name="member_reg_coupon_minimum" value="{{ $member_reg_coupon_minimum }}" id="member_reg_coupon_minimum" class="frm_input" size="10"> 원이상
+<!--
+                <label for="member_reg_coupon_term">쿠폰유효기간</label>
+                <input type="text" name="member_reg_coupon_term" value="{{ $member_reg_coupon_term }}" id="member_reg_coupon_term" class="frm_input" size="5"> 일
+-->
+
+        </td>
+    </tr>
+
+</table>
+
 <table border=1>
     <tr>
         <td colspan="2"><b>이미지 리사이징 설정</b></td>

@@ -18,7 +18,8 @@ class CreateUsersTable extends Migration
             $table->string('user_id')->unique()->comment('아이디');
             $table->string('password')->comment('비밀번호');    //$user_pw 을 사용 하면 로그인이 되지 않으므로 칼럼명을 password 로 바꾼다
             $table->string('user_name')->comment('이름');
-            $table->string('user_phone')->comment('전화번호')->default('');
+            $table->string('user_tel')->comment('집 전화번호');
+            $table->string('user_phone')->comment('휴대 전화번호');
             $table->string('user_imagepath')->nullable()->comment('프로필사진 변경파일이름');
             $table->string('user_ori_imagepath')->nullable()->comment('프로필사진 원본파일이름');
             $table->string('user_thumb_name')->nullable()->comment('썸네일 파일 이름');
@@ -28,6 +29,13 @@ class CreateUsersTable extends Migration
             $table->enum('user_type', ['N', 'Y'])->nullable()->length(2)->default('N')->comment('탈퇴여부:Y=>탈퇴');
             $table->string('user_platform_type')->nullable()->comment('소셜 로그인 방식');
             $table->timestamp('user_email_verified_at')->nullable();
+
+            $table->integer('user_zip')->length(5)->default(0)->comment('우편번호');
+            $table->string('user_addr1')->comment('주소');
+            $table->string('user_addr2')->comment('상세주소');
+            $table->string('user_addr3')->comment('참고 항목');
+            $table->char('user_addr_jibeon')->length(2)->comment('지번:J=>지번, R=>도로명');
+
             $table->rememberToken();
             $table->timestamps();
         });
