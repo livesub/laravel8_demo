@@ -62,3 +62,9 @@ Route::get('/orderform', [
     'as' => 'orderform',
     'uses' => 'App\Http\Controllers\shop\OrderController@orderform',
 ]);
+
+//배송지 처리
+Route::get('/baesongji', [
+    'as' => 'ajax_baesongji',
+    'uses' => 'App\Http\Controllers\shop\BaesongjiController@ajax_baesongji',
+]);

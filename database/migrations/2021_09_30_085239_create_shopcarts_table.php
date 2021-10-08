@@ -28,8 +28,8 @@ class CreateShopcartsTable extends Migration
             $table->text('sct_history')->comment('기록');
             $table->integer('sct_price')->default(0)->comment('판매가격');
             $table->integer('sct_point')->default(0)->comment('포인트');
-            $table->tinyInteger('sct_point_use')->length(0)->default(0)->comment('포인트사용여부');
-            $table->tinyInteger('sct_stock_use')->length(0)->default(0)->comment('재고 차감을 했는지 여부');
+            $table->tinyInteger('sct_point_use')->length(1)->default(0)->comment('포인트사용여부');
+            $table->tinyInteger('sct_stock_use')->length(1)->default(0)->comment('재고 차감을 했는지 여부');
             $table->string('sct_option')->comment('상품명 또는 옵션명');
             $table->integer('sct_qty')->default(0)->comment('수량');
             $table->text('sio_id')->comment('옵션항목 조합');
