@@ -89,15 +89,54 @@ class OrderController extends Controller
         $user_addr2 = '';
         $user_addr3 = '';
         $user_addr_jibeon = '';
+        $addr_list = "";
 
-        if(Auth::user()->user_name != "") $user_name = Auth::user()->user_name;
-        if(Auth::user()->user_tel != "") $user_tel = Auth::user()->user_tel;
-        if(Auth::user()->user_phone != "") $user_phone = Auth::user()->user_phone;
-        if(Auth::user()->user_zip != "") $user_zip = Auth::user()->user_zip;
-        if(Auth::user()->user_addr1 != "") $user_addr1 = Auth::user()->user_addr1;
-        if(Auth::user()->user_addr2 != "") $user_addr2 = Auth::user()->user_addr2;
-        if(Auth::user()->user_addr3 != "") $user_addr3 = Auth::user()->user_addr3;
-        if(Auth::user()->user_addr_jibeon != "") $user_addr_jibeon = Auth::user()->user_addr_jibeon;
+        if(Auth::user()){
+            if(Auth::user()->user_name != "") $user_name = Auth::user()->user_name;
+            if(Auth::user()->user_tel != "") $user_tel = Auth::user()->user_tel;
+            if(Auth::user()->user_phone != "") $user_phone = Auth::user()->user_phone;
+            if(Auth::user()->user_zip != "") $user_zip = Auth::user()->user_zip;
+            if(Auth::user()->user_addr1 != "") $user_addr1 = Auth::user()->user_addr1;
+            if(Auth::user()->user_addr2 != "") $user_addr2 = Auth::user()->user_addr2;
+            if(Auth::user()->user_addr3 != "") $user_addr3 = Auth::user()->user_addr3;
+            if(Auth::user()->user_addr_jibeon != "") $user_addr_jibeon = Auth::user()->user_addr_jibeon;
+
+            // 기본배송지
+            $default_baesongji = DB::table('baesongjis')->where([['user_id', Auth::user()->user_id], ['ad_default','1']])->first();
+
+            $sep = chr(30);
+            $val1 = "";
+
+            // 주문자와 동일
+            $addr_list .= '<input type="radio" name="ad_sel_addr" value="same" id="ad_sel_addr_same">'.PHP_EOL;
+            $addr_list .= '<label for="ad_sel_addr_same">주문자와 동일</label>'.PHP_EOL;
+
+            if(isset($default_baesongji->id) && $default_baesongji->id) {
+                $val1 = $default_baesongji->ad_name.$sep.$default_baesongji->ad_tel.$sep.$default_baesongji->ad_hp.$sep.$default_baesongji->ad_zip1.$sep.$default_baesongji->ad_addr1.$sep.$default_baesongji->ad_addr2.$sep.$default_baesongji->ad_addr3.$sep.$default_baesongji->ad_jibeon.$sep.$default_baesongji->ad_subject;
+                $addr_list .= '<input type="radio" name="ad_sel_addr" value="'.$val1.'" id="ad_sel_addr_def">'.PHP_EOL;
+                $addr_list .= '<label for="ad_sel_addr_def">기본배송지</label>'.PHP_EOL;
+            }
+
+            // 최근배송지
+            $lately_baesongji = DB::table('baesongjis')->where([['user_id', Auth::user()->user_id], ['ad_default','0']])->orderBy('id', 'desc')->first();
+            if(!is_null($lately_baesongji)){
+                if($lately_baesongji->ad_subject == "") $disp_list = $lately_baesongji->ad_name;
+                else $disp_list = $lately_baesongji->ad_subject;
+
+                $val1 = $lately_baesongji->ad_name.$sep.$lately_baesongji->ad_tel.$sep.$lately_baesongji->ad_hp.$sep.$lately_baesongji->ad_zip1.$sep.$lately_baesongji->ad_addr1.$sep.$lately_baesongji->ad_addr2.$sep.$lately_baesongji->ad_addr3.$sep.$lately_baesongji->ad_jibeon.$sep.$lately_baesongji->ad_subject;
+                $val2 = '<label for="ad_sel_addr_1">최근배송지('.$disp_list.')</label>';
+                $addr_list .= '<input type="radio" name="ad_sel_addr" value="'.$val1.'" id="ad_sel_addr_1"> '.PHP_EOL.$val2.PHP_EOL;
+            }
+
+            $addr_list .= '<input type="radio" name="ad_sel_addr" value="new" id="od_sel_addr_new">'.PHP_EOL;
+            $addr_list .= '<label for="od_sel_addr_new">신규배송지</label>'.PHP_EOL;
+
+            $addr_list .= '<button type="button" onclick="baesongji();">배송지 목록</button>';
+        }else{
+            // 주문자와 동일
+            $addr_list .= '<input type="checkbox" name="ad_sel_addr" value="same" id="ad_sel_addr_same">'.PHP_EOL;
+            $addr_list .= '<label for="ad_sel_addr_same">주문자와 동일</label>'.PHP_EOL;
+        }
 
         return view('shop.order_page',[
             's_cart_id'     => $s_cart_id,
@@ -112,8 +151,8 @@ class OrderController extends Controller
             'user_addr2'    => $user_addr2,
             'user_addr3'    => $user_addr3,
             'user_addr_jibeon'  => $user_addr_jibeon,
+            'addr_list'     => $addr_list,
         ],$Messages::$blade_ment['login']);
-
     }
 
     /**

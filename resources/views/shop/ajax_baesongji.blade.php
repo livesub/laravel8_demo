@@ -20,12 +20,15 @@
                 @foreach($baesongjis as $baesongji)
                     @php
                     $addr = $baesongji->ad_name.$sep.$baesongji->ad_tel.$sep.$baesongji->ad_hp.$sep.$baesongji->ad_zip1.$sep.$baesongji->ad_addr1.$sep.$baesongji->ad_addr2.$sep.$baesongji->ad_addr3.$sep.$baesongji->ad_jibeon.$sep.$baesongji->ad_subject;
+
+                    $checked = "";
+                    if($baesongji->ad_default == 1) $checked = "checked";
                     @endphp
                 <tr>
                     <td>
-                        <input type="hidden" name="id[{{ $i }}]" value="{{ $baesongji->id }}">
-                        <input type="checkbox" name="chk[]" value="{{ $i }}" id="chk_{{ $i }}">
-                        <input type="text" name="ad_subject[{{ $i }}]" id="ad_subject{{ $i }}" size="12" maxlength="20" value="{{ $baesongji->ad_subject }}">
+                        <input type="hidden" name="id[{{ $i }}]" id="id[{{ $i }}]" value="{{ $baesongji->id }}">
+                        <input type="checkbox" name="chk[]" id="chk_{{ $i }}" value="{{ $i }}">
+                        <input type="text" name="ad_subject_ori[{{ $i }}]" id="ad_subject_ori{{ $i }}" size="12" maxlength="20" value="{{ $baesongji->ad_subject }}">
                     </td>
                     <td>{{ $baesongji->ad_name }}</td>
                     <td>
@@ -36,8 +39,8 @@
                         <input type="hidden" id="addr{{ $i }}" value="{{ $addr }}">
                         <button type="button" onclick="return_addr('{{ $i }}');">선택</button>
                         <a href="" class="del_address mng_btn">삭제</a>
-                        <input type="radio" name="ad_default" value="" id="ad_default" >
-                        <label for="ad_default" class="default_lb mng_btn">기본배송지</label>
+                        <input type="radio" name="ad_default_ori" value="{{ $baesongji->id }}" id="ad_default{{ $i }}" {{ $checked }}>
+                        <label for="ad_default_ori" class="default_lb mng_btn">기본배송지</label>
                     </td>
                 </tr>
                     @php
@@ -45,6 +48,9 @@
                     @endphp
                 @endforeach
 
+                <tr>
+                    <td><button type="button" onclick="choice_modi();">선택수정</button><button type="button" onclick="lay_close();">닫기</button></td>
+                </tr>
             </table>
         </td>
     <tr>
@@ -53,60 +59,51 @@
 <script>
     function return_addr(num){
         var addr = $("#addr"+num).val().split(String.fromCharCode(30));
-        alert(addr);
+        //alert(addr);
+
+        $("#od_b_name").val(addr[0]);
+        $("#od_b_tel").val(addr[1]);
+        $("#od_b_hp").val(addr[2]);
+        $("#od_b_zip").val(addr[3]);
+        $("#od_b_addr1").val(addr[4]);
+        $("#od_b_addr2").val(addr[5]);
+        $("#od_b_addr3").val(addr[6]);
+        $("#od_b_addr_jibeon").val(addr[7]);
+        $("#ad_subject").val(addr[8]);
     }
 
-/*
-$(function() {
-    $(".sel_address").on("click", function() {
-        var addr = $(this).siblings("input").val().split(String.fromCharCode(30));
-
-        var f = window.opener.forderform;
-        f.od_b_name.value        = addr[0];
-        f.od_b_tel.value         = addr[1];
-        f.od_b_hp.value          = addr[2];
-        f.od_b_zip.value         = addr[3] + addr[4];
-        f.od_b_addr1.value       = addr[5];
-        f.od_b_addr2.value       = addr[6];
-        f.od_b_addr3.value       = addr[7];
-        f.od_b_addr_jibeon.value = addr[8];
-        f.ad_subject.value       = addr[9];
-
-        var zip1 = addr[3].replace(/[^0-9]/g, "");
-        var zip2 = addr[4].replace(/[^0-9]/g, "");
-
-        if(zip1 != "" && zip2 != "") {
-            var code = String(zip1) + String(zip2);
-
-            if(window.opener.zipcode != code) {
-                window.opener.zipcode = code;
-                window.opener.calculate_sendcost(code);
-            }
-        }
-
-        window.close();
-    });
-
-    $(".del_address").on("click", function() {
-        return confirm("배송지 목록을 삭제하시겠습니까?");
-    });
-
-    // 전체선택 부분
-    $("#chk_all").on("click", function() {
-        if($(this).is(":checked")) {
-            $("input[name^='chk[']").attr("checked", true);
-        } else {
-            $("input[name^='chk[']").attr("checked", false);
-        }
-    });
-
-    $(".btn_submit").on("click", function() {
+    function choice_modi(){
         if($("input[name^='chk[']:checked").length==0 ){
             alert("수정하실 항목을 하나 이상 선택하세요.");
             return false;
         }
-    });
 
-});
-*/
+        var queryString = $("#forderform").serialize();
+        $.ajax({
+            headers: {'X-CSRF-TOKEN': $('input[name=_token]').val()},
+            type : 'post',
+            url : '{{ route('ajax_baesongji_modi') }}',
+            data : queryString,
+            dataType : 'text',
+            success : function(result){
+//alert(result);
+//return false;
+                if(result == "no_mem"){
+                    alert("회원이시라면 회원로그인 후 이용해 주십시오.");
+                    return false;
+                }
+
+                if(result == "ok"){
+                    baesongji();
+                }
+            },
+            error: function(result){
+                console.log(result);
+            },
+        });
+    }
+
+    function lay_close(){
+        $("#disp_baesongi").html("");
+    }
 </script>

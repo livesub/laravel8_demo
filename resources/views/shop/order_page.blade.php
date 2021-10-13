@@ -13,6 +13,7 @@
 
 
 <form name="forderform" id="forderform" method="post" action="" autocomplete="off">
+{!! csrf_field() !!}
 <table border=1>
     <tr>
         <th scope="col">상품명</th>
@@ -168,7 +169,7 @@
     @endphp
 </table>
 
-</form>
+
 
 <table border=1>
 <input type="hidden" name="od_price"    value="{{ $tot_sell_price }}">
@@ -245,20 +246,14 @@
                     <td><h2>받으시는 분</h2></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><div id="disp_baesongi"></div></td>
+                    <td colspan="2">
+                        <div id="disp_baesongi"></div>
+                    </td>
                 </tr>
 
                 <tr>
                     <td>배송지선택</td>
-                    <td>
-                        <input type="radio" name="ad_sel_addr" value="same" id="ad_sel_addr_same">주문자와 동일
-
-                        @if(Auth::user())
-                        <input type="radio" name="ad_sel_addr" value="new" id="od_sel_addr_new">신규배송지
-                        <button type="button" onclick="baesongji();">배송지 목록</button>
-                        @endif
-
-                    </td>
+                    <td>{!! $addr_list !!}</td>
                 </tr>
 
                 @if(Auth::user())
@@ -319,6 +314,7 @@
             </table>
         </td>
     </tr>
+</form>
 </table>
 
 <script>
@@ -326,12 +322,10 @@
         $.ajax({
             type : 'get',
             url : '{{ route('ajax_baesongji') }}',
-            data : [
-
-            ],
+            data : {
+            },
             dataType : 'text',
             success : function(result){
-//alert(result);
                 if(result == "no_mem"){
                     alert("회원이시라면 회원로그인 후 이용해 주십시오.");
                     return false;
@@ -345,5 +339,68 @@
         });
     }
 </script>
+
+<script>
+    $("input[name=ad_sel_addr]").on("click", function() {
+//        var addr = $("#addr"+num).val().split(String.fromCharCode(30));
+//        alert(addr);
+        $("#od_b_name").val($("#od_name").val());
+        $("#od_b_tel").val($("#od_tel").val());
+        $("#od_b_hp").val($("#od_hp").val());
+        $("#od_b_zip").val($("#od_zip").val());
+        $("#od_b_addr1").val($("#od_addr1").val());
+        $("#od_b_addr2").val($("#od_addr2").val());
+        $("#od_b_addr3").val($("#od_addr3").val());
+        $("#od_b_addr_jibeon").val($("#od_addr_jibeon").val());
+        $("#ad_subject").val($("#ad_subject").val());
+/*
+        $("#od_b_name").val(addr[0]);
+        $("#od_b_tel").val(addr[1]);
+        $("#od_b_hp").val(addr[2]);
+        $("#od_b_zip").val(addr[3]);
+        $("#od_b_addr1").val(addr[4]);
+        $("#od_b_addr2").val(addr[5]);
+        $("#od_b_addr3").val(addr[6]);
+        $("#od_b_addr_jibeon").val(addr[7]);
+        $("#ad_subject").val(addr[8]);
+
+        var addr = $(this).val().split(String.fromCharCode(30));
+
+        if (addr[0] == "same") {
+            gumae2baesong();
+        } else {
+            if(addr[0] == "new") {
+                for(i=0; i<10; i++) {
+                    addr[i] = "";
+                }
+            }
+
+            var f = document.forderform;
+            f.od_b_name.value        = addr[0];
+            f.od_b_tel.value         = addr[1];
+            f.od_b_hp.value          = addr[2];
+            f.od_b_zip.value         = addr[3] + addr[4];
+            f.od_b_addr1.value       = addr[5];
+            f.od_b_addr2.value       = addr[6];
+            f.od_b_addr3.value       = addr[7];
+            f.od_b_addr_jibeon.value = addr[8];
+            f.ad_subject.value       = addr[9];
+
+            var zip1 = addr[3].replace(/[^0-9]/g, "");
+            var zip2 = addr[4].replace(/[^0-9]/g, "");
+
+            var code = String(zip1) + String(zip2);
+
+            if(zipcode != code) {
+                calculate_sendcost(code);
+            }
+        }
+*/
+    });
+</script>
+
+
+
+
 
 @endsection

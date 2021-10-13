@@ -12,8 +12,8 @@
 </table>
 
 <form name="frmcartlist" id="sod_bsk_list" method="post" action="{{ route('ajax_cart_register') }}">
-<input type="hidden" name="ajax_option_url" id="ajax_option_url" value="{{ route('ajax_option_change') }}">
 {!! csrf_field() !!}
+<input type="hidden" name="ajax_option_url" id="ajax_option_url" value="{{ route('ajax_option_change') }}">
 <table border=1>
     <tr>
         <td><input type="checkbox" name="ct_all" value="1" id="ct_all" checked="checked"></td>

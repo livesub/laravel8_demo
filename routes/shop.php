@@ -68,3 +68,9 @@ Route::get('/baesongji', [
     'as' => 'ajax_baesongji',
     'uses' => 'App\Http\Controllers\shop\BaesongjiController@ajax_baesongji',
 ]);
+
+//배송지 수정
+Route::post('/baesongji_process', [
+    'as' => 'ajax_baesongji_modi',
+    'uses' => 'App\Http\Controllers\shop\BaesongjiController@ajax_baesongji_modify',
+]);

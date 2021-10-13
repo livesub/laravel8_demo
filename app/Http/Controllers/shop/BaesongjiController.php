@@ -43,35 +43,46 @@ class BaesongjiController extends Controller
             exit;
         }
 
-        // 기본배송지
-        $default_baesongji = DB::table('baesongjis')->where([['user_id', Auth::user()->user_id], ['ad_default','1']])->first();
-
-        $sep = chr(30);
-        $addr_list = "";
-
-        if(isset($default_baesongji->id) && $default_baesongji->id) {
-            $val1 = $default_baesongji->ad_name.$sep.$default_baesongji->ad_tel.$sep.$default_baesongji->ad_hp.$sep.$default_baesongji->ad_zip1.$sep.$default_baesongji->ad_zip2.$sep.$default_baesongji->ad_addr1.$sep.$default_baesongji->ad_addr2.$sep.$default_baesongji->ad_addr3.$sep.$default_baesongji->ad_jibeon.$sep.$default_baesongji->ad_subject;
-            $addr_list .= '<input type="radio" name="ad_sel_addr" value="'.$val1.'" id="ad_sel_addr_def">'.PHP_EOL;
-            $addr_list .= '<label for="ad_sel_addr_def">기본배송지</label>'.PHP_EOL;
-        }
-
-/*
-    삭제처리
-        if($w == 'd') {
-            $sql = " delete from {$g5['g5_shop_order_address_table']} where mb_id = '{$member['mb_id']}' and ad_id = '$ad_id' ";
-            sql_query($sql);
-            goto_url($_SERVER['SCRIPT_NAME']);
-        }
-*/
-        //$baesongji = DB::table('baesongjis')->where('user_id', Auth::user()->user_id)->count(); //배송지 갯수
-
         $baesongjis = DB::table('baesongjis')->where('user_id', Auth::user()->user_id)->orderBy('ad_default', 'desc')->orderBy('id', 'desc')->get();
 
         $view = view('shop.ajax_baesongji',[
-            'baesongjis' => $baesongjis,
+            'baesongjis'    => $baesongjis,
         ]);
 
         return $view;
+    }
+
+    public function ajax_baesongji_modify(Request $request)
+    {
+        $CustomUtils = new CustomUtils;
+        $Messages = $CustomUtils->language_pack(session()->get('multi_lang'));
+
+        $chk        = $request->input('chk');
+        $id         = $request->input('id');
+        $ad_subject = $request->input('ad_subject_ori');
+        $ad_default = $request->input('ad_default_ori');
+
+        if(!Auth::user() || count($chk) == 0){
+            echo "no_mem";
+            exit;
+        }
+
+        for($i=0; $i<count($chk); $i++)
+        {
+            $k = isset($chk[$i]) ? (int)$chk[$i] : 0;
+            $id = isset($id[$k]) ? (int)$id[$k] : 0;
+            $ad_subject = isset($ad_subject[$k]) ? $ad_subject[$k] : '';
+
+            //if(!empty($ad_default) && $id === $ad_default) {  //$id === $ad_default 이부분 처리 해야함
+            if(!empty($ad_default)) {
+                $update_result = DB::table('baesongjis')->where([['id', $id], ['user_id',Auth::user()->user_id]])->limit(1)->update(['ad_subject' => $ad_subject, 'ad_default' => 1]);
+            }else{
+                $update_result = DB::table('baesongjis')->where([['id', $id], ['user_id',Auth::user()->user_id]])->limit(1)->update(['ad_subject' => $ad_subject]);
+            }
+        }
+
+        echo "ok";
+        exit;
     }
 
     /**
