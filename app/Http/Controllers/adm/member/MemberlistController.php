@@ -251,6 +251,7 @@ class MemberlistController extends Controller
                 $user = User::whereUser_id($user_id)->first();  //update 할때 미리 값을 조회 하고 쓰면 update 구문으로 자동 변경
                 $user->user_name = $user_name;
                 $user->user_phone = $user_phone;
+                $user->user_level = $user_level;
                 $result_up = $user->save();
 
                 if(!$result_up)
@@ -287,7 +288,7 @@ class MemberlistController extends Controller
 
         if($mode == "regi"){
             //등록
-            $select_disp = CustomUtils::select_box("user_level","회원@@관리자","10@@".config('app.ADMIN_LEVEL'), "");
+            $select_disp = CustomUtils::select_box("user_level","회원@@관리자","10@@3".config('app.ADMIN_LEVEL'), "");
 
             return view('adm.memberregi',[
                 'title_ment'            => '등록',
@@ -305,7 +306,7 @@ class MemberlistController extends Controller
             //수정
             //회원 정보를 찾아 놓음
             $user_info = DB::table('users')->select('id', 'user_id', 'user_name', 'user_phone', 'user_thumb_name', 'user_ori_imagepath', 'user_level', 'user_type','created_at')->where('id', $num)->first();
-            $select_disp = CustomUtils::select_box("user_level","회원@@관리자","10@@".config('app.ADMIN_LEVEL'), "$user_info->user_level");
+            $select_disp = CustomUtils::select_box("user_level","회원@@관리자","10@@3".config('app.ADMIN_LEVEL'), "$user_info->user_level");
 
             if($user_info->user_type == "Y") $user_status = "탈퇴";
             else $user_status = "가입";
