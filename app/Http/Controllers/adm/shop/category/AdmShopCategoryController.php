@@ -266,7 +266,7 @@ class AdmShopCategoryController extends Controller
 
         //blade 에서 제어 했으나 한번더 제어 함(하위 카테고리가 있거나 상품이 있을 경우 삭제 안되게)
         $de_cate_info = DB::table('shopcategorys')->where('sca_id','like',$sca_id.'%')->count();   //하위 카테고리 갯수
-        $de_item_info = DB::table('items')->where('ca_id','like',$sca_id.'%')->count();   //상품 갯수
+        $de_item_info = DB::table('shopitems')->where('sca_id','like',$sca_id.'%')->count();   //상품 갯수
 
         if($de_cate_info == 1 && $de_item_info == 0){
             $cate_del = DB::table('shopcategorys')->where([['id',$id],['sca_id',$ca_id]])->delete();   //row 삭제

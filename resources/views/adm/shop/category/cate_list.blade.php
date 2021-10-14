@@ -117,7 +117,7 @@
         $("#sca_id").val(sca_id);
 
         if (confirm("상품이 있을 경우 상품 부터 삭제 하세요.\n정말 삭제하시겠습니까?") == true){
-            $("#cate_form").attr("action", "{{ route('adm.cate.cate_delete') }}");
+            $("#cate_form").attr("action", "{{ route('shop.cate.cate_delete') }}");
             $("#cate_form").submit();
         }else{
             return false;

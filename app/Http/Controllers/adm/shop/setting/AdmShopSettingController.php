@@ -57,6 +57,11 @@ class AdmShopSettingController extends Controller
         $shop_img_width         = "500%%300%%100";
         $shop_img_height        = "500%%300%%100";
 
+        $member_reg_coupon_use      = "";
+        $member_reg_coupon_price    = "";
+        $member_reg_coupon_minimum  = "";
+        $member_reg_coupon_term     = "";
+
         if(!is_null($setting_info)){
             $id = $setting_info->id;
 
