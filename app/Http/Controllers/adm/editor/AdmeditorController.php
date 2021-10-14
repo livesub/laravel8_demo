@@ -90,7 +90,7 @@ class AdmeditorController extends Controller
                 $item_like = DB::table('items')->where('item_content', 'LIKE', "%{$files_item[$j_item]}%")->count();
 
                 if($item_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
-                    $editor_no_regi_img_item[$k] = $files_item[$j_item];
+                    $editor_no_regi_img_item[$k_item] = $files_item[$j_item];
                     $k_item++;
                 }
 
@@ -115,7 +115,7 @@ class AdmeditorController extends Controller
                 $menu_like = DB::table('menuses')->where('menu_content', 'LIKE', "%{$files_menu[$j_menu]}%")->count();
 
                 if($menu_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
-                    $editor_no_regi_img_menu[$k] = $files_menu[$j_menu];
+                    $editor_no_regi_img_menu[$k_menu] = $files_menu[$j_menu];
                     $k_menu++;
                 }
 
@@ -140,7 +140,7 @@ class AdmeditorController extends Controller
                 $email_like = DB::table('emails')->where('email_content', 'LIKE', "%{$files_email[$j_email]}%")->count();
 
                 if($email_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
-                    $editor_no_regi_img_email[$k] = $files_email[$j_email];
+                    $editor_no_regi_img_email[$k_email] = $files_email[$j_email];
                     $k_email++;
                 }
 
@@ -165,7 +165,7 @@ class AdmeditorController extends Controller
                 $pop_like = DB::table('popups')->where('pop_content', 'LIKE', "%{$files_pop[$j_pop]}%")->count();
 
                 if($pop_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
-                    $editor_no_regi_img_pop[$k] = $files_pop[$j_pop];
+                    $editor_no_regi_img_pop[$k_pop] = $files_pop[$j_pop];
                     $k_pop++;
                 }
 
@@ -190,7 +190,7 @@ class AdmeditorController extends Controller
                 $sitem_like = DB::table('shopitems')->where('item_content', 'LIKE', "%{$files_sitem[$j_sitem]}%")->count();
 
                 if($sitem_like == 0){   //db 에 저장된 이미지가 아닌것만 배열로 만든다.
-                    $editor_no_regi_img_sitem[$k] = $files_sitem[$j_sitem];
+                    $editor_no_regi_img_sitem[$k_sitem] = $files_sitem[$j_sitem];
                     $k_sitem++;
                 }
 
